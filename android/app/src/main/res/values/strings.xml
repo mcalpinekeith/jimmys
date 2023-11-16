@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+    <string name="app_name">Jimmy\'s Gym</string>
+    <string name="facebook_app_id">6574900569284222</string>
+    <string name="fb_login_protocol_scheme">fb6574900569284222</string>
+    <string name="facebook_client_token">e1215aac6c3beb403d2856131c043147</string>
+</resources>

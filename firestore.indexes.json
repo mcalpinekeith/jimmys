@@ -1,0 +1,53 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "shared_exercises",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "exercise_types",
+          "arrayConfig": "CONTAINS"
+        },
+        {
+          "fieldPath": "name",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "synchronize",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "table_name",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "user_id",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "utc_updated",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "exercises",
+      "fieldPath": "name",
+      "ttl": false,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION_GROUP"
+        }
+      ]
+    }
+  ]
+}

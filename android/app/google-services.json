@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "385539961382",
+    "project_id": "jimmys-4d596d",
+    "storage_bucket": "jimmys-4d596d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:385539961382:android:823c1af42b24b70a03ace7",
+        "android_client_info": {
+          "package_name": "com.mcalpinekeith.jimmys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "385539961382-8qngn1eu5jvsm4k23edtpn416c38d2l1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mcalpinekeith.jimmys",
+            "certificate_hash": "ae362529a593c1e2904573551e13e6f7bcf408f7"
+          }
+        },
+        {
+          "client_id": "385539961382-spaprnri0u3pqcupte2f23g3t8bq7j6l.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mcalpinekeith.jimmys",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "385539961382-35pn7v2v6b07974jrnm4r501ibkbbvjm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6FBtx7EVF0dwstS3VJENUxIH6IvEpBic"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "385539961382-35pn7v2v6b07974jrnm4r501ibkbbvjm.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "385539961382-akpi21muc8rsepq2hg5i8gm54umt8r9g.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mcalpinekeith.Jimmys"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
