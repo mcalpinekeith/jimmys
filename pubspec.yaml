@@ -35,6 +35,7 @@ dependencies:
   collection: ^1.17.2
   measured_size: ^1.0.0
   gap: ^3.0.1
+  scroll_to_index: ^3.0.1
 
 dev_dependencies:
   flutter_test:

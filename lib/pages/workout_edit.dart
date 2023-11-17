@@ -22,6 +22,7 @@ import 'package:jimmys/widgets/my_carousel.dart';
 import 'package:jimmys/widgets/my_grid.dart';
 import 'package:jimmys/widgets/my_text_form_field.dart';
 import 'package:provider/provider.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:uuid/uuid.dart';
 
 class WorkoutEditPage extends StatefulWidget {
@@ -47,6 +48,7 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
   final _formKey = GlobalKey<FormState>();
   final _workoutExerciseKey = GlobalKey<AnimatedListState>();
   final _workoutIconKey = GlobalKey<AnimatedListState>();
+  late AutoScrollController _workoutIconController;
   final _focusNode = FocusNode();
 
   Exercise? _currentExercise;
@@ -74,6 +76,17 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
       var name = '${generateWordPairs().first.join()} workout';
       _workout = Workout(id: id, name: name);
     }
+
+    _workoutIconController = AutoScrollController(
+      viewportBoundaryGetter: () => Rect.fromLTRB(
+        MediaQuery.of(context).padding.left,
+        MediaQuery.of(context).padding.top,
+        MediaQuery.of(context).padding.right,
+        MediaQuery.of(context).padding.bottom
+      ),
+      axis: Axis.vertical,
+      suggestedRowHeight: iconMedium + (spacingMicro * 2),
+    );
 
     _categories = _db.workouts.where((_) => _.category != null && _.category!.isNotEmpty).map((_) => _.category!).toSet().toList();
 
@@ -178,6 +191,7 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
                           child: MyGrid(
                             gridKey: _workoutIconKey,
                             gridList: _workoutIconList,
+                            controller: _workoutIconController,
                             onSelected: (String value) => _workout.icon = value,
                           ),
                         ),
@@ -252,6 +266,13 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
                     _createSaveOptions(),
                   ],
                   onSelected: (int selectedIndex) {
+                    if (selectedIndex == 1) {
+                      final selectedWorkoutIconIndex = _workoutIconList.items.indexWhere((_) => _.isSelected);
+                      if (selectedWorkoutIconIndex > -1) {
+                        _workoutIconController.scrollToIndex(selectedWorkoutIconIndex, preferPosition: AutoScrollPosition.begin);
+                      }
+                    }
+
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
                 ),

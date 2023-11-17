@@ -5,6 +5,7 @@ import 'package:jimmys/constants.dart';
 import 'package:jimmys/services/animated_list_service.dart';
 import 'package:jimmys/services/icon_service.dart';
 import 'package:jimmys/types.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class MyGrid extends StatefulWidget {
   const MyGrid({
@@ -12,12 +13,14 @@ class MyGrid extends StatefulWidget {
     required this.gridKey,
     required this.gridList,
     this.padding = const EdgeInsets.symmetric(vertical: spacingMicro, horizontal: spacingMedium),
+    required this.controller,
     required this.onSelected,
   }) : super(key: key);
 
   final GlobalKey<AnimatedListState> gridKey;
   final AnimatedListService<IconItem> gridList;
   final EdgeInsetsGeometry padding;
+  final AutoScrollController controller;
   final StringToVoidFunc onSelected;
 
   @override
@@ -34,6 +37,7 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
     return Padding(
       padding: widget.padding,
       child: AnimatedGrid(
+        controller: widget.controller,
         key: widget.gridKey,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
@@ -44,30 +48,35 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
         itemBuilder: (BuildContext context, int index, Animation<double> animation) {
           final item = widget.gridList[index];
 
-          return SizeTransition(
-            sizeFactor: animation,
-            child: IconButton(
-              iconSize: iconMedium,
-              color: item.isSelected
-                ? theme.colorScheme.primary
-                : theme.colorScheme.secondary,
-              icon: FaIcon(item.icon!),
-              style: ElevatedButton.styleFrom(
-                shape: const CircleBorder(),
-                side: BorderSide(
-                  color: item.isSelected
-                    ? theme.colorScheme.primary
-                    : Colors.transparent,
-                )
+          return AutoScrollTag(
+            key: ValueKey(index),
+            controller: widget.controller,
+            index: index,
+            child: SizeTransition(
+              sizeFactor: animation,
+              child: IconButton(
+                iconSize: iconMedium,
+                color: item.isSelected
+                  ? theme.colorScheme.primary
+                  : theme.colorScheme.secondary,
+                icon: FaIcon(item.icon!),
+                style: ElevatedButton.styleFrom(
+                  shape: const CircleBorder(),
+                  side: BorderSide(
+                    color: item.isSelected
+                      ? theme.colorScheme.primary
+                      : Colors.transparent,
+                  )
+                ),
+                onPressed: () {
+                  setState(() {
+                    for (var i = 0; i < widget.gridList.items.length; i++) {
+                      widget.gridList[i].isSelected = i == index ? !widget.gridList[i].isSelected : false;
+                    }
+                  });
+                  widget.onSelected(IconService().getIconUnicode(item.icon!));
+                },
               ),
-              onPressed: () {
-                setState(() {
-                  for (var i = 0; i < widget.gridList.items.length; i++) {
-                    widget.gridList[i].isSelected = i == index ? !widget.gridList[i].isSelected : false;
-                  }
-                });
-                widget.onSelected(IconService().getIconUnicode(item.icon!));
-              },
             ),
           );
         },
