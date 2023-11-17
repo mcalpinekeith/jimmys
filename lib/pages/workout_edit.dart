@@ -198,28 +198,7 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
                     ),
                     Column(
                       children: [
-                        ChangeNotifierProvider(
-                          create: (context) => ExerciseService(),
-                          child: Consumer<ExerciseService>(
-                            builder: (context, exerciseService, child) => MyAutocomplete(
-                              labelText: 'Exercise',
-                              options: _db.exercises.map((_) => _.name).toList(),
-                              onSelected: (String selection) {
-                                setState(() {
-                                  _currentExercise = _db.exercises.where((_) => _.name == selection).singleOrNull;
-                                  if (kDebugMode) {
-                                    if (_currentExercise == null) {
-                                      print('--------------- Could not find any exercises for "$selection"');
-                                    }
-                                    else {
-                                      print('--------------- Found "${_currentExercise!.name}"');
-                                    }
-                                  }
-                                });
-                              },
-                            ),
-                          ),
-                        ),
+                        _createExerciseAutocomplete(),
                         Visibility(
                           visible: _currentExercise == null,
                           replacement: IconButton(
@@ -281,6 +260,32 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
               const Gap(spacingMedium),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  _createExerciseAutocomplete() {
+    return ChangeNotifierProvider(
+      create: (context) => ExerciseService(),
+      child: Consumer<ExerciseService>(
+        builder: (context, exerciseService, child) => MyAutocomplete(
+          labelText: 'Exercise',
+          options: _db.exercises.map((_) => _.name).toList(),
+          onSelected: (String selection) {
+            setState(() {
+              _currentExercise = _db.exercises.where((_) => _.name == selection).singleOrNull;
+
+              if (kDebugMode) {
+                if (_currentExercise == null) {
+                  print('--------------- Could not find any exercises for "$selection"');
+                }
+                else {
+                  print('--------------- Found "${_currentExercise!.name}"');
+                }
+              }
+            });
+          },
         ),
       ),
     );
@@ -388,7 +393,7 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
     );
   }
 
-  Widget _createSaveOptions() {
+  _createSaveOptions() {
     return ListView(
       children: [
         const Gap(spacingLarge),

@@ -104,7 +104,7 @@ class _MyTextState extends State<MyTextFormField> {
         widget.onChanged!('');
       },
       child: const Padding(
-        padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+        padding: EdgeInsets.only(top: 5),
         child: FaIcon(FontAwesomeIcons.xmark),
       ),
     );

@@ -117,7 +117,7 @@ Widget createIconWithPadding(String? icon, ThemeData theme) {
   if (icon == null) return const SizedBox.shrink();
 
   return Padding(
-    padding: const EdgeInsets.fromLTRB(0, 0, spacingSmall, 0),
+    padding: const EdgeInsets.only(right: spacingSmall),
     child: FaIcon(IconDataSolid(getIcon(icon))),
   );
 }

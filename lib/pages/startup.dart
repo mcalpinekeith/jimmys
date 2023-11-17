@@ -27,44 +27,38 @@ class _StartupState extends State<StartupPage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(spacingMedium),
-          child: Column(
-            children: [
-              Row(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(spacingSmall, 0, spacingSmall, 0),
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Hello,', style: theme.textTheme.headlineLarge),
                   _createAvatarImage(),
                 ],
               ),
-              _createUserGreeting(theme),
-              Expanded(
-                child: ListView(
-                  children: [
-                    MyButton(
-                      label: const Text('Add workouts'),
-                      icon: const FaIcon(FontAwesomeIcons.circlePlus),
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => const WorkoutsPage()
-                        ));
-                      },
-                    ),
-                    MyButton(
-                      label: const Text('Add exercises'),
-                      icon: const FaIcon(FontAwesomeIcons.circlePlus),
-                      onTap: () {
-                        //Navigator.pop(context);
-                      },
-                    ),
-                    _createScheduleWorkoutsOption(theme),
-                    _createScheduledWorkout(theme),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+            _createUserGreeting(theme),
+            MyButton(
+              label: const Text('Add workouts'),
+              icon: const FaIcon(FontAwesomeIcons.circlePlus),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const WorkoutsPage()
+                ));
+              },
+            ),
+            MyButton(
+              label: const Text('Add exercises'),
+              icon: const FaIcon(FontAwesomeIcons.circlePlus),
+              onTap: () {
+                //Navigator.pop(context);
+              },
+            ),
+            _createScheduleWorkoutsOption(theme),
+            _createScheduledWorkout(theme),
+          ],
         ),
       ),
     );
@@ -110,10 +104,13 @@ class _StartupState extends State<StartupPage> {
             children: [ 
               SizedBox(
                 height: spacingLarge,
-                child: Text(
-                  '${d.displayName!}.',
-                  style: getHeadlineLargePrimary(theme),
-                  overflow: TextOverflow.ellipsis,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: spacingSmall),
+                  child: Text(
+                    '${d.displayName!}.',
+                    style: getHeadlineLargePrimary(theme),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ],
@@ -122,7 +119,10 @@ class _StartupState extends State<StartupPage> {
 
         return Row(
           children: [ 
-            Text('Stranger.', style: getHeadlineLargePrimary(theme)),
+            Padding(
+              padding: const EdgeInsets.only(left: spacingSmall),
+              child: Text('Stranger.', style: getHeadlineLargePrimary(theme)),
+            ),
           ],
         );
       },
@@ -152,23 +152,33 @@ class _StartupState extends State<StartupPage> {
       child: Consumer<WorkoutService>(builder: (context, workoutService, child) {
         if (_db.todayWorkout == null) return const SizedBox.shrink();
 
-        return Column(
-          children: [
-            const Gap(spacingLarge),
-            const Text('Scheduled for today:'),
-            const Gap(spacingMedium),
-            Text(
-              _db.todayWorkout!.name,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleLarge,
-              softWrap: true,
-            ),
-            Text(
-              _db.todayWorkout!.description!,
-              textAlign: TextAlign.center,
-              style: getTitleMediumSecondary(theme),
-            ),
-          ],
+        return Expanded(
+          child: Column(
+            children: [
+              const Gap(spacingLarge),
+              const Text('Scheduled for today:'),
+              const Gap(spacingMedium),
+              Text(
+                _db.todayWorkout!.name,
+                textAlign: TextAlign.center,
+                style: theme.textTheme.titleLarge,
+                softWrap: true,
+              ),
+              const Gap(spacingSmall),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Text(
+                      _db.todayWorkout!.description!,
+                      textAlign: TextAlign.center,
+                      style: getTitleMediumSecondary(theme),
+                    ),
+                  ],
+                ),
+              ),
+              const Gap(spacingSmall),
+            ],
+          ),
         );
       }),
     );
