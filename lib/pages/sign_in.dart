@@ -11,8 +11,15 @@ import 'package:jimmys/services/workout_service.dart';
 import 'package:jimmys/types.dart';
 import 'package:jimmys/widgets/my_button.dart';
 
-class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+class SignInPage extends StatefulWidget {
+  const SignInPage({Key? key,}) : super(key: key);
+
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isSigningIn = false;
 
   Future _signIn(String provider, StringToVoidFunc onFail, VoidCallback onSuccess) async {
     try {
@@ -87,7 +94,7 @@ class SignInPage extends StatelessWidget {
     return Scaffold(
       appBar: createAppBar(theme, 'Welcome'),
       body: SafeArea(
-        child: ListView(
+        child: Column(
           children: [
             Container(
               padding: const EdgeInsets.all(spacingMedium),
@@ -95,23 +102,33 @@ class SignInPage extends StatelessWidget {
               height: 300,
               child: Image.asset('assets/images/logo-color-no-background-high-res.png'),
             ),
-            MyButton(
-              size: Sizes.large,
-              label: const Text('Continue with Google'),
-              icon: const FaIcon(FontAwesomeIcons.google),
-              onTap: () async => await _onPressed('Google', context)
-            ),
-            MyButton(
-              size: Sizes.large,
-              label: const Text('Continue with Facebook'),
-              icon: const FaIcon(FontAwesomeIcons.facebook),
-              onTap: () async => await _onPressed('Facebook', context)
-            ),
-            MyButton(
-              size: Sizes.large,
-              label: const Text('Continue with Yahoo!'),
-              icon: const FaIcon(FontAwesomeIcons.yahoo),
-              onTap: () async => await _onPressed('Yahoo', context)
+            Visibility(
+              visible: !_isSigningIn,
+              replacement: createBusy(theme),
+              child: Expanded(
+                child: ListView(
+                  children: [
+                    MyButton(
+                      size: Sizes.large,
+                      label: const Text('Continue with Google'),
+                      icon: const FaIcon(FontAwesomeIcons.google),
+                      onTap: () async => await _onPressed('Google', context)
+                    ),
+                    MyButton(
+                        size: Sizes.large,
+                        label: const Text('Continue with Facebook'),
+                        icon: const FaIcon(FontAwesomeIcons.facebook),
+                        onTap: () async => await _onPressed('Facebook', context)
+                    ),
+                    MyButton(
+                        size: Sizes.large,
+                        label: const Text('Continue with Yahoo!'),
+                        icon: const FaIcon(FontAwesomeIcons.yahoo),
+                        onTap: () async => await _onPressed('Yahoo', context)
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -120,6 +137,10 @@ class SignInPage extends StatelessWidget {
   }
 
   Future _onPressed(String provider, BuildContext context) async {
+    setState(() {
+      _isSigningIn = true;
+    });
+
     await _signIn(provider, 
       (fail) => _showFailMessage(context, fail),
       () => _navigateOnSuccess(context)
