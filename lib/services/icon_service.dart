@@ -5,7 +5,7 @@ import 'package:jimmys/services/animated_list_service.dart';
 class IconService {
   static final IconService _instance = IconService._internal();
 
-  final _defaultIcons = const [
+  final defaultIcons = const [
 
     FontAwesomeIcons.heartPulse,
     FontAwesomeIcons.heartCrack,
@@ -375,17 +375,20 @@ class IconService {
   AnimatedListService<IconItem> getAnimatedIconList(GlobalKey<AnimatedListState> key) {
     final items = <IconItem>[];
 
-    for (var i = 0; i < _defaultIcons.length; i++) {
-      final iconData = _defaultIcons[i];
-      final unicode = iconData.codePoint.toRadixString(16);
+    for (var i = 0; i < defaultIcons.length; i++) {
+      final iconData = defaultIcons[i];
 
       items.add(IconItem(
-        unicode: unicode,
+        unicode: getIconUnicode(iconData),
         icon: iconData,
       ));
     }
 
     return AnimatedListService(key, null, items);
+  }
+
+  String getIconUnicode(IconData iconData) {
+    return iconData.codePoint.toRadixString(16);
   }
 }
 

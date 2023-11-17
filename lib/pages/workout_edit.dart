@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:english_words/english_words.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -57,10 +58,16 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+    _lastSave = 'never';
     _isAdd = widget.workoutId == null;
+    _workoutExerciseList = AnimatedListService(_workoutExerciseKey, _createRemovedWorkoutExerciseItem, <WorkoutExerciseItem>[]);
+    _workoutIconList = IconService().getAnimatedIconList(_workoutIconKey);
 
     if (widget.workoutId != null) {
       _workout = _db.workouts.singleWhere((_) => _.id == widget.workoutId);
+      for (var i = 0; i < _workoutIconList.items.length; i++) {
+        _workoutIconList.items[i].isSelected = _workoutIconList.items[i].unicode == _workout.icon;
+      }
     }
     else {
       var id = const Uuid().v8();
@@ -69,10 +76,6 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
     }
 
     _categories = _db.workouts.where((_) => _.category != null && _.category!.isNotEmpty).map((_) => _.category!).toSet().toList();
-
-    _lastSave = 'never';
-    _workoutExerciseList = AnimatedListService(_workoutExerciseKey, _createRemovedWorkoutExerciseItem, <WorkoutExerciseItem>[]);
-    _workoutIconList = IconService().getAnimatedIconList(_workoutIconKey);
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
@@ -173,7 +176,6 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
                         const Gap(spacingSmall),
                         Expanded(
                           child: MyGrid(
-                            initialValue: _workout.icon,
                             gridKey: _workoutIconKey,
                             gridList: _workoutIconList,
                             onSelected: (String value) => _workout.icon = value,
@@ -227,7 +229,8 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
                                   exercise: _currentExercise!,
                                   supersetExerciseId: null,
                                   supersetExercise: null,
-                                ));
+                                )
+                              );
                             },
                           ),
                           child: Padding(

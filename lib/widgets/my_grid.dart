@@ -5,19 +5,16 @@ import 'package:jimmys/constants.dart';
 import 'package:jimmys/services/animated_list_service.dart';
 import 'package:jimmys/services/icon_service.dart';
 import 'package:jimmys/types.dart';
-import 'package:jimmys/widgets/my_card.dart';
 
 class MyGrid extends StatefulWidget {
   const MyGrid({
     Key? key,
-    this.initialValue,
     required this.gridKey,
     required this.gridList,
     this.padding = const EdgeInsets.symmetric(vertical: spacingMicro, horizontal: spacingMedium),
     required this.onSelected,
   }) : super(key: key);
 
-  final String? initialValue;
   final GlobalKey<AnimatedListState> gridKey;
   final AnimatedListService<IconItem> gridList;
   final EdgeInsetsGeometry padding;
@@ -28,20 +25,10 @@ class MyGrid extends StatefulWidget {
 }
 
 class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
-  int _selectedIndex = -1;
-
-  @override
-  void initState() {
-    super.initState();
-
-    if (widget.initialValue == null && _selectedIndex == -1) _selectedIndex = 0;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
-
     final crossAxisCount = width ~/ 50;
 
     return Padding(
@@ -50,20 +37,37 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
         key: widget.gridKey,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: crossAxisCount,
-          //mainAxisSpacing: spacingMedium,
-          //crossAxisSpacing: spacingMedium,
+          mainAxisSpacing: spacingMicro,
+          crossAxisSpacing: spacingMicro,
         ),
         initialItemCount: widget.gridList.length,
         itemBuilder: (BuildContext context, int index, Animation<double> animation) {
           final item = widget.gridList[index];
 
-          return MyCard(
-            animation: animation,
-            child: FaIcon(item.icon!,
+          return SizeTransition(
+            sizeFactor: animation,
+            child: IconButton(
+              iconSize: iconMedium,
               color: item.isSelected
-                ? theme.colorScheme.onPrimary
+                ? theme.colorScheme.primary
                 : theme.colorScheme.secondary,
-              size: iconMedium,
+              icon: FaIcon(item.icon!),
+              style: ElevatedButton.styleFrom(
+                shape: const CircleBorder(),
+                side: BorderSide(
+                  color: item.isSelected
+                    ? theme.colorScheme.primary
+                    : Colors.transparent,
+                )
+              ),
+              onPressed: () {
+                setState(() {
+                  for (var i = 0; i < widget.gridList.items.length; i++) {
+                    widget.gridList[i].isSelected = i == index ? !widget.gridList[i].isSelected : false;
+                  }
+                });
+                widget.onSelected(IconService().getIconUnicode(item.icon!));
+              },
             ),
           );
         },

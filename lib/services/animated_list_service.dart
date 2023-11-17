@@ -14,18 +14,21 @@ class AnimatedListService<E> {
   final RemovedItemBuilder<E>? removedItemBuilder;
   final List<E> items;
   
-  AnimatedListState? get _animatedList => key.currentState;
+  AnimatedListState? get animatedItems => key.currentState;
 
   void insert(int index, E item) {
     items.insert(index, item);
-    _animatedList!.insertItem(index, duration: duration);
+
+    if (animatedItems != null) {
+      animatedItems!.insertItem(index, duration: duration);
+    }
   }
 
   E removeAt(int index) {
     final E removedItem = items.removeAt(index);
 
-    if (removedItem != null) {
-      _animatedList!.removeItem(
+    if (animatedItems != null && removedItem != null) {
+      animatedItems!.removeItem(
         index,
         (BuildContext context, Animation<double> animation) {
           if (removedItemBuilder == null) return const SizedBox.shrink();
@@ -37,6 +40,16 @@ class AnimatedListService<E> {
     }
 
     return removedItem;
+  }
+
+  removeAll() {
+    items.clear();
+
+    if (animatedItems != null) {
+      animatedItems!.removeAllItems((BuildContext context, Animation<double> animation) {
+        return const SizedBox.shrink();
+      });
+    }
   }
 
   int get length => items.length;

@@ -69,8 +69,6 @@ class _MyGroupedListViewState extends State<MyGroupedListView> {
                 offstage: offstage,
                 child: Container(
                   height: spacingLarge,
-                  //width: width,
-                  padding: const EdgeInsets.only(left: spacingLarge),
                   alignment: Alignment.centerLeft,
                   child: Text(tag, style: getHeadlineLargePrimary(theme)),
                 ),
