@@ -20,6 +20,7 @@ import 'package:jimmys/widgets/my_button.dart';
 import 'package:jimmys/widgets/my_card.dart';
 import 'package:jimmys/widgets/my_carousel.dart';
 import 'package:jimmys/widgets/my_grid.dart';
+import 'package:jimmys/widgets/my_number_stepper.dart';
 import 'package:jimmys/widgets/my_text_form_field.dart';
 import 'package:provider/provider.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -54,8 +55,6 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
   Exercise? _currentExercise;
   late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
   late AnimatedListService<IconItem> _workoutIconList;
-
-  final double _setsMaxHeight = 100;
 
   @override
   void initState() {
@@ -317,35 +316,34 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: spacingSmall, bottom: spacingSmall),
-                  child: ElevatedButton(
-                    child: Text('Sets: ${workoutExercise.sets.join(', ')}'),
-                    onPressed: () {
-                      setState(() {
-                        for (var i = 0; i < _workoutExerciseList.items.length; i++) {
-                          _workoutExerciseList[i].isSetsExpanded = i == index ? !_workoutExerciseList[i].isSetsExpanded : false;
-                        }
-                      });
-                    },
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: spacingSmall, right: spacingMedium),
+                    child: ElevatedButton(
+                      child: Text('Sets: ${workoutExercise.sets.join(', ')}'),
+                      onPressed: () {
+                        setState(() {
+                          for (var i = 0; i < _workoutExerciseList.items.length; i++) {
+                            _workoutExerciseList[i].isSetsExpanded = i == index ? !_workoutExerciseList[i].isSetsExpanded : false;
+                          }
+                        });
+                      },
+                    ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: spacingSmall),
-                  child: IconButton(
-                    iconSize: iconMedium,
-                    highlightColor: theme.colorScheme.primary,
-                    color: workoutExercise.isDropSet ? theme.colorScheme.primary : theme.colorScheme.onPrimaryContainer,
-                    icon: const FaIcon(FontAwesomeIcons.rankingStar),
-                    onPressed: () {
-                      setState(() {
-                        workoutExercise.isDropSet = !workoutExercise.isDropSet;
-                      });
-                    },
-                  ),
+                IconButton(
+                  iconSize: iconMedium,
+                  highlightColor: theme.colorScheme.primary,
+                  color: workoutExercise.isDropSet ? theme.colorScheme.primary : theme.colorScheme.onPrimaryContainer,
+                  icon: const FaIcon(FontAwesomeIcons.rankingStar),
+                  onPressed: () {
+                    setState(() {
+                      workoutExercise.isDropSet = !workoutExercise.isDropSet;
+                    });
+                  },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: spacingSmall, right: spacingSmall),
+                  padding: const EdgeInsets.only(left: spacingMedium, right: spacingSmall),
                   child: IconButton(
                     iconSize: iconMedium,
                     color: theme.colorScheme.error,
@@ -359,15 +357,29 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
             ),
             AnimatedContainer(
               duration: duration,
-              height: workoutExercise.isSetsExpanded ? _setsMaxHeight : 0,
-              child: ListView.builder(
-                itemCount: workoutExercise.sets.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final set = workoutExercise.sets[index];
-                  final theme = Theme.of(context);
+              height: workoutExercise.isSetsExpanded ? workoutExercise.sets.length * 50 : 0,
+              child: Column(
+                children: [
+                  const Divider(height: spacingSmall, thickness: 1, indent: spacingMedium, endIndent: spacingMedium),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: workoutExercise.sets.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        var set = workoutExercise.sets[index];
 
-                  return Text(set, style: theme.textTheme.labelSmall);
-                },
+                        return MyNumberStepper(
+                          initialValue: int.parse(set),
+                          step: 1,
+                          onChanged: (value) {
+                            setState(() {
+                              workoutExercise.sets[index] = value.toString();
+                            });
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
