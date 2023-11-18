@@ -369,8 +369,7 @@ class IconService {
   }
 
   // The "real" constructor called exactly once, by the static property assignment above it's also private, so it can only be called in this class.
-  IconService._internal(
-  );
+  IconService._internal();
 
   AnimatedListService<IconItem> getAnimatedIconList(GlobalKey<AnimatedListState> key) {
     final items = <IconItem>[];
