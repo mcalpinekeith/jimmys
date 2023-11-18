@@ -131,7 +131,7 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
 
     return Scaffold(
       appBar: createAppBar(theme, (_isAdd ? 'Add workout' : 'Edit workout'),
-        actions: (_isAdd ? null : <Widget>[
+        actions: (_isAdd ? null : [
           createDeleteAction(theme, context, 'workout', () async {
             await WorkoutService().remove(_workout);
 
@@ -201,30 +201,7 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
                         _createExerciseAutocomplete(),
                         Visibility(
                           visible: _currentExercise == null,
-                          replacement: IconButton(
-                            iconSize: iconMedium,
-                            icon: const FaIcon(FontAwesomeIcons.solidCircleDown),
-                            onPressed: () async {
-                              if (_currentExercise == null) return;
-
-                              final int index = _workoutExerciseList.length;
-
-                              _workoutExerciseList.insert(
-                                index,
-                                WorkoutExerciseItem(
-                                  id: const Uuid().v8(),
-                                  workoutId: _workout.id,
-                                  exerciseId: _currentExercise!.id,
-                                  isDropSet: false,
-                                  sequence: index + 1,
-                                  sets: ['15', '12', '8'],
-                                  exercise: _currentExercise!,
-                                  supersetExerciseId: null,
-                                  supersetExercise: null,
-                                )
-                              );
-                            },
-                          ),
+                          replacement: _createWorkoutExerciseInsertButton(),
                           child: Padding(
                             padding: const EdgeInsets.only(bottom: 32),
                             child: Text('Select an exercise from the list', style: theme.textTheme.labelSmall),
@@ -288,6 +265,33 @@ class _WorkoutEditState extends State<WorkoutEditPage> with TickerProviderStateM
           },
         ),
       ),
+    );
+  }
+
+  _createWorkoutExerciseInsertButton() {
+    return IconButton(
+      iconSize: iconMedium,
+      icon: const FaIcon(FontAwesomeIcons.solidCircleDown),
+      onPressed: () async {
+        if (_currentExercise == null) return;
+
+        final int index = _workoutExerciseList.length;
+
+        _workoutExerciseList.insert(
+            index,
+            WorkoutExerciseItem(
+              id: const Uuid().v8(),
+              workoutId: _workout.id,
+              exerciseId: _currentExercise!.id,
+              isDropSet: false,
+              sequence: index + 1,
+              sets: ['15', '12', '8'],
+              exercise: _currentExercise!,
+              supersetExerciseId: null,
+              supersetExercise: null,
+            )
+        );
+      },
     );
   }
 
