@@ -14,7 +14,7 @@ class ExerciseService extends ChangeNotifier {
       .collection('shared_exercises')
       .withConverter<Exercise>(
         fromFirestore: (snapshot, _) => Exercise.fromMap(snapshot.data()!),
-        toFirestore: (exerise, _) => exerise.toMap(),
+        toFirestore: (exercise, _) => exercise.toMap(),
       );
 
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -26,7 +26,7 @@ class ExerciseService extends ChangeNotifier {
       .collection('exercises')
       .withConverter<Exercise>(
         fromFirestore: (snapshot, _) => Exercise.fromMap(snapshot.data()!),
-        toFirestore: (exerise, _) => exerise.toMap(),
+        toFirestore: (exercise, _) => exercise.toMap(),
       );
   }
 
