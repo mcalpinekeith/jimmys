@@ -7,7 +7,7 @@ class DataService {
   // Workout
   final workouts = <Workout>[];
   late DateTime workoutsLastSync;
-  late Workout? todayWorkout;
+  //late Workout? todayWorkout;
 
   // Exercise
   final exercises = <Exercise>[];

@@ -10,7 +10,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jimmys/constants.dart';
 import 'package:jimmys/firebase_options.dart';
 import 'package:jimmys/pages/sign_in.dart';
+import 'package:jimmys/services/exercise_service.dart';
+import 'package:jimmys/services/workout_service.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,7 +34,14 @@ void main() async {
 
   Glassy().setConfig(GlassyConfig(radius: radiusSmall, backgroundColor: Colors.transparent, backgroundOpacity: 0, borderOpacity: 0));
 
-  runApp(const MainApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<WorkoutService>.value(value: WorkoutService()),
+      ],
+      child: const MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {

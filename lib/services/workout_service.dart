@@ -7,10 +7,33 @@ import 'package:jimmys/services/data_service.dart';
 import 'package:collection/collection.dart';
 
 class WorkoutService extends ChangeNotifier {
+  static final WorkoutService _instance = WorkoutService._internal();
+
+  // The factory is promises to return an object of this type; it doesn't promise to make a new one.
+  factory WorkoutService() {
+    return _instance;
+  }
+
+  // The "real" constructor called exactly once, by the static property assignment above it's also private, so it can only be called in this class.
+  WorkoutService._internal() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+
+    _workoutsRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.uid)
+        .collection('workouts')
+        .withConverter<Workout>(
+      fromFirestore: (snapshot, _) => Workout.fromMap(snapshot.data()!),
+      toFirestore: (workout, _) => workout.toMap(),
+    );
+  }
+
   final db = DataService();
   late CollectionReference<Workout> _workoutsRef;
+  late Workout? todayWorkout;
 
-  WorkoutService() {
+/*  WorkoutService() {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) return;
 
@@ -22,11 +45,11 @@ class WorkoutService extends ChangeNotifier {
         fromFirestore: (snapshot, _) => Workout.fromMap(snapshot.data()!),
         toFirestore: (workout, _) => workout.toMap(),
       );
-  }
+  }*/
 
   Future refresh() async {
     db.workouts.clear();
-    db.todayWorkout = null;
+    todayWorkout = null;
 
     final snapshots = await _workoutsRef.get().then((snapshot) => snapshot.docs);
 
@@ -35,7 +58,7 @@ class WorkoutService extends ChangeNotifier {
     }
 
     db.workoutsLastSync = DateTime.now();
-    db.todayWorkout = DataService().workouts.firstOrNull;
+    todayWorkout = DataService().workouts.firstOrNull;
 
     notifyListeners();
   }

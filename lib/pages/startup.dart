@@ -147,40 +147,37 @@ class _StartupState extends State<StartupPage> {
   }
 
   Widget _createScheduledWorkout(ThemeData theme) {
-    return ChangeNotifierProvider(
-      create: (context) => WorkoutService(),
-      child: Consumer<WorkoutService>(builder: (context, workoutService, child) {
-        if (_db.todayWorkout == null) return const SizedBox.shrink();
+    var ws = context.watch<WorkoutService>();
 
-        return Expanded(
-          child: Column(
-            children: [
-              const Gap(spacingLarge),
-              const Text('Scheduled for today:'),
-              const Gap(spacingMedium),
-              Text(
-                _db.todayWorkout!.name,
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleLarge,
-                softWrap: true,
-              ),
-              const Gap(spacingSmall),
-              Expanded(
-                child: ListView(
-                  children: [
-                    Text(
-                      _db.todayWorkout!.description!,
-                      textAlign: TextAlign.center,
-                      style: getTitleMediumSecondary(theme),
-                    ),
-                  ],
-                ),
-              ),
-              const Gap(spacingSmall),
-            ],
+    if (ws.todayWorkout == null) return const SizedBox.shrink();
+
+    return Expanded(
+      child: Column(
+        children: [
+          const Gap(spacingLarge),
+          const Text('Scheduled for today:'),
+          const Gap(spacingMedium),
+          Text(
+            ws.todayWorkout!.name,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleLarge,
+            softWrap: true,
           ),
-        );
-      }),
+          const Gap(spacingSmall),
+          Expanded(
+            child: ListView(
+              children: [
+                Text(
+                  ws.todayWorkout!.description!,
+                  textAlign: TextAlign.center,
+                  style: getTitleMediumSecondary(theme),
+                ),
+              ],
+            ),
+          ),
+          const Gap(spacingSmall),
+        ],
+      ),
     );
   }
 }
