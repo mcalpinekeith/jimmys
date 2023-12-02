@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jimmys/functions.dart';
+import 'package:jimmys/utilities/functions.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

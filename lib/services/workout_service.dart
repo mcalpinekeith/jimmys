@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:jimmys/models/workout.dart';
-import 'package:jimmys/models/workout_exercise.dart';
+import 'package:jimmys/domain/models/workout.dart';
+import 'package:jimmys/domain/models/workout_exercise.dart';
 import 'package:jimmys/services/data_service.dart';
 import 'package:collection/collection.dart';
 

@@ -1,5 +1,5 @@
-import 'package:jimmys/models/exercise.dart';
-import 'package:jimmys/models/workout.dart';
+import 'package:jimmys/domain/models/exercise.dart';
+import 'package:jimmys/domain/models/workout.dart';
 
 class DataService {
   static final DataService _instance = DataService._internal();

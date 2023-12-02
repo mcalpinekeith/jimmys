@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:jimmys/constants.dart';
-import 'package:jimmys/functions.dart';
+import 'package:jimmys/ui/theme/constants.dart';
+import 'package:jimmys/utilities/functions.dart';
 import 'package:jimmys/pages/startup.dart';
 import 'package:jimmys/services/exercise_service.dart';
 import 'package:jimmys/services/workout_service.dart';
-import 'package:jimmys/types.dart';
-import 'package:jimmys/widgets/my_button.dart';
+import 'package:jimmys/core/function_types.dart';
+import 'package:jimmys/ui/widgets/my_button.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key,}) : super(key: key);

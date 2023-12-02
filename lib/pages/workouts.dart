@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
-import 'package:jimmys/constants.dart';
-import 'package:jimmys/functions.dart';
+import 'package:jimmys/ui/theme/constants.dart';
+import 'package:jimmys/utilities/functions.dart';
 import 'package:jimmys/pages/workout_edit.dart';
 import 'package:jimmys/services/data_service.dart';
 import 'package:jimmys/services/workout_service.dart';
-import 'package:jimmys/widgets/my_button.dart';
-import 'package:jimmys/widgets/my_grouped_list_view.dart';
+import 'package:jimmys/ui/widgets/my_button.dart';
+import 'package:jimmys/ui/widgets/my_grouped_list_view.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutsPage extends StatefulWidget {
