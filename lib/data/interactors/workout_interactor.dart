@@ -1,6 +1,7 @@
 import 'package:jimmys/data/modules/services/store_service.dart';
 import 'package:jimmys/domain/models/workout.dart';
 import 'package:jimmys/domain/use_cases/workout_use_cases.dart';
+import 'package:jimmys/core/extensions/string.dart';
 
 class WorkoutInteractor implements WorkoutUseCases {
   final StoreService store;
@@ -18,6 +19,17 @@ class WorkoutInteractor implements WorkoutUseCases {
     final workouts = await store.where<Workout>(Workout.empty(), criteria: criteria);
 
     return workouts;
+  }
+
+  @override
+  Future<List<String>> getCategories() async {
+    final workouts = await get();
+
+    return workouts
+        .where((_) => _.category.isNotNullNorEmpty)
+        .map((_) => _.category as String)
+        .toSet()
+        .toList();
   }
 
   @override

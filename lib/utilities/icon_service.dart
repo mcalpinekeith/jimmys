@@ -3,9 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:jimmys/utilities/animated_list_service.dart';
 
 class IconService {
-  static final IconService _instance = IconService._internal();
-
-  final defaultIcons = const [
+  static List<IconData> defaultIcons = const [
 
     FontAwesomeIcons.heartPulse,
     FontAwesomeIcons.heartCrack,
@@ -363,15 +361,7 @@ class IconService {
 
   ];
 
-  // The factory is promises to return an object of this type; it doesn't promise to make a new one.
-  factory IconService() {
-    return _instance;
-  }
-
-  // The "real" constructor called exactly once, by the static property assignment above it's also private, so it can only be called in this class.
-  IconService._internal();
-
-  AnimatedListService<IconItem> getAnimatedIconList(GlobalKey<AnimatedListState> key) {
+  static AnimatedListService<IconItem> getAnimatedIconList(GlobalKey<AnimatedListState> key) {
     final items = <IconItem>[];
 
     for (var i = 0; i < defaultIcons.length; i++) {
@@ -386,8 +376,31 @@ class IconService {
     return AnimatedListService(key, null, items);
   }
 
-  String getIconUnicode(IconData iconData) {
+  static String getIconUnicode(IconData iconData) {
     return iconData.codePoint.toRadixString(16);
+  }
+
+  static int getIcon(String code) {
+    int result = 0;
+    int len = code.length;
+
+    for (int i = 0; i < len; i++) {
+      int hexDigit = code.codeUnitAt(i);
+
+      if (hexDigit >= 48 && hexDigit <= 57) {
+        result += (hexDigit - 48) * (1 << (4 * (len - 1 - i)));
+      } else if (hexDigit >= 65 && hexDigit <= 70) {
+        // A..F
+        result += (hexDigit - 55) * (1 << (4 * (len - 1 - i)));
+      } else if (hexDigit >= 97 && hexDigit <= 102) {
+        // a..f
+        result += (hexDigit - 87) * (1 << (4 * (len - 1 - i)));
+      } else {
+        throw const FormatException("An error occurred when converting");
+      }
+    }
+
+    return result;
   }
 }
 

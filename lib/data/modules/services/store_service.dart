@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:jimmys/core/extensions/string.dart';
 import 'package:jimmys/core/global.dart';
-import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/data/modules/services/user_service.dart';
+import 'package:jimmys/domain/models/base_model.dart';
 
 /*
 DO NOT use async / await
@@ -73,12 +74,13 @@ class StoreService {
   }
 
   CollectionReference<Map<String, dynamic>> _userCollection(String path) {
-    final user = getIt<UserService>().user;
-    if (user == null) throw Exception('User cannot be null.');
+    final userId = getIt<UserService>().userId;
+
+    if (userId.isNullOrEmpty) throw Exception('User cannot be null.');
 
     return store
       .collection('users')
-      .doc(user.uid)
+      .doc(userId)
       .collection(path);
   }
 

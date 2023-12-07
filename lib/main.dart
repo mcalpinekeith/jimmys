@@ -5,11 +5,12 @@ import 'package:flutter/services.dart';
 import 'package:glassy/glassy.dart';
 import 'package:glassy/glassy_config.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jimmys/core/global.dart';
 import 'package:jimmys/core/locator.dart';
+import 'package:jimmys/data/modules/services/user_service.dart';
+import 'package:jimmys/ui/screens/sign_in/sign_in_view.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/firebase_options.dart';
-import 'package:jimmys/pages/sign_in.dart';
-import 'package:jimmys/services/workout_service.dart';
 import 'package:keyboard_dismisser/keyboard_dismisser.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider<WorkoutService>.value(value: WorkoutService()),
+        ChangeNotifierProvider<UserService>(create: (_) => getIt<UserService>()),
       ],
       child: const MainApp(),
     ),
@@ -178,7 +179,7 @@ class MainApp extends StatelessWidget {
           fontFamily: GoogleFonts.lato().fontFamily,
         ),
         themeMode: ThemeMode.system,
-        home: const SignInPage(),
+        home: const SignInView(),
       ),
     );
   }

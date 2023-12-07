@@ -4,10 +4,16 @@ import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
 import 'package:jimmys/core/global.dart';
 import 'package:jimmys/data/modules/services/store_service.dart';
-import 'package:jimmys/data/modules/services/user_service.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 
 class MockFirestore {
+  static MockUser mockUser = MockUser(
+    isAnonymous: false,
+    uid: 'mock_user_id',
+    email: 'a@a.com',
+    displayName: 'A-Team',
+  );
+
   static Future<FakeFirebaseFirestore> getStore() async {
     final googleUser = await MockGoogleSignIn().signIn();
     final googleAuth = await googleUser?.authentication;
@@ -17,23 +23,14 @@ class MockFirestore {
       idToken: googleAuth.idToken,
     );
 
-    final user = MockUser(
-      isAnonymous: false,
-      uid: 'QH2VKFaHO8SKC0NH8nyIxbaP5O22',
-      email: 'a@a.com',
-      displayName: 'A-Team',
-    );
-
-    final auth = MockFirebaseAuth(mockUser: user);
+    final auth = MockFirebaseAuth(mockUser: mockUser);
     final store = FakeFirebaseFirestore(authObject: auth.authForFakeFirestore);
     final userCredential = await auth.signInWithCredential(oauthCredential);
 
-    getIt<UserService>().user = userCredential.user;
-
-    store.collection('users').doc(user.uid).set({
-      'uid': 'QH2VKFaHO8SKC0NH8nyIxbaP5O22',
-      'email': 'a@a.com',
-      'displayName': 'A-Team',
+    store.collection('users').doc(mockUser.uid).set({
+      'uid': mockUser.uid,
+      'email': mockUser.email,
+      'displayName': mockUser.displayName,
     });
 
     return store;
@@ -43,7 +40,7 @@ class MockFirestore {
     final snapshots = await getIt<StoreService>()
       .store
       .collection('users')
-      .doc('QH2VKFaHO8SKC0NH8nyIxbaP5O22')
+      .doc(mockUser.uid)
       .collection(data.path)
       .get()
       .then((_) => _.docs);

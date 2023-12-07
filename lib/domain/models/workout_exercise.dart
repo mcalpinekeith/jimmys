@@ -1,6 +1,8 @@
+// Keep import of dynamic.dart - dynamic types use extensions at run-time
+import 'package:jimmys/core/extensions/dynamic.dart';
+import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/domain/models/exercise.dart';
-import 'package:jimmys/utilities/functions.dart';
 
 class WorkoutExercise implements BaseModel {
   WorkoutExercise.empty();
@@ -35,19 +37,13 @@ class WorkoutExercise implements BaseModel {
 
   @override
   WorkoutExercise fromMap(Map<String, dynamic> map) => WorkoutExercise(
-    id: map['id']! as String,
-    workoutId: map['workout_id']! as String,
-    exerciseId: map['exercise_id']! as String,
-    isDropSet: !map.containsKey('is_drop_set') || map['is_drop_set'] == null
-      ? false
-      : map['is_drop_set']! as bool,
-    sequence: map['sequence']! as int,
-    sets: !map.containsKey('sets')
-      ? []
-      : getList(map['sets']!),
-    supersetExerciseId: !map.containsKey('superset_exercise_id') || map['superset_exercise_id'] == null
-      ? ''
-      : map['superset_exercise_id']! as String,
+    id: map.value('id', ''),
+    workoutId: map.value('workout_id', ''),
+    exerciseId: map.value('exercise_id', ''),
+    isDropSet: map.value('is_drop_set', false),
+    sequence: map.value('sequence', 1),
+    sets: map.value('sets', []).toStringList(),
+    supersetExerciseId: map.value('superset_exercise_id', ''),
   );
 
   @override
@@ -72,7 +68,7 @@ class WorkoutExercise implements BaseModel {
     sequence: map['sequence']! as int,
     sets: !map.containsKey('sets') || map['sets'] == null
       ? []
-      : getList(map['sets']!),
+      : map['sets']!.toStringList(),
     supersetExerciseId: !map.containsKey('superset_exercise_id') || map['superset_exercise_id'] == null
         ? ''
         : map['superset_exercise_id']! as String,

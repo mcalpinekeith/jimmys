@@ -1,5 +1,7 @@
+// Keep import of dynamic.dart - dynamic types use extensions at run-time
+import 'package:jimmys/core/extensions/dynamic.dart';
+import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
-import 'package:jimmys/utilities/functions.dart';
 
 class Exercise implements BaseModel {
   Exercise.empty();
@@ -25,15 +27,11 @@ class Exercise implements BaseModel {
 
   @override
   Exercise fromMap(Map<String, dynamic> map) => Exercise(
-    id: map['id']! as String,
-    name: map['name']! as String,
-    category: !map.containsKey('category') || map['category'] == null
-      ? ''
-      : map['category']! as String,
-    exerciseTypes: !map.containsKey('exercise_types')
-      ? []
-      : getList(map['exercise_types']!),
-    stepIncrease: map['step_increase']! as double,
+    id: map.value('id', ''),
+    name: map.value('name', ''),
+    category: map.value('category', ''),
+    exerciseTypes: map.value('exercise_types', []).toStringList(),
+    stepIncrease: map.value('step_increase', 0.0),
   );
 
   @override
@@ -54,7 +52,7 @@ class Exercise implements BaseModel {
         : map['category']! as String,
     exerciseTypes: !map.containsKey('exercise_types')
         ? []
-        : getList(map['exercise_types']!),
+        : map['exercise_types']!.toStringList(),
     stepIncrease: map['step_increase']! as double,
   );
 }
