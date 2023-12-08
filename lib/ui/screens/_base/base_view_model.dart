@@ -24,7 +24,7 @@ abstract class BaseViewModel<VMS extends BaseViewModelState, VC extends BaseView
 
   /// Same for when the view is disposed.
   @override
-  void onDispose() {}
+  void onDisposeView() {}
 
   /// Update the state and notify listeners when loading starts.
   void startLoadingState() {

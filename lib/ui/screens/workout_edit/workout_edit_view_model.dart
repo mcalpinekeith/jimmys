@@ -8,7 +8,7 @@ import 'package:jimmys/ui/screens/_base/base_view_model.dart';
 import 'package:jimmys/ui/screens/workout_edit/workout_edit_contract.dart';
 import 'package:uuid/uuid.dart';
 
-class WorkoutEditViewModel extends BaseViewModel<WorkoutEditVMState, WorkoutEditViewContract> implements WorkoutEditVMContract {
+class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, WorkoutEditVContract> implements WorkoutEditVMContract {
   final WorkoutUseCases _workoutInteractor;
   final WorkoutExerciseUseCases _workoutExerciseInteractor;
   final ExerciseUseCases _exerciseInteractor;

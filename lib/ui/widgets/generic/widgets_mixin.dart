@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/utilities/icon_service.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -9,7 +10,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:jimmys/core/extensions/string.dart';
 
 mixin WidgetsMixin {
-  bool use24HourFormat(BuildContext context) => MediaQuery.of(context).alwaysUse24HourFormat;
+  bool use24HourFormat(BuildContext context) => context.mediaQuery.alwaysUse24HourFormat;
 
   Widget logo() {
     return Container(
@@ -45,25 +46,27 @@ mixin WidgetsMixin {
     );
   }
 
-  Widget loader(ThemeData theme) {
+  Widget loader(BuildContext context) {
     return SpinKitDualRing(
-      color: theme.colorScheme.primary,
+      color: context.colorScheme.primary,
     );
   }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(BuildContext context, String message) {
-    return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    return context.scaffoldMessenger.showSnackBar(SnackBar(
       content: Text(message),
     ));
   }
 
   AutoScrollController scrollController(BuildContext context) {
+    final padding = context.mediaQuery.padding;
+    
     return AutoScrollController(
       viewportBoundaryGetter: () => Rect.fromLTRB(
-        MediaQuery.of(context).padding.left,
-        MediaQuery.of(context).padding.top,
-        MediaQuery.of(context).padding.right,
-        MediaQuery.of(context).padding.bottom
+        padding.left,
+        padding.top,
+        padding.right,
+        padding.bottom
       ),
       axis: Axis.vertical,
       suggestedRowHeight: iconMedium + (spacingMicro * 2),
@@ -71,58 +74,58 @@ mixin WidgetsMixin {
   }
 
   void navigate(BuildContext context, Widget page) async {
-    await Navigator.push(context, MaterialPageRoute(
+    await context.navigator.push(MaterialPageRoute(
         builder: (_) => page
     ));
   }
 
   void pop(BuildContext context) {
-    Navigator.pop(context);
+    context.navigator.pop();
   }
 
-  AppBar appBar(ThemeData theme, String text, {List<Widget>? actions}) {
+  AppBar appBar(BuildContext context, String text, {List<Widget>? actions}) {
     return AppBar(
       centerTitle: true,
       title: Text(text,
-        style: theme.textTheme.headlineLarge!.copyWith(
-          color: theme.colorScheme.onPrimary,
+        style: context.textTheme.headlineLarge!.copyWith(
+          color: context.colorScheme.onPrimary,
         ),
       ),
-      backgroundColor: theme.colorScheme.primary,
+      backgroundColor: context.colorScheme.primary,
       actions: actions,
     );
   }
 
-  Widget addAction(ThemeData theme, void Function()? onPressed) {
+  Widget addAction(BuildContext context, void Function()? onPressed) {
     return IconButton(
       iconSize: iconMedium,
       icon: const FaIcon(FontAwesomeIcons.plus),
-      color: theme.colorScheme.onPrimary,
+      color: context.colorScheme.onPrimary,
       onPressed: onPressed,
     );
   }
 
-  Widget deleteAction(ThemeData theme, BuildContext context, String dataTypeText, void Function()? onPressed) {
+  Widget deleteAction(BuildContext context, String dataTypeText, void Function()? onPressed) {
     return IconButton(
       iconSize: iconMedium,
       icon: const FaIcon(FontAwesomeIcons.trash),
       color: Colors.red,
       onPressed: () => showDialog<void>(
         context: context,
-        builder: (BuildContext context) => _deleteActionDialog(theme, dataTypeText, context, onPressed),
+        builder: (BuildContext context) => _deleteActionDialog(context, dataTypeText, onPressed),
       ),
     );
   }
 
-  AlertDialog _deleteActionDialog(ThemeData theme, String dataTypeText, BuildContext context, void Function()? onPressed) {
+  AlertDialog _deleteActionDialog(BuildContext context, String dataTypeText, void Function()? onPressed) {
     return AlertDialog(
         actionsAlignment: MainAxisAlignment.center,
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radiusMedium))),
         title: Text('Confirm delete',
-          style: titleMediumSecondary(theme)
+          style: titleMediumSecondary(context)
         ),
         content: Text('Are you sure you want to delete the $dataTypeText?',
-          style: labelMediumSecondary(theme)
+          style: labelMediumSecondary(context)
         ),
         actions: [
           IconButton(
@@ -134,28 +137,28 @@ mixin WidgetsMixin {
           IconButton(
             iconSize: iconLarge,
             icon: const FaIcon(FontAwesomeIcons.solidCircleCheck),
-            color: theme.colorScheme.error,
+            color: context.colorScheme.error,
             onPressed: onPressed,
           ),
         ],
       );
   }
 
-  Widget fab(ThemeData theme, IconData icon, void Function() onPressed) {
+  Widget fab(BuildContext context, IconData icon, void Function() onPressed) {
     return FloatingActionButton(
       onPressed: onPressed,
       shape: const CircleBorder(),
-      elevation: theme.popupMenuTheme.elevation,
-      backgroundColor: theme.colorScheme.primary,
+      elevation: context.popupMenuTheme.elevation,
+      backgroundColor: context.colorScheme.primary,
       child: FaIcon(
         icon,
-        color: theme.colorScheme.onPrimary,
+        color: context.colorScheme.onPrimary,
         size: iconMedium,
       ),
     );
   }
 
-  Widget icon(String? icon, ThemeData theme) {
+  Widget icon(String? icon) {
     if (icon.isNullOrEmpty) return const SizedBox.shrink();
 
     return Padding(
@@ -164,28 +167,28 @@ mixin WidgetsMixin {
     );
   }
 
-  TextStyle headlineLargePrimary(ThemeData theme) {
-    return theme.textTheme.headlineLarge!.copyWith(
-      color: theme.colorScheme.primary,
+  TextStyle headlineLargePrimary(BuildContext context) {
+    return context.textTheme.headlineLarge!.copyWith(
+      color: context.colorScheme.primary,
     );
   }
 
-  TextStyle titleMediumSecondary(ThemeData theme) {
-    return theme.textTheme.titleMedium!.copyWith(
-      color: theme.colorScheme.secondary,
+  TextStyle titleMediumSecondary(BuildContext context) {
+    return context.textTheme.titleMedium!.copyWith(
+      color: context.colorScheme.secondary,
     );
   }
 
-  TextStyle labelMediumSecondary(ThemeData theme, {double fontSize = 20}) {
-    return theme.textTheme.labelMedium!.copyWith(
-      color: theme.colorScheme.secondary,
+  TextStyle labelMediumSecondary(BuildContext context, {double fontSize = 20}) {
+    return context.textTheme.labelMedium!.copyWith(
+      color: context.colorScheme.secondary,
       fontSize: fontSize,
     );
   }
 
-  TextStyle labelMediumOnPrimary(ThemeData theme, {double fontSize = 20}) {
-    return theme.textTheme.labelMedium!.copyWith(
-      color: theme.colorScheme.onPrimary,
+  TextStyle labelMediumOnPrimary(BuildContext context, {double fontSize = 20}) {
+    return context.textTheme.labelMedium!.copyWith(
+      color: context.colorScheme.onPrimary,
       fontSize: fontSize,
     );
   }

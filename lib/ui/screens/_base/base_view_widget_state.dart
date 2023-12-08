@@ -32,8 +32,6 @@ abstract class BaseViewWidgetState<SW extends StatefulWidget, VMC extends BaseVi
 
   late final VMC vmContract;
   VMS get vmState => vmContract.vmState as VMS;
-  ThemeData get theme => Theme.of(context);
-  TextTheme get textTheme => theme.textTheme;
 
   /// Ensuring @[mustCallSuper] to guarantee [onInitState] is always called.
   /// Dispatching this event to the viewModel signals that the UI is ready for initialization.
@@ -42,7 +40,6 @@ abstract class BaseViewWidgetState<SW extends StatefulWidget, VMC extends BaseVi
   @override
   @mustCallSuper
   void initState() {
-    // this is not needed for our app but shown as an example
     vmState.user = context.read<User>();
     onInitState();
     vmContract.onInitState();

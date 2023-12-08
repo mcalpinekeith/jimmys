@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/ui/widgets/generic/widgets_mixin.dart';
 
@@ -50,8 +51,6 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Padding(
       padding: widget.padding ?? const EdgeInsets.all(spacingMedium),
       child: TextFormField(
@@ -61,11 +60,11 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
         minLines: 1,
         maxLines: widget.keyboardType == TextInputType.multiline ? widget.maxLines : 1,
         //initialValue: initialValue, use controller to set initialValue
-        style: labelMediumSecondary(theme),
-        cursorColor: theme.colorScheme.primary,
+        style: labelMediumSecondary(context),
+        cursorColor: context.colorScheme.primary,
         controller: _controller,
         validator: widget.validator,
-        decoration: _decoration(theme),
+        decoration: _decoration(),
         focusNode: widget.focusNode,
         onChanged: widget.onChanged,
         onFieldSubmitted: _onSubmitted,
@@ -73,7 +72,7 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
     );
   }
 
-  InputDecoration _decoration(ThemeData theme) {
+  InputDecoration _decoration() {
     return InputDecoration(
       labelText: widget.labelText,
       contentPadding: const EdgeInsets.symmetric(horizontal: spacingSmall),
@@ -82,16 +81,16 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
         borderSide: BorderSide(color: Colors.red),
       ),
       focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: theme.colorScheme.primary),
+        borderSide: BorderSide(color: context.colorScheme.primary),
       ),
       focusedErrorBorder: const UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
       ),
       disabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: theme.colorScheme.shadow),
+        borderSide: BorderSide(color: context.colorScheme.shadow),
       ),
       enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: theme.colorScheme.secondary),
+        borderSide: BorderSide(color: context.colorScheme.secondary),
       ),
     );
   }

@@ -14,23 +14,21 @@ class SignInView extends StatefulWidget {
   State<SignInView> createState() => _SignInViewWidgetState();
 }
 
-class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMContract, SignInVMState> with WidgetsMixin implements SignInViewContract {
+class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMContract, SignInViewModelState> with WidgetsMixin implements SignInVContract {
   @override
   void onInitState() {}
 
   @override
-  Widget contentBuilder(BuildContext context) {
-    final theme = Theme.of(context);
-
+  Widget contentBuilder(BuildContext ctx) {
     return Scaffold(
-      appBar: appBar(theme, 'Welcome'),
+      appBar: appBar(ctx, 'Welcome'),
       body: SafeArea(
         child: Column(
           children: [
             logo(),
             Visibility(
               visible: !vmState.isSigningIn,
-              replacement: loader(theme),
+              replacement: loader(ctx),
               child: Expanded(
                 child: ListView(
                   children: [
@@ -38,19 +36,19 @@ class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMCon
                       size: Sizes.large,
                       label: const Text('Continue with Google'),
                       icon: const FaIcon(FontAwesomeIcons.google),
-                      onPressed: () async => await continueOnPressed('Google', context)
+                      onPressed: () async => await continueOnPressed('Google')
                     ),
                     MyButton(
                       size: Sizes.large,
                       label: const Text('Continue with Facebook'),
                       icon: const FaIcon(FontAwesomeIcons.facebook),
-                      onPressed: () async => await continueOnPressed('Facebook', context)
+                      onPressed: () async => await continueOnPressed('Facebook')
                     ),
                     MyButton(
                       size: Sizes.large,
                       label: const Text('Continue with Yahoo!'),
                       icon: const FaIcon(FontAwesomeIcons.yahoo),
-                      onPressed: () async => await continueOnPressed('Yahoo', context)
+                      onPressed: () async => await continueOnPressed('Yahoo')
                     ),
                   ],
                 ),
@@ -63,7 +61,7 @@ class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMCon
   }
 
   @override
-  Future continueOnPressed(String provider, BuildContext context) async {
+  Future continueOnPressed(String provider) async {
     setState(() {
       vmState.isSigningIn = true;
     });

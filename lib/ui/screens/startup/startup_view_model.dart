@@ -2,7 +2,7 @@ import 'package:jimmys/domain/use_cases/workout_use_cases.dart';
 import 'package:jimmys/ui/screens/_base/base_view_model.dart';
 import 'package:jimmys/ui/screens/startup/startup_contract.dart';
 
-class StartupViewModel extends BaseViewModel<StartupVMState, StartupViewContract> implements StartupVMContract {
+class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVContract> implements StartupVMContract {
   final WorkoutUseCases _workoutInteractor;
 
   StartupViewModel({

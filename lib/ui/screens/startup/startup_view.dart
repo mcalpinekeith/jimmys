@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/ui/screens/_base/base_view_widget_state.dart';
 import 'package:jimmys/ui/screens/startup/startup_contract.dart';
 import 'package:jimmys/ui/screens/workout_list/workout_list_view.dart';
@@ -16,14 +17,12 @@ class StartupView extends StatefulWidget {
   State<StartupView> createState() => _StartupViewWidgetState();
 }
 
-class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVMContract, StartupVMState> with WidgetsMixin implements StartupViewContract {
+class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVMContract, StartupViewModelState> with WidgetsMixin implements StartupVContract {
   @override
   void onInitState() {}
 
   @override
   Widget contentBuilder(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -34,13 +33,13 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('Hello,',
-                    style: theme.textTheme.headlineLarge
+                    style: context.textTheme.headlineLarge
                   ),
                   userAvatar(vmState.user),
                 ],
               ),
             ),
-            _userGreeting(theme),
+            _userGreeting(),
             MyButton(
               label: const Text('Add workouts'),
               icon: const FaIcon(FontAwesomeIcons.circlePlus),
@@ -53,15 +52,15 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
                 //Navigator.pop(context);
               },
             ),
-            _scheduleWorkoutsOption(theme),
-            _scheduledWorkout(theme),
+            _scheduleWorkoutsOption(),
+            _scheduledWorkout(),
           ],
         ),
       ),
     );
   }
 
-  Widget _userGreeting(ThemeData theme) {
+  Widget _userGreeting() {
     final displayName = vmState.user != null && vmState.user!.displayName.isNotNullNorEmpty
       ? '${vmState.user!.displayName!}.'
       : 'Stranger.';
@@ -73,7 +72,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           child: Padding(
             padding: const EdgeInsets.only(left: spacingSmall),
             child: Text(displayName,
-              style: headlineLargePrimary(theme),
+              style: headlineLargePrimary(context),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -82,7 +81,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
     );
   }
 
-  Widget _scheduleWorkoutsOption(ThemeData theme) {
+  Widget _scheduleWorkoutsOption() {
     if (vmState.workoutList.isEmpty) return const SizedBox.shrink();
 
     return MyButton(
@@ -94,7 +93,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
     );
   }
 
-  Widget _scheduledWorkout(ThemeData theme) {
+  Widget _scheduledWorkout() {
     if (vmState.todayWorkout == null) return const SizedBox.shrink();
 
     return Expanded(
@@ -105,7 +104,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           const Gap(spacingMedium),
           Text(vmState.todayWorkout!.name,
             textAlign: TextAlign.center,
-            style: theme.textTheme.titleLarge,
+            style: context.textTheme.titleLarge,
             softWrap: true,
           ),
           const Gap(spacingSmall),
@@ -114,7 +113,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
               children: [
                 Text(vmState.todayWorkout!.description!,
                   textAlign: TextAlign.center,
-                  style: titleMediumSecondary(theme),
+                  style: titleMediumSecondary(context),
                 ),
               ],
             ),

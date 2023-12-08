@@ -4,7 +4,7 @@ import 'package:jimmys/domain/models/workout.dart';
 import 'package:jimmys/domain/models/workout_exercise.dart';
 import 'package:jimmys/ui/screens/_base/base_contract.dart';
 
-class WorkoutEditVMState extends BaseViewModelState {
+class WorkoutEditViewModelState extends BaseViewModelState {
   late Workout workout;
 
   DateTime? lastSave;
@@ -17,11 +17,11 @@ class WorkoutEditVMState extends BaseViewModelState {
   Exercise? currentExercise;
 }
 
-abstract class WorkoutEditViewContract extends BaseViewContract {
-  
+abstract class WorkoutEditVContract extends BaseViewContract {
+
 }
 
-abstract class WorkoutEditVMContract extends BaseViewModelContract<WorkoutEditVMState, WorkoutEditViewContract> {
+abstract class WorkoutEditVMContract extends BaseViewModelContract<WorkoutEditViewModelState, WorkoutEditVContract> {
   void remove();
   void save();
   void saveWorkoutExercise(WorkoutExercise workoutExercise);

@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
+import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/core/extensions/string.dart';
 import 'package:jimmys/ui/theme/constants.dart';
@@ -36,8 +37,6 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     _data = widget.data
       .map((_) => MyGroupedListItem.fromMap(
         _,
@@ -64,15 +63,13 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
         indexBarItemHeight: spacingMedium,
         hapticFeedback: true,
         indexBarMargin: const EdgeInsets.all(spacingSmall),
-        indexBarOptions: _indexBarOptions(theme),
+        indexBarOptions: _indexBarOptions(),
       ),
     );
   }
 
   Widget _itemBuilder(BuildContext context, int index) {
     final item = _data[index];
-    final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
 
     return Column(
       children: [
@@ -82,7 +79,7 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
             height: spacingLarge,
             alignment: Alignment.centerLeft,
             child: Text(item.getSuspensionTag(),
-              style: headlineLargePrimary(theme)
+              style: headlineLargePrimary(context)
             ),
           ),
         ),
@@ -93,14 +90,14 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
-                icon(item.icon, theme),
+                icon(item.icon),
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _topText(item, theme, width),
-                    _middleText(item, theme, width),
-                    _bottomText(item, theme, width),
+                    _topText(item),
+                    _middleText(item),
+                    _bottomText(item),
                   ],
                 ),
               ],
@@ -112,78 +109,72 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
   }
 
   //region _itemBuilder helpers
-  Widget _topText(MyGroupedListItem item, ThemeData theme, double width) {
+  Widget _topText(MyGroupedListItem item) {
     if (item.topText.isNullOrEmpty) return const SizedBox.shrink();
 
-    width -= item.icon.isNullOrEmpty ? spacingSmall * 2 : spacingSmall * 5;
-
     return SizedBox(
-      width: width - (spacingSmall * 10),
+      width: _textWidth(item.icon.isNotNullNorEmpty),
       child: Text(item.topText!,
-        style: titleMediumSecondary(theme),
+        style: titleMediumSecondary(context),
         overflow: TextOverflow.ellipsis,
       ),
     );
   }
 
-  Widget _middleText(MyGroupedListItem item, ThemeData theme, double width) {
-    width -= item.icon.isNullOrEmpty ? spacingSmall * 2 : spacingSmall * 5;
-
+  Widget _middleText(MyGroupedListItem item) {
     return SizedBox(
-      width: width - (spacingSmall * 10),
+      width: _textWidth(item.icon.isNotNullNorEmpty),
       child: Text(item.middleText,
-        style: theme.textTheme.titleLarge,
+        style: context.textTheme.titleLarge,
         softWrap: true,
       ),
     );
   }
 
-  Widget _bottomText(MyGroupedListItem item, ThemeData theme, double width) {
+  Widget _bottomText(MyGroupedListItem item) {
     if (item.bottomText.isNullOrEmpty) return const SizedBox.shrink();
 
-    width -= item.icon.isNullOrEmpty ? spacingSmall * 2 : spacingSmall * 5;
-
     return SizedBox(
-      width: width - (spacingSmall * 10),
+      width: _textWidth(item.icon.isNotNullNorEmpty),
       child: Text(item.bottomText!,
-        style: titleMediumSecondary(theme),
+        style: titleMediumSecondary(context),
         overflow: TextOverflow.ellipsis,
       ),
     );
   }
+
+  double _textWidth(bool hasIcon) => context.mediaQuery.size.width - (hasIcon ? spacingSmall * 5 : spacingSmall * 2) - (spacingSmall * 10);
   //endregion
 
   Widget _indexHintBuilder(BuildContext context, String tag) {
-    final theme = Theme.of(context);
-
     return Container(
       width: 40, /// FAB size
       height: 40, /// FAB size
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: theme.colorScheme.primary,
+        color: context.colorScheme.primary,
       ),
       child: Text(tag,
         style: TextStyle(
-          color: theme.colorScheme.onPrimary,
+          color: context.colorScheme.onPrimary,
           fontSize: 20,
         ),
       ),
     );
   }
 
-  IndexBarOptions _indexBarOptions(ThemeData theme) {
+  IndexBarOptions _indexBarOptions() {
     return IndexBarOptions(
       needRebuild: true,
       indexHintAlignment: Alignment.centerRight,
       indexHintOffset: const Offset(-spacingMedium, 0),
       selectTextStyle: TextStyle(
-        color: theme.colorScheme.onPrimary,
+        color: context.colorScheme.onPrimary,
       ),
       selectItemDecoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: theme.colorScheme.primary,
+        color: context.colorScheme.primary,
       ),
     );
   }

@@ -16,17 +16,15 @@ class WorkoutListView extends StatefulWidget {
   State<WorkoutListView> createState() => _WorkoutListViewWidgetState();
 }
 
-class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, WorkoutListVMContract, WorkoutListVMState> with WidgetsMixin implements WorkoutListViewContract {
+class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, WorkoutListVMContract, WorkoutListViewModelState> with WidgetsMixin implements WorkoutListVContract {
   @override
   void onInitState() {}
 
   @override
   Widget contentBuilder(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: appBar(theme, 'Workouts'),
-      floatingActionButton: fab(theme, FontAwesomeIcons.plus, () => navigate(context, const WorkoutEditView())),
+      appBar: appBar(context, 'Workouts'),
+      floatingActionButton: fab(context, FontAwesomeIcons.plus, () => navigate(context, const WorkoutEditView())),
       body: SafeArea(
         child: Visibility(
           visible: vmState.workoutList.isNotEmpty,
@@ -53,15 +51,13 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   }
 
   Widget _noWorkoutsContainer() {
-    final theme = Theme.of(context);
-
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Gap(spacingMedium),
         Text('Workouts are a myth around here ...',
           textAlign: TextAlign.center,
-          style: headlineLargePrimary(theme),
+          style: headlineLargePrimary(context),
         ),
         const Gap(spacingMedium),
         const FaIcon(FontAwesomeIcons.ghost,

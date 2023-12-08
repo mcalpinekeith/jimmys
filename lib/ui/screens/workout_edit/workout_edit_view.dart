@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/core/extensions/datetime.dart';
 import 'package:jimmys/core/extensions/string.dart';
 import 'package:jimmys/domain/models/workout_exercise.dart';
@@ -33,7 +34,7 @@ class WorkoutEditView extends StatefulWidget {
   State<WorkoutEditView> createState() => _WorkoutEditViewWidgetState();
 }
 
-class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, WorkoutEditVMContract, WorkoutEditVMState> with WidgetsMixin, TickerProviderStateMixin implements WorkoutEditViewContract {
+class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, WorkoutEditVMContract, WorkoutEditViewModelState> with WidgetsMixin, TickerProviderStateMixin implements WorkoutEditVContract {
 
   /// Override to disable auto rebuilds on any vmState change.
   ///@override
@@ -54,7 +55,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     _initializeWorkoutIconList();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      FocusScope.of(context).requestFocus(_focusNode);
+      context.focusScope.requestFocus(_focusNode);
       _initializeWorkoutExerciseList();
     });
   }
@@ -92,15 +93,13 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       /// vmState.workoutExercises.clear();
   }
 
-  Widget _removedWorkoutExerciseItemBuilder(BuildContext context, Animation<double> animation, WorkoutExerciseItem item) => _workoutExerciseItemBuilder(context, animation, item: item);
+  Widget _removedWorkoutExerciseItemBuilder(BuildContext context, Animation<double> animation, WorkoutExerciseItem item) => _workoutExerciseItemBuilder(animation, item: item);
 
   @override
   Widget contentBuilder(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      appBar: appBar(theme, (vmState.isAdd ? 'Add workout' : 'Edit workout'), actions: _appBarActions(theme, context)),
-      floatingActionButton: fab(theme, FontAwesomeIcons.solidFloppyDisk, _saveForm),
+      appBar: appBar(context, (vmState.isAdd ? 'Add workout' : 'Edit workout'), actions: _appBarActions()),
+      floatingActionButton: fab(context, FontAwesomeIcons.solidFloppyDisk, _saveForm),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -128,11 +127,11 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
-  List<Widget>? _appBarActions(ThemeData theme, BuildContext context) {
+  List<Widget>? _appBarActions() {
     if (vmState.isAdd) return null;
 
     return [
-      deleteAction(theme, context, 'workout', () {
+      deleteAction(context, 'workout', () {
         vmContract.remove();
 
         if (!vmState.hasError && context.mounted) {
@@ -208,7 +207,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       children: [
         const Gap(spacingMedium),
         Text('Select an icon for your new workout.',
-            style: theme.textTheme.bodySmall
+            style: context.textTheme.bodySmall
         ),
         const Gap(spacingSmall),
         Expanded(
@@ -226,7 +225,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   Widget _carouselPageExercises() {
     return Column(
       children: [
-        _exerciseAutocomplete(context),
+        _exerciseAutocomplete(),
         Visibility(
           visible: vmState.currentExercise == null,
           replacement: IconButton(
@@ -237,7 +236,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
           child: Padding(
             padding: const EdgeInsets.only(bottom: 32),
             child: Text('Select an exercise from the list',
-                style: theme.textTheme.labelSmall
+                style: context.textTheme.labelSmall
             ),
           ),
         ),
@@ -245,14 +244,14 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
           child: AnimatedList(
               key: _workoutExerciseKey,
               initialItemCount: _workoutExerciseList.length,
-              itemBuilder: (BuildContext context, int index, Animation<double> animation) => _workoutExerciseItemBuilder(context, animation, index: index)
+              itemBuilder: (BuildContext context, int index, Animation<double> animation) => _workoutExerciseItemBuilder(animation, index: index)
           ),
         ),
       ],
     );
   }
 
-  Widget _exerciseAutocomplete(BuildContext context) {
+  Widget _exerciseAutocomplete() {
     return MyAutocomplete(
       labelText: 'Exercise',
       options: vmState.exercises.map((_) => _.name).toList(),
@@ -285,9 +284,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
-  Widget _workoutExerciseItemBuilder(BuildContext context, Animation<double> animation, {int index = 0, WorkoutExerciseItem? item}) {
+  Widget _workoutExerciseItemBuilder(Animation<double> animation, {int index = 0, WorkoutExerciseItem? item}) {
     final workoutExercise = item ?? _workoutExerciseList[index];
-    final theme = Theme.of(context);
 
     return Padding(
       padding: const EdgeInsets.all(spacingMicro),
@@ -299,7 +297,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
             Padding(
               padding: const EdgeInsets.all(spacingSmall),
               child: Text(workoutExercise.exercise!.name,
-                style: titleMediumSecondary(theme),
+                style: titleMediumSecondary(context),
                 softWrap: true,
               ),
             ),
@@ -323,8 +321,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
                 ),
                 IconButton(
                   iconSize: iconMedium,
-                  highlightColor: theme.colorScheme.primary,
-                  color: workoutExercise.isDropSet ? theme.colorScheme.primary : theme.colorScheme.onPrimaryContainer,
+                  highlightColor: context.colorScheme.primary,
+                  color: workoutExercise.isDropSet ? context.colorScheme.primary : context.colorScheme.onPrimaryContainer,
                   icon: const FaIcon(FontAwesomeIcons.rankingStar),
                   onPressed: () {
                     setState(() {
@@ -336,7 +334,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
                   padding: const EdgeInsets.only(left: spacingMedium, right: spacingSmall),
                   child: IconButton(
                     iconSize: iconMedium,
-                    color: theme.colorScheme.error,
+                    color: context.colorScheme.error,
                     icon: const FaIcon(FontAwesomeIcons.trash),
                     onPressed: () {
                       _workoutExerciseList.removeAt(_workoutExerciseList.indexOf(workoutExercise));
@@ -431,7 +429,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     final value = vmState.lastSave != null ? vmState.lastSave!.time(use24HourFormat(context)) : 'never';
 
     return Text('Last save: $value',
-      style: theme.textTheme.bodySmall,
+      style: context.textTheme.bodySmall,
       textAlign: TextAlign.center
     );
   }

@@ -12,6 +12,10 @@ import 'package:jimmys/ui/screens/sign_in/sign_in_contract.dart';
 import 'package:jimmys/ui/screens/sign_in/sign_in_view_model.dart';
 import 'package:jimmys/ui/screens/startup/startup_contract.dart';
 import 'package:jimmys/ui/screens/startup/startup_view_model.dart';
+import 'package:jimmys/ui/screens/workout_edit/workout_edit_contract.dart';
+import 'package:jimmys/ui/screens/workout_edit/workout_edit_view_model.dart';
+import 'package:jimmys/ui/screens/workout_list/workout_list_contract.dart';
+import 'package:jimmys/ui/screens/workout_list/workout_list_view_model.dart';
 import 'package:jimmys/utilities/icon_service.dart';
 import 'package:jimmys/utilities/test/mock_firestore.dart';
 
@@ -35,19 +39,19 @@ Future initializeApp() async {
 
   /// SignIn
   getIt.registerFactory<SignInVMContract>(() => SignInViewModel());
-  getIt.registerFactory<SignInVMState>(() => SignInVMState());
+  getIt.registerFactory<SignInViewModelState>(() => SignInViewModelState());
 
   /// Startup
   getIt.registerFactory<StartupVMContract>(() => StartupViewModel(workoutInteractor: getIt<WorkoutUseCases>()));
-  getIt.registerFactory<StartupVMState>(() => StartupVMState());
-
-  /// WorkoutList
-/*  getIt.registerFactory<WorkoutListVMContract>(() => WorkoutListViewModel(workoutInteractor: getIt<WorkoutUseCases>()));
-  getIt.registerFactory<WorkoutListVMState>(() => WorkoutListVMState());
+  getIt.registerFactory<StartupViewModelState>(() => StartupViewModelState());
 
   /// WorkoutEdit
-  getIt.registerFactory<WorkoutEditVMContract>(() => WorkoutEditViewModel());
-  getIt.registerFactory<WorkoutEditVMState>(() => WorkoutEditVMState());*/
+  getIt.registerFactory<WorkoutEditVMContract>(() => WorkoutEditViewModel(workoutInteractor: getIt<WorkoutUseCases>(), workoutExerciseInteractor: getIt<WorkoutExerciseUseCases>(), exerciseInteractor: getIt<ExerciseUseCases>()));
+  getIt.registerFactory<WorkoutEditViewModelState>(() => WorkoutEditViewModelState());
+
+  /// WorkoutList
+  getIt.registerFactory<WorkoutListVMContract>(() => WorkoutListViewModel(workoutInteractor: getIt<WorkoutUseCases>()));
+  getIt.registerFactory<WorkoutListViewModelState>(() => WorkoutListViewModelState());
 
   Global.isAppInitialized = true;
 }

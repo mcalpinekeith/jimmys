@@ -5,7 +5,7 @@ import 'package:jimmys/ui/screens/_base/base_view_model.dart';
 import 'package:jimmys/ui/screens/sign_in/sign_in_contract.dart';
 import 'package:jimmys/core/extensions/string.dart';
 
-class SignInViewModel extends BaseViewModel<SignInVMState, SignInViewContract> implements SignInVMContract {
+class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContract> implements SignInVMContract {
   @override
   void onInitState() {
     vmState.isLoading = true;

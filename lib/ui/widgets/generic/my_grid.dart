@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/utilities/animated_list_service.dart';
 import 'package:jimmys/utilities/icon_service.dart';
@@ -49,7 +50,6 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
   }
 
   Widget _itemBuilder(BuildContext context, int index, Animation<double> animation) {
-    final theme = Theme.of(context);
     final item = widget.gridList[index];
 
     return AutoScrollTag(
@@ -60,12 +60,12 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
         sizeFactor: animation,
         child: IconButton(
           iconSize: iconMedium,
-          color: item.isSelected ? theme.colorScheme.primary : theme.colorScheme.secondary,
+          color: item.isSelected ? context.colorScheme.primary : context.colorScheme.secondary,
           icon: FaIcon(item.icon!),
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),
             side: BorderSide(
-              color: item.isSelected ? theme.colorScheme.primary : Colors.transparent,
+              color: item.isSelected ? context.colorScheme.primary : Colors.transparent,
             )
           ),
           onPressed: () => _iconOnPressed(index, item),

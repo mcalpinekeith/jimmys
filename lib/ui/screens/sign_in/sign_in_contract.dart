@@ -1,14 +1,13 @@
-import 'package:flutter/material.dart';
 import 'package:jimmys/ui/screens/_base/base_contract.dart';
 
-class SignInVMState extends BaseViewModelState {
+class SignInViewModelState extends BaseViewModelState {
   bool isSigningIn = false;
 }
 
-abstract class SignInViewContract extends BaseViewContract {
-  Future continueOnPressed(String provider, BuildContext context);
+abstract class SignInVContract extends BaseViewContract {
+  Future continueOnPressed(String provider);
 }
 
-abstract class SignInVMContract extends BaseViewModelContract<SignInVMState, SignInViewContract> {
+abstract class SignInVMContract extends BaseViewModelContract<SignInViewModelState, SignInVContract> {
   Future signIn(String provider, Function onSignIn);
 }

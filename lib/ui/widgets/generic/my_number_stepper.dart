@@ -34,8 +34,6 @@ class _MyNumberStepperState extends State<MyNumberStepper> with WidgetsMixin {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -47,7 +45,7 @@ class _MyNumberStepperState extends State<MyNumberStepper> with WidgetsMixin {
         ConstrainedBox(
           constraints: const BoxConstraints.tightForFinite(width: 100),
           child: Text(_currentValue.toString(),
-            style: labelMediumSecondary(theme),
+            style: labelMediumSecondary(context),
             textAlign: TextAlign.center,
           ),
         ),
