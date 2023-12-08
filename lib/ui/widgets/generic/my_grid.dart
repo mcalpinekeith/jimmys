@@ -29,7 +29,6 @@ class MyGrid extends StatefulWidget {
 class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final width = MediaQuery.sizeOf(context).width;
     final crossAxisCount = width ~/ 50;
 
@@ -44,48 +43,50 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
           crossAxisSpacing: spacingMicro,
         ),
         initialItemCount: widget.gridList.length,
-        itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-          final item = widget.gridList[index];
-
-          return AutoScrollTag(
-            key: ValueKey(index),
-            controller: widget.controller,
-            index: index,
-            child: SizeTransition(
-              sizeFactor: animation,
-              child: IconButton(
-                iconSize: iconMedium,
-                color: item.isSelected
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.secondary,
-                icon: FaIcon(item.icon!),
-                style: ElevatedButton.styleFrom(
-                  shape: const CircleBorder(),
-                  side: BorderSide(
-                    color: item.isSelected
-                      ? theme.colorScheme.primary
-                      : Colors.transparent,
-                  )
-                ),
-                onPressed: () {
-                  setState(() {
-                    for (var i = 0; i < widget.gridList.items.length; i++) {
-                      widget.gridList[i].isSelected = i == index ? !widget.gridList[i].isSelected : false;
-                    }
-                  });
-                  widget.onSelected(IconService.getIconUnicode(item.icon!));
-                },
-              ),
-            ),
-          );
-        },
+        itemBuilder: _itemBuilder,
       ),
     );
+  }
+
+  Widget _itemBuilder(BuildContext context, int index, Animation<double> animation) {
+    final theme = Theme.of(context);
+    final item = widget.gridList[index];
+
+    return AutoScrollTag(
+      key: ValueKey(index),
+      controller: widget.controller,
+      index: index,
+      child: SizeTransition(
+        sizeFactor: animation,
+        child: IconButton(
+          iconSize: iconMedium,
+          color: item.isSelected ? theme.colorScheme.primary : theme.colorScheme.secondary,
+          icon: FaIcon(item.icon!),
+          style: ElevatedButton.styleFrom(
+            shape: const CircleBorder(),
+            side: BorderSide(
+              color: item.isSelected ? theme.colorScheme.primary : Colors.transparent,
+            )
+          ),
+          onPressed: () => _iconOnPressed(index, item),
+        ),
+      ),
+    );
+  }
+
+  void _iconOnPressed(int index, IconItem item) {
+    setState(() {
+      for (var i = 0; i < widget.gridList.items.length; i++) {
+        widget.gridList[i].isSelected = i == index ? !widget.gridList[i].isSelected : false;
+      }
+    });
+
+    widget.onSelected(IconService.getIconUnicode(item.icon!));
   }
 }
 
 /*
-  ChoiceChip _createChoiceChip(Widget label, int index, ThemeData theme) {
+  ChoiceChip _choiceChip(Widget label, int index, ThemeData theme) {
     return ChoiceChip(
       //avatar:
       label: label,

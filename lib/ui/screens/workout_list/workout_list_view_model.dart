@@ -16,7 +16,7 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListVMState, WorkoutList
     _loadWorkouts();
   }
 
-  Future<void> _loadWorkouts() async {
+  Future _loadWorkouts() async {
     vmState.hasError = false;
 
     try {

@@ -11,7 +11,7 @@ const iconLarge = 30.0;
 const radiusSmall = 6.0;
 const radiusMedium = 10.0;
 
-// default is 300
+/// default is 300
 const Duration duration = Duration(milliseconds: 150);
 
 enum Sizes {

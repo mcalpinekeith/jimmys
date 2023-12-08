@@ -33,43 +33,38 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Hello,', style: theme.textTheme.headlineLarge),
+                  Text('Hello,',
+                    style: theme.textTheme.headlineLarge
+                  ),
                   userAvatar(vmState.user),
                 ],
               ),
             ),
-            _createUserGreeting(theme),
+            _userGreeting(theme),
             MyButton(
               label: const Text('Add workouts'),
               icon: const FaIcon(FontAwesomeIcons.circlePlus),
-              onTap: () => navigate(context, const WorkoutListView()),
+              onPressed: () => navigate(context, const WorkoutListView()),
             ),
             MyButton(
               label: const Text('Add exercises'),
               icon: const FaIcon(FontAwesomeIcons.circlePlus),
-              onTap: () {
+              onPressed: () {
                 //Navigator.pop(context);
               },
             ),
-            _createScheduleWorkoutsOption(theme),
-            _createScheduledWorkout(theme),
+            _scheduleWorkoutsOption(theme),
+            _scheduledWorkout(theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _createUserGreeting(ThemeData theme) {
-    if (vmState.user == null || vmState.user!.displayName.isNullOrEmpty) {
-      return Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: spacingSmall),
-            child: Text('Stranger.', style: headlineLargePrimary(theme)),
-          ),
-        ],
-      );
-    }
+  Widget _userGreeting(ThemeData theme) {
+    final displayName = vmState.user != null && vmState.user!.displayName.isNotNullNorEmpty
+      ? '${vmState.user!.displayName!}.'
+      : 'Stranger.';
 
     return Row(
       children: [
@@ -77,8 +72,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           height: spacingLarge,
           child: Padding(
             padding: const EdgeInsets.only(left: spacingSmall),
-            child: Text(
-              '${vmState.user!.displayName!}.',
+            child: Text(displayName,
               style: headlineLargePrimary(theme),
               overflow: TextOverflow.ellipsis,
             ),
@@ -88,19 +82,19 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
     );
   }
 
-  Widget _createScheduleWorkoutsOption(ThemeData theme) {
+  Widget _scheduleWorkoutsOption(ThemeData theme) {
     if (vmState.workoutList.isEmpty) return const SizedBox.shrink();
 
     return MyButton(
       label: const Text('Schedule workouts'),
       icon: const FaIcon(FontAwesomeIcons.calendar),
-      onTap: () {
+      onPressed: () {
         //Navigator.pop(context);
       },
     );
   }
 
-  Widget _createScheduledWorkout(ThemeData theme) {
+  Widget _scheduledWorkout(ThemeData theme) {
     if (vmState.todayWorkout == null) return const SizedBox.shrink();
 
     return Expanded(
@@ -109,8 +103,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           const Gap(spacingLarge),
           const Text('Scheduled for today:'),
           const Gap(spacingMedium),
-          Text(
-            vmState.todayWorkout!.name,
+          Text(vmState.todayWorkout!.name,
             textAlign: TextAlign.center,
             style: theme.textTheme.titleLarge,
             softWrap: true,
@@ -119,8 +112,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           Expanded(
             child: ListView(
               children: [
-                Text(
-                  vmState.todayWorkout!.description!,
+                Text(vmState.todayWorkout!.description!,
                   textAlign: TextAlign.center,
                   style: titleMediumSecondary(theme),
                 ),

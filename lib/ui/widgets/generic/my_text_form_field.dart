@@ -65,36 +65,38 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
         cursorColor: theme.colorScheme.primary,
         controller: _controller,
         validator: widget.validator,
-        decoration: InputDecoration(
-          labelText: widget.labelText,
-          contentPadding: const EdgeInsets.symmetric(horizontal: spacingSmall),
-          suffix: _createSuffix(),
-          errorBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.red),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: theme.colorScheme.primary),
-          ),
-          focusedErrorBorder: const UnderlineInputBorder(
-            borderSide: BorderSide(color: Colors.red),
-          ),
-          disabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: theme.colorScheme.shadow),
-          ),
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: theme.colorScheme.secondary),
-          ),
-        ),
+        decoration: _decoration(theme),
         focusNode: widget.focusNode,
         onChanged: widget.onChanged,
-        onFieldSubmitted: (String value) {
-          if (widget.onSubmitted != null) widget.onSubmitted!();
-        },
+        onFieldSubmitted: _onSubmitted,
       ),
     );
   }
 
-  Widget _createSuffix() {
+  InputDecoration _decoration(ThemeData theme) {
+    return InputDecoration(
+      labelText: widget.labelText,
+      contentPadding: const EdgeInsets.symmetric(horizontal: spacingSmall),
+      suffix: _suffix(),
+      errorBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: theme.colorScheme.primary),
+      ),
+      focusedErrorBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.red),
+      ),
+      disabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: theme.colorScheme.shadow),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: theme.colorScheme.secondary),
+      ),
+    );
+  }
+
+  Widget _suffix() {
     if (_controller.text.trim().isEmpty) return const SizedBox.shrink();
 
     return InkWell(
@@ -107,5 +109,9 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
         child: FaIcon(FontAwesomeIcons.xmark),
       ),
     );
+  }
+
+  void _onSubmitted(String value) {
+    if (widget.onSubmitted != null) widget.onSubmitted!();
   }
 }

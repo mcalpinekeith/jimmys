@@ -34,8 +34,8 @@ class SignInViewModel extends BaseViewModel<SignInVMState, SignInViewContract> i
         vmState.hasError = true;
 
         final message = error.message.isNullOrEmpty
-            ? 'An unknown error has occurred.'
-            : error.message as String;
+          ? 'An unknown error has occurred.'
+          : error.message as String;
 
         viewContract.showError(message);
         return;
@@ -46,15 +46,15 @@ class SignInViewModel extends BaseViewModel<SignInVMState, SignInViewContract> i
   }
 
   Future<UserCredential?> signInWithGoogle() async {
-    // Trigger the authentication flow
+    /// Trigger the authentication flow
     final googleUser = await GoogleSignIn().signIn();
 
     if (googleUser == null) return null;
 
-    // Obtain the auth details from the request
+    /// Obtain the auth details from the request
     final googleAuth = await googleUser.authentication;
 
-    // Create a new credential
+    /// Create a new credential
     final credential = GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -69,7 +69,7 @@ class SignInViewModel extends BaseViewModel<SignInVMState, SignInViewContract> i
 
     if (loginResult.accessToken == null) return null;
 
-    // Create a credential from the access token
+    /// Create a credential from the access token
     final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
 
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
@@ -78,7 +78,7 @@ class SignInViewModel extends BaseViewModel<SignInVMState, SignInViewContract> i
   Future<UserCredential> signInWithYahoo() async {
     YahooAuthProvider yahooAuthProvider = YahooAuthProvider();
 
-    // Call the login method to initiate the Yahoo login process
+    /// Call the login method to initiate the Yahoo login process
     return await FirebaseAuth.instance.signInWithProvider(yahooAuthProvider);
   }
 

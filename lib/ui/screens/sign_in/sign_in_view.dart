@@ -38,19 +38,19 @@ class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMCon
                       size: Sizes.large,
                       label: const Text('Continue with Google'),
                       icon: const FaIcon(FontAwesomeIcons.google),
-                      onTap: () async => await onContinueTap('Google', context)
+                      onPressed: () async => await continueOnPressed('Google', context)
                     ),
                     MyButton(
                       size: Sizes.large,
                       label: const Text('Continue with Facebook'),
                       icon: const FaIcon(FontAwesomeIcons.facebook),
-                      onTap: () async => await onContinueTap('Facebook', context)
+                      onPressed: () async => await continueOnPressed('Facebook', context)
                     ),
                     MyButton(
                       size: Sizes.large,
                       label: const Text('Continue with Yahoo!'),
                       icon: const FaIcon(FontAwesomeIcons.yahoo),
-                      onTap: () async => await onContinueTap('Yahoo', context)
+                      onPressed: () async => await continueOnPressed('Yahoo', context)
                     ),
                   ],
                 ),
@@ -63,7 +63,7 @@ class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMCon
   }
 
   @override
-  Future onContinueTap(String provider, BuildContext context) async {
+  Future continueOnPressed(String provider, BuildContext context) async {
     setState(() {
       vmState.isSigningIn = true;
     });

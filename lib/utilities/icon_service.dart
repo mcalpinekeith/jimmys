@@ -390,10 +390,10 @@ class IconService {
       if (hexDigit >= 48 && hexDigit <= 57) {
         result += (hexDigit - 48) * (1 << (4 * (len - 1 - i)));
       } else if (hexDigit >= 65 && hexDigit <= 70) {
-        // A..F
+        /// A..F
         result += (hexDigit - 55) * (1 << (4 * (len - 1 - i)));
       } else if (hexDigit >= 97 && hexDigit <= 102) {
-        // a..f
+        /// a..f
         result += (hexDigit - 87) * (1 << (4 * (len - 1 - i)));
       } else {
         throw const FormatException("An error occurred when converting");

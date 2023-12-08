@@ -6,7 +6,7 @@ class SignInVMState extends BaseViewModelState {
 }
 
 abstract class SignInViewContract extends BaseViewContract {
-  Future onContinueTap(String provider, BuildContext context);
+  Future continueOnPressed(String provider, BuildContext context);
 }
 
 abstract class SignInVMContract extends BaseViewModelContract<SignInVMState, SignInViewContract> {

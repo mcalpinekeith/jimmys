@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:jimmys/ui/widgets/generic/my_text_form_field.dart';
@@ -23,26 +24,28 @@ class MyAutocomplete extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Autocomplete<String>(
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        if (textEditingValue.text.isEmpty) return const Iterable<String>.empty();
-
-        var result = options.where((String option) {
-          return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
-        });
-
-        return result;
-      },
+      optionsBuilder: _optionsBuilder,
       onSelected: onSelected,
-      fieldViewBuilder: (context, controller, focus, onFieldSubmitted) => MyTextFormField(
-        initialValue: initialValue,
-        validator: validator,
-        labelText: labelText,
-        padding: padding,
-        controller: controller,
-        focusNode: focus,
-        onChanged: onSelected,
-        onSubmitted: onFieldSubmitted,
-      ),
+      fieldViewBuilder: _fieldViewBuilder,
     );
   }
+
+  FutureOr<Iterable<String>> _optionsBuilder(TextEditingValue textEditingValue) {
+    if (textEditingValue.text.isEmpty) return const Iterable<String>.empty();
+
+    return options.where((String option) {
+      return option.toLowerCase().contains(textEditingValue.text.toLowerCase());
+    });
+  }
+
+  Widget _fieldViewBuilder(context, controller, focus, onFieldSubmitted) => MyTextFormField(
+    initialValue: initialValue,
+    validator: validator,
+    labelText: labelText,
+    padding: padding,
+    controller: controller,
+    focusNode: focus,
+    onChanged: onSelected,
+    onSubmitted: onFieldSubmitted,
+  );
 }

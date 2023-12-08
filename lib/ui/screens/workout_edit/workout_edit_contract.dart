@@ -18,6 +18,7 @@ class WorkoutEditVMState extends BaseViewModelState {
 }
 
 abstract class WorkoutEditViewContract extends BaseViewContract {
+  
 }
 
 abstract class WorkoutEditVMContract extends BaseViewModelContract<WorkoutEditVMState, WorkoutEditViewContract> {

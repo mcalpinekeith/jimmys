@@ -69,17 +69,21 @@ mixin WidgetsMixin {
       suggestedRowHeight: iconMedium + (spacingMicro * 2),
     );
   }
-  Future<dynamic> navigate(BuildContext context, Widget page) {
-    return Navigator.push(context, MaterialPageRoute(
+
+  void navigate(BuildContext context, Widget page) async {
+    await Navigator.push(context, MaterialPageRoute(
         builder: (_) => page
     ));
+  }
+
+  void pop(BuildContext context) {
+    Navigator.pop(context);
   }
 
   AppBar appBar(ThemeData theme, String text, {List<Widget>? actions}) {
     return AppBar(
       centerTitle: true,
-      title: Text(
-        text,
+      title: Text(text,
         style: theme.textTheme.headlineLarge!.copyWith(
           color: theme.colorScheme.onPrimary,
         ),
@@ -105,28 +109,36 @@ mixin WidgetsMixin {
       color: Colors.red,
       onPressed: () => showDialog<void>(
         context: context,
-        builder: (BuildContext context) => AlertDialog(
-          actionsAlignment: MainAxisAlignment.center,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radiusMedium))),
-          title: Text('Confirm delete', style: titleMediumSecondary(theme)),
-          content: Text('Are you sure you want to delete the $dataTypeText?', style: labelMediumSecondary(theme)),
-          actions: [
-            IconButton(
-              iconSize: iconLarge,
-              icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
-              color: Colors.black54,
-              onPressed: () => Navigator.pop(context),
-            ),
-            IconButton(
-              iconSize: iconLarge,
-              icon: const FaIcon(FontAwesomeIcons.solidCircleCheck),
-              color: theme.colorScheme.error,
-              onPressed: onPressed,
-            ),
-          ],
-        ),
+        builder: (BuildContext context) => _deleteActionDialog(theme, dataTypeText, context, onPressed),
       ),
     );
+  }
+
+  AlertDialog _deleteActionDialog(ThemeData theme, String dataTypeText, BuildContext context, void Function()? onPressed) {
+    return AlertDialog(
+        actionsAlignment: MainAxisAlignment.center,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radiusMedium))),
+        title: Text('Confirm delete',
+          style: titleMediumSecondary(theme)
+        ),
+        content: Text('Are you sure you want to delete the $dataTypeText?',
+          style: labelMediumSecondary(theme)
+        ),
+        actions: [
+          IconButton(
+            iconSize: iconLarge,
+            icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
+            color: Colors.black54,
+            onPressed: () => pop(context),
+          ),
+          IconButton(
+            iconSize: iconLarge,
+            icon: const FaIcon(FontAwesomeIcons.solidCircleCheck),
+            color: theme.colorScheme.error,
+            onPressed: onPressed,
+          ),
+        ],
+      );
   }
 
   Widget fab(ThemeData theme, IconData icon, void Function() onPressed) {

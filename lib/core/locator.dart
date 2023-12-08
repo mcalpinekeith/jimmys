@@ -18,34 +18,34 @@ import 'package:jimmys/utilities/test/mock_firestore.dart';
 Future initializeApp() async {
   if (Global.isAppInitialized) return;
 
-  // Initialize modules
+  /// Initialize modules
 
   getIt.registerSingleton<UserService>(UserService());
   getIt.registerSingleton<StoreService>(StoreService(store: (Global.isTest ? await MockFirestore.getStore() : FirebaseFirestore.instance)));
 
-  // Initialise interactors
+  /// Initialise interactors
 
   getIt.registerFactory<ExerciseUseCases>(() => ExerciseInteractor(store: getIt<StoreService>()));
   getIt.registerFactory<WorkoutExerciseUseCases>(() => WorkoutExerciseInteractor(store: getIt<StoreService>()));
   getIt.registerFactory<WorkoutUseCases>(() => WorkoutInteractor(store: getIt<StoreService>()));
 
-  // Initialize screens
+  /// Initialize screens
 
   getIt.registerSingleton<IconService>(IconService());
 
-  // SignIn
+  /// SignIn
   getIt.registerFactory<SignInVMContract>(() => SignInViewModel());
   getIt.registerFactory<SignInVMState>(() => SignInVMState());
 
-  // Startup
+  /// Startup
   getIt.registerFactory<StartupVMContract>(() => StartupViewModel(workoutInteractor: getIt<WorkoutUseCases>()));
   getIt.registerFactory<StartupVMState>(() => StartupVMState());
 
-  // WorkoutList
+  /// WorkoutList
 /*  getIt.registerFactory<WorkoutListVMContract>(() => WorkoutListViewModel(workoutInteractor: getIt<WorkoutUseCases>()));
   getIt.registerFactory<WorkoutListVMState>(() => WorkoutListVMState());
 
-  // WorkoutEdit
+  /// WorkoutEdit
   getIt.registerFactory<WorkoutEditVMContract>(() => WorkoutEditViewModel());
   getIt.registerFactory<WorkoutEditVMState>(() => WorkoutEditVMState());*/
 

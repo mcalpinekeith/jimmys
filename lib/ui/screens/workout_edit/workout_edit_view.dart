@@ -36,12 +36,12 @@ class WorkoutEditView extends StatefulWidget {
 class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, WorkoutEditVMContract, WorkoutEditVMState> with WidgetsMixin, TickerProviderStateMixin implements WorkoutEditViewContract {
 
   /// Override to disable auto rebuilds on any vmState change.
-  @override
-  bool get autoSubscribeToVmStateChanges => false;
+  ///@override
+  ///bool get autoSubscribeToVmStateChanges => false;
 
   late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
-  late AnimatedListService<IconItem> _workoutIconList;
   late AutoScrollController _workoutIconController;
+  late AnimatedListService<IconItem> _workoutIconList;
 
   final _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
@@ -51,19 +51,31 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   @override
   void onInitState() {
     super.initState();
-    _workoutExerciseList = AnimatedListService(_workoutExerciseKey, _createRemovedWorkoutExerciseItem, <WorkoutExerciseItem>[]);
-    _workoutIconList = IconService.getAnimatedIconList(_workoutIconKey);
-    _workoutIconController = scrollController(context);
-
-    _setWorkoutIconListIsSelected();
+    _initializeWorkoutIconList();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
+      _initializeWorkoutExerciseList();
+    });
+  }
 
-      if (vmState.workoutExercises.isNotEmpty) {
-        _workoutExerciseList = AnimatedListService(
-          _workoutExerciseKey,
-          _createRemovedWorkoutExerciseItem,
+  void _initializeWorkoutIconList() {
+    _workoutIconController = scrollController(context);
+    _workoutIconList = IconService.getAnimatedIconList(_workoutIconKey);
+
+    if (vmState.isAdd) return;
+
+    for (var i = 0; i < _workoutIconList.items.length; i++) {
+      final isSelected = _workoutIconList.items[i].unicode == vmState.workout.icon;
+
+      _workoutIconList.items[i].isSelected = vmState.workout.icon.isNullOrEmpty ? false : isSelected;
+    }
+  }
+
+  void _initializeWorkoutExerciseList() {
+    _workoutExerciseList = vmState.workoutExercises.isEmpty
+      ? AnimatedListService(_workoutExerciseKey, _removedWorkoutExerciseItemBuilder, [])
+      : AnimatedListService(_workoutExerciseKey, _removedWorkoutExerciseItemBuilder,
           vmState.workoutExercises.map((_) => WorkoutExerciseItem(
             id: _.id,
             workoutId: _.workoutId,
@@ -76,16 +88,18 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
             supersetExercise: _.supersetExercise,
           )),
         );
-      }
-    });
+
+      /// vmState.workoutExercises.clear();
   }
+
+  Widget _removedWorkoutExerciseItemBuilder(BuildContext context, Animation<double> animation, WorkoutExerciseItem item) => _workoutExerciseItemBuilder(context, animation, item: item);
 
   @override
   Widget contentBuilder(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: appBar(theme, (vmState.isAdd ? 'Add workout' : 'Edit workout'), actions: _createAppBarActions(theme, context)),
+      appBar: appBar(theme, (vmState.isAdd ? 'Add workout' : 'Edit workout'), actions: _appBarActions(theme, context)),
       floatingActionButton: fab(theme, FontAwesomeIcons.solidFloppyDisk, _saveForm),
       body: SafeArea(
         child: Form(
@@ -95,26 +109,17 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
             children: [
               Expanded(
                 child: MyCarousel(
+                  onSelected: _carouselOnSelected,
                   children: [
-                    _createCarouselPageMain(),
-                    _createCarouselPageIcon(),
-                    _createCarouselPageExercises(),
-                    _createCarouselPageSaveOptions(),
+                    _carouselPageMain(),
+                    _carouselPageIcon(),
+                    _carouselPageExercises(),
+                    _carouselPageSaveOptions(),
                   ],
-                  onSelected: (int selectedIndex) {
-                    if (selectedIndex == 1) {
-                      final selectedWorkoutIconIndex = _workoutIconList.items.indexWhere((_) => _.isSelected);
-                      if (selectedWorkoutIconIndex > -1) {
-                        _workoutIconController.scrollToIndex(selectedWorkoutIconIndex, preferPosition: AutoScrollPosition.begin);
-                      }
-                    }
-
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
                 ),
               ),
               const Gap(spacingSmall),
-              _createLastSave(),
+              _lastSave(),
               const Gap(spacingSmall),
             ],
           ),
@@ -123,58 +128,50 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
-  @override
-  void dispose() {
-    FocusManager.instance.primaryFocus?.unfocus();
-    super.dispose();
-  }
-
-  _createAddedWorkoutExerciseItem(BuildContext context, Animation<double> animation, int index) {
-    return _createWorkoutExerciseItem(context, animation, index: index);
-  }
-
-  List<Widget>? _createAppBarActions(ThemeData theme, BuildContext context) {
+  List<Widget>? _appBarActions(ThemeData theme, BuildContext context) {
     if (vmState.isAdd) return null;
 
     return [
       deleteAction(theme, context, 'workout', () {
         vmContract.remove();
 
-        if (context.mounted) {
-          Navigator.pop(context); // Close dialog
-          Navigator.pop(context); // Close form
+        if (!vmState.hasError && context.mounted) {
+          pop(context); /// Close dialog
+          pop(context); /// Close form
         }
       })
     ];
   }
 
-  /// CarouselPage BEGIN
-  _createCarouselPageExercises() {
-    return Column(
-      children: [
-        _createExerciseAutocomplete(context),
-        Visibility(
-          visible: vmState.currentExercise == null,
-          replacement: _createWorkoutExerciseInsertButton(),
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 32),
-            child: Text('Select an exercise from the list', style: theme.textTheme.labelSmall),
-          ),
-        ),
-        Expanded(
-          child: AnimatedList(
-            key: _workoutExerciseKey,
-            initialItemCount: _workoutExerciseList.length,
-            itemBuilder: (BuildContext context, int index, Animation<double> animation) {
-              return _createAddedWorkoutExerciseItem(context, animation, index);
-            },
-          ),
-        ),
-      ],
-    );
+  void _saveForm() {
+    if (!_formKey.currentState!.validate()) return;
+
+    vmContract.save();
+
+    for (final workoutExercise in _workoutExerciseList.items) {
+      vmContract.saveWorkoutExercise(workoutExercise);
+    }
+
+    setState(() {
+      vmState.lastSave = DateTime.now();
+    });
   }
 
-  _createCarouselPageMain() {
+  //region Carousel Pages
+  void _carouselOnSelected(int selectedIndex) {
+    /// onSelected for carousel icons page
+    if (selectedIndex == 1) {
+      final iconIndex = _workoutIconList.items.indexWhere((_) => _.isSelected);
+
+      if (iconIndex > -1) {
+        _workoutIconController.scrollToIndex(iconIndex, preferPosition: AutoScrollPosition.begin);
+      }
+    }
+
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  Widget _carouselPageMain() {
     return Column(
       children: [
         Expanded(
@@ -206,11 +203,13 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
-  _createCarouselPageIcon() {
+  Widget _carouselPageIcon() {
     return Column(
       children: [
         const Gap(spacingMedium),
-        Text('Select an icon for your new workout.', style: theme.textTheme.bodySmall),
+        Text('Select an icon for your new workout.',
+            style: theme.textTheme.bodySmall
+        ),
         const Gap(spacingSmall),
         Expanded(
           child: MyGrid(
@@ -224,107 +223,69 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
-  _createCarouselPageSaveOptions() {
-    return ListView(
-        children: [
-          const Gap(spacingLarge),
-          MyButton(
-            size: Sizes.large,
-            label: const Text('Save & close'),
-            icon: const FaIcon(FontAwesomeIcons.floppyDisk),
-            onTap: () async {
-              if (_formKey.currentState!.validate()) {
-                _saveForm();
-
-                if (context.mounted) Navigator.pop(context);
-              }
-            },
+  Widget _carouselPageExercises() {
+    return Column(
+      children: [
+        _exerciseAutocomplete(context),
+        Visibility(
+          visible: vmState.currentExercise == null,
+          replacement: IconButton(
+            iconSize: iconMedium,
+            icon: const FaIcon(FontAwesomeIcons.solidCircleDown),
+            onPressed: _workoutExerciseInsertOnPressed,
           ),
-          MyButton(
-            size: Sizes.large,
-            label: const Text('Save & add new workout'),
-            icon: const FaIcon(FontAwesomeIcons.rotateLeft),
-            onTap: () async {
-              if (_formKey.currentState!.validate()) {
-                _saveForm();
-
-                if (context.mounted) {
-                  Navigator.pop(context); // Close form
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const WorkoutEditView()));
-                }
-              }
-            },
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: Text('Select an exercise from the list',
+                style: theme.textTheme.labelSmall
+            ),
           ),
-          MyButton(
-              size: Sizes.large,
-              label: const Text('Save & edit exercises'),
-              icon: const FaIcon(FontAwesomeIcons.listOl),
-              onTap: () async {}
+        ),
+        Expanded(
+          child: AnimatedList(
+              key: _workoutExerciseKey,
+              initialItemCount: _workoutExerciseList.length,
+              itemBuilder: (BuildContext context, int index, Animation<double> animation) => _workoutExerciseItemBuilder(context, animation, index: index)
           ),
-          MyButton(
-              size: Sizes.large,
-              label: const Text('Save & schedule'),
-              icon: const FaIcon(FontAwesomeIcons.xmarksLines),
-              onTap: () async {}
-          ),
-        ]
-    );
-  }
-  /// CarouselPage END
-
-  _createExerciseAutocomplete(BuildContext context) {
-    return viewSelectorWidget(
-      selector: (vmState) => vmState.exercises,
-      builder: (context) => MyAutocomplete(
-        labelText: 'Exercise',
-        options: vmState.exercises.map((_) => _.name).toList(),
-        onSelected: (String selection) {
-          setState(() {
-            vmState.currentExercise = vmState.exercises.where((_) => _.name == selection).singleOrNull;
-          });
-        },
-      ),
+        ),
+      ],
     );
   }
 
-  _createLastSave() {
-    final value = vmState.lastSave != null ? vmState.lastSave!.time(use24HourFormat(context)) : 'never';
-
-    return Text('Last save: $value', style: theme.textTheme.bodySmall, textAlign: TextAlign.center);
-  }
-
-  Widget _createRemovedWorkoutExerciseItem(BuildContext context, Animation<double> animation, WorkoutExerciseItem item) {
-    return _createWorkoutExerciseItem(context, animation, item: item);
-  }
-
-  _createWorkoutExerciseInsertButton() {
-    return IconButton(
-      iconSize: iconMedium,
-      icon: const FaIcon(FontAwesomeIcons.solidCircleDown),
-      onPressed: () async {
-        if (vmState.currentExercise == null) return;
-
-        final int index = _workoutExerciseList.length;
-
-        _workoutExerciseList.insert(
-            index,
-            WorkoutExerciseItem(
-              id: const Uuid().v8(),
-              workoutId: vmState.workout.id,
-              exerciseId: vmState.currentExercise!.id,
-              isDropSet: false,
-              sequence: index + 1,
-              sets: ['15', '12', '8'],
-              exercise: vmState.currentExercise!,
-              supersetExerciseId: null,
-              supersetExercise: null,
-            )
-        );
+  Widget _exerciseAutocomplete(BuildContext context) {
+    return MyAutocomplete(
+      labelText: 'Exercise',
+      options: vmState.exercises.map((_) => _.name).toList(),
+      onSelected: (String selection) {
+        setState(() {
+          vmState.currentExercise = vmState.exercises.where((_) => _.name == selection).singleOrNull;
+        });
       },
     );
   }
 
-  _createWorkoutExerciseItem(BuildContext context, Animation<double> animation, {int index = 0, WorkoutExerciseItem? item}) {
+  void _workoutExerciseInsertOnPressed() {
+    if (vmState.currentExercise == null) return;
+
+    final index = _workoutExerciseList.length;
+
+    _workoutExerciseList.insert(
+        index,
+        WorkoutExerciseItem(
+          id: const Uuid().v8(),
+          workoutId: vmState.workout.id,
+          exerciseId: vmState.currentExercise!.id,
+          isDropSet: false,
+          sequence: index + 1,
+          sets: ['15', '12', '8'],
+          exercise: vmState.currentExercise!,
+          supersetExerciseId: null,
+          supersetExercise: null,
+        )
+    );
+  }
+
+  Widget _workoutExerciseItemBuilder(BuildContext context, Animation<double> animation, {int index = 0, WorkoutExerciseItem? item}) {
     final workoutExercise = item ?? _workoutExerciseList[index];
     final theme = Theme.of(context);
 
@@ -337,8 +298,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
           children: [
             Padding(
               padding: const EdgeInsets.all(spacingSmall),
-              child: Text(
-                workoutExercise.exercise!.name,
+              child: Text(workoutExercise.exercise!.name,
                 style: titleMediumSecondary(theme),
                 softWrap: true,
               ),
@@ -418,69 +378,73 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
-  _saveForm() {
-    if (!_formKey.currentState!.validate()) return;
+  Widget _carouselPageSaveOptions() {
+    /// For readability, leave onPressed function bodies in this function
+    return ListView(
+        children: [
+          const Gap(spacingLarge),
+          MyButton(
+            size: Sizes.large,
+            label: const Text('Save & close'),
+            icon: const FaIcon(FontAwesomeIcons.floppyDisk),
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                _saveForm();
 
-    vmContract.save();
+                if (context.mounted) pop(context);
+              }
+            },
+          ),
+          MyButton(
+            size: Sizes.large,
+            label: const Text('Save & add new workout'),
+            icon: const FaIcon(FontAwesomeIcons.rotateLeft),
+            onPressed: () async {
+              if (_formKey.currentState!.validate()) {
+                _saveForm();
 
-    for (final workoutExercise in _workoutExerciseList.items) {
-      vmContract.saveWorkoutExercise(workoutExercise);
-    }
-
-    setState(() {
-      vmState.lastSave = DateTime.now();
-    });
-  }
-
-  _setWorkoutIconListIsSelected() {
-    if (vmState.isAdd) return;
-
-    for (var i = 0; i < _workoutIconList.items.length; i++) {
-      final isSelected = _workoutIconList.items[i].unicode == vmState.workout.icon;
-
-      _workoutIconList.items[i].isSelected = vmState.workout.icon.isNullOrEmpty ? false : isSelected;
-    }
-  }
-
-
-
-
-
-
-
-
-
-/*  Widget _createEmptyContainer() {
-    final theme = Theme.of(context);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Gap(spacingMedium),
-        Text(
-          'Workouts are a myth around here ...',
-          textAlign: TextAlign.center,
-          style: headlineLargePrimary(theme),
-        ),
-        const Gap(spacingMedium),
-        const FaIcon(
-          FontAwesomeIcons.ghost,
-          size: spacingLarge,
-        ),
-        const Gap(spacingLarge),
-        MyButton(
-          label: const Text('Add workout'),
-          icon: const FaIcon(FontAwesomeIcons.circlePlus),
-          onTap: () => navigate(context, const WorkoutEditPage()),
-        ),
-        const Gap(spacingMedium),
-      ],
+                if (context.mounted) {
+                  pop(context); /// Close form
+                  navigate(context, const WorkoutEditView());
+                }
+              }
+            },
+          ),
+          MyButton(
+              size: Sizes.large,
+              label: const Text('Save & edit exercises'),
+              icon: const FaIcon(FontAwesomeIcons.listOl),
+              onPressed: () async {}
+          ),
+          MyButton(
+              size: Sizes.large,
+              label: const Text('Save & schedule'),
+              icon: const FaIcon(FontAwesomeIcons.xmarksLines),
+              onPressed: () async {}
+          ),
+        ]
     );
-  }*/
+  }
+  //endregion
+
+  Widget _lastSave() {
+    final value = vmState.lastSave != null ? vmState.lastSave!.time(use24HourFormat(context)) : 'never';
+
+    return Text('Last save: $value',
+      style: theme.textTheme.bodySmall,
+      textAlign: TextAlign.center
+    );
+  }
 
   @override
   void showError(String message) {
     showSnackBar(context, message);
+  }
+
+  @override
+  void dispose() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    super.dispose();
   }
 }
 

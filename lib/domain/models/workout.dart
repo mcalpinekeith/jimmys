@@ -40,19 +40,4 @@ class Workout implements BaseModel {
     'icon': icon,
     'description': description,
   };
-
-  // TODO deprecated
-  Workout.fromMap(Map<String, Object?> map) : this(
-    id: map['id']! as String,
-    name: map['name']! as String,
-    category: !map.containsKey('category') || map['category'] == null
-        ? ''
-        : map['category']! as String,
-    icon: !map.containsKey('icon') || map['icon'] == null
-        ? ''
-        : map['icon']! as String,
-    description: !map.containsKey('description') || map['description'] == null
-        ? ''
-        : map['description']! as String,
-  );
 }

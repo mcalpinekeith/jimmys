@@ -13,33 +13,32 @@ class MyCard extends StatelessWidget {
   final Animation<double> animation;
   final Widget child;
   final bool isInteractive;
-  final VoidCallback? onTap;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final card = Card(
-      color: theme.colorScheme.onPrimary,
-      elevation: theme.popupMenuTheme.elevation,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radiusMedium))),
-      child: child,
-    );
 
-    if (isInteractive) {
-        return SizeTransition(
-          sizeFactor: animation,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: onTap,
-            child: card,
-          ),
-        );
-    }
-    else {
-      return SizeTransition(
-        sizeFactor: animation,
-        child: card,
-      );
-    }
+    return SizeTransition(
+      sizeFactor: animation,
+      child: _childWrapper(Card(
+        color: theme.colorScheme.onPrimary,
+        elevation: theme.popupMenuTheme.elevation,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(radiusMedium))
+        ),
+        child: child,
+      )),
+    );
+  }
+
+  Widget _childWrapper(Card card) {
+    if (!isInteractive) return child;
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: card,
+    );
   }
 }

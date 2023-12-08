@@ -1,4 +1,4 @@
-// Keep import of dynamic.dart - dynamic types use extensions at run-time
+/// Keep import of dynamic.dart - dynamic types use extensions at run-time
 import 'package:jimmys/core/extensions/dynamic.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
@@ -56,21 +56,4 @@ class WorkoutExercise implements BaseModel {
     'sets': sets,
     'superset_exercise_id': supersetExerciseId,
   };
-
-  // TODO deprecated
-  WorkoutExercise.fromMap(Map<String, Object?> map) : this(
-    id: map['id']! as String,
-    workoutId: map['workout_id']! as String,
-    exerciseId: map['exercise_id']! as String,
-    isDropSet: !map.containsKey('is_drop_set') || map['is_drop_set'] == null
-      ? false
-      : map['is_drop_set']! as bool,
-    sequence: map['sequence']! as int,
-    sets: !map.containsKey('sets') || map['sets'] == null
-      ? []
-      : map['sets']!.toStringList(),
-    supersetExerciseId: !map.containsKey('superset_exercise_id') || map['superset_exercise_id'] == null
-        ? ''
-        : map['superset_exercise_id']! as String,
-  );
 }

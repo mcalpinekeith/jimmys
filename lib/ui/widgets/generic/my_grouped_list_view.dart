@@ -1,5 +1,6 @@
 import 'package:azlistview/azlistview.dart';
 import 'package:flutter/material.dart';
+import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/core/extensions/string.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/ui/widgets/generic/widgets_mixin.dart';
@@ -9,10 +10,10 @@ class MyGroupedListView extends StatefulWidget {
     super.key,
     required this.data,
     required this.idField,
-    this.pretextField,
+    this.topTextField,
     this.iconField,
-    required this.textField,
-    this.posttextField,
+    required this.middleTextField,
+    this.bottomTextField,
     this.padding = const EdgeInsets.symmetric(vertical: spacingMicro, horizontal: spacingMedium),
     required this.onSelected,
   });
@@ -20,9 +21,9 @@ class MyGroupedListView extends StatefulWidget {
   final List<Map<String, dynamic>> data;
   final String idField;
   final String? iconField;
-  final String? pretextField;
-  final String textField;
-  final String? posttextField;
+  final String? topTextField;
+  final String middleTextField;
+  final String? bottomTextField;
   final EdgeInsetsGeometry padding;
   final Function onSelected;
 
@@ -36,16 +37,15 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final width = MediaQuery.sizeOf(context).width;
 
     _data = widget.data
       .map((_) => MyGroupedListItem.fromMap(
         _,
         widget.idField,
-        widget.pretextField,
+        widget.topTextField,
         widget.iconField,
-        widget.textField,
-        widget.posttextField,
+        widget.middleTextField,
+        widget.bottomTextField,
       ))
       .toList();
 
@@ -59,125 +59,131 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
       child: AzListView(
         data: _data,
         itemCount: _data.length,
-        itemBuilder: (context, index) {
-          final item = _data[index];
-          final tag = item.getSuspensionTag();
-          final offstage = !item.isShowSuspension;
-
-          return Column(
-            children: <Widget>[
-              Offstage(
-                offstage: offstage,
-                child: Container(
-                  height: spacingLarge,
-                  alignment: Alignment.centerLeft,
-                  child: Text(tag, style: headlineLargePrimary(theme)),
-                ),
-              ),
-              _createListTile(item, theme, width),
-            ],
-          );
-        },
-        indexHintBuilder: (context, tag) => Container(
-          width: 40,
-          // FAB size
-          height: 40,
-          // FAB size
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: theme.colorScheme.primary,
-          ),
-          child: Text(
-            tag,
-            style: TextStyle(
-              color: theme.colorScheme.onPrimary,
-              fontSize: 20,
-            ),
-          ),
-        ),
+        itemBuilder: _itemBuilder,
+        indexHintBuilder: _indexHintBuilder,
         indexBarItemHeight: spacingMedium,
         hapticFeedback: true,
         indexBarMargin: const EdgeInsets.all(spacingSmall),
-        indexBarOptions: IndexBarOptions(
-          needRebuild: true,
-          indexHintAlignment: Alignment.centerRight,
-          indexHintOffset: const Offset(-spacingMedium, 0),
-          selectTextStyle: TextStyle(
-            color: theme.colorScheme.onPrimary,
-          ),
-          selectItemDecoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: theme.colorScheme.primary,
-          ),
-        ),
+        indexBarOptions: _indexBarOptions(theme),
       ),
     );
   }
 
-  Widget _createListTile(MyGroupedListItem item, ThemeData theme, double width) {
-    return GestureDetector(
-      onTap: () => widget.onSelected(item),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(spacingSmall, spacingSmall, spacingSmall * 5, spacingSmall),
-        alignment: Alignment.centerLeft,
-        child: Row(
-          children: [
-            icon(item.icon, theme),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _itemBuilder(BuildContext context, int index) {
+    final item = _data[index];
+    final theme = Theme.of(context);
+    final width = MediaQuery.sizeOf(context).width;
+
+    return Column(
+      children: [
+        Offstage(
+          offstage: !item.isShowSuspension,
+          child: Container(
+            height: spacingLarge,
+            alignment: Alignment.centerLeft,
+            child: Text(item.getSuspensionTag(),
+              style: headlineLargePrimary(theme)
+            ),
+          ),
+        ),
+        GestureDetector(
+          onTap: () => widget.onSelected(item),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(spacingSmall, spacingSmall, spacingSmall * 5, spacingSmall),
+            alignment: Alignment.centerLeft,
+            child: Row(
               children: [
-                _createPretext(item, theme, width),
-                _createText(item, theme, width),
-                _createPosttext(item, theme, width),
+                icon(item.icon, theme),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _topText(item, theme, width),
+                    _middleText(item, theme, width),
+                    _bottomText(item, theme, width),
+                  ],
+                ),
               ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
-  Widget _createPretext(MyGroupedListItem item, ThemeData theme, double width) {
-    if (item.pretext.isNullOrEmpty) return const SizedBox.shrink();
+  //region _itemBuilder helpers
+  Widget _topText(MyGroupedListItem item, ThemeData theme, double width) {
+    if (item.topText.isNullOrEmpty) return const SizedBox.shrink();
 
     width -= item.icon.isNullOrEmpty ? spacingSmall * 2 : spacingSmall * 5;
 
     return SizedBox(
       width: width - (spacingSmall * 10),
-      child: Text(
-        item.pretext!,
+      child: Text(item.topText!,
         style: titleMediumSecondary(theme),
         overflow: TextOverflow.ellipsis,
       ),
     );
   }
 
-  Widget _createText(MyGroupedListItem item, ThemeData theme, double width) {
+  Widget _middleText(MyGroupedListItem item, ThemeData theme, double width) {
     width -= item.icon.isNullOrEmpty ? spacingSmall * 2 : spacingSmall * 5;
 
     return SizedBox(
       width: width - (spacingSmall * 10),
-      child: Text(
-        item.text,
+      child: Text(item.middleText,
         style: theme.textTheme.titleLarge,
         softWrap: true,
       ),
     );
   }
 
-  Widget _createPosttext(MyGroupedListItem item, ThemeData theme, double width) {
-    if (item.posttext.isNullOrEmpty) return const SizedBox.shrink();
+  Widget _bottomText(MyGroupedListItem item, ThemeData theme, double width) {
+    if (item.bottomText.isNullOrEmpty) return const SizedBox.shrink();
 
     width -= item.icon.isNullOrEmpty ? spacingSmall * 2 : spacingSmall * 5;
 
     return SizedBox(
       width: width - (spacingSmall * 10),
-      child: Text(
-        item.posttext!,
+      child: Text(item.bottomText!,
         style: titleMediumSecondary(theme),
         overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+  //endregion
+
+  Widget _indexHintBuilder(BuildContext context, String tag) {
+    final theme = Theme.of(context);
+
+    return Container(
+      width: 40, /// FAB size
+      height: 40, /// FAB size
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: theme.colorScheme.primary,
+      ),
+      child: Text(tag,
+        style: TextStyle(
+          color: theme.colorScheme.onPrimary,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+  IndexBarOptions _indexBarOptions(ThemeData theme) {
+    return IndexBarOptions(
+      needRebuild: true,
+      indexHintAlignment: Alignment.centerRight,
+      indexHintOffset: const Offset(-spacingMedium, 0),
+      selectTextStyle: TextStyle(
+        color: theme.colorScheme.onPrimary,
+      ),
+      selectItemDecoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: theme.colorScheme.primary,
       ),
     );
   }
@@ -186,18 +192,18 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
 class MyGroupedListItem extends ISuspensionBean {
   MyGroupedListItem({
     required this.id,
-    this.pretext,
+    this.topText,
     this.icon,
-    required this.text,
-    this.posttext,
+    required this.middleText,
+    this.bottomText,
     required this.tag,
   });
 
   final String id;
-  final String? pretext;
+  final String? topText;
   final String? icon;
-  final String text;
-  final String? posttext;
+  final String middleText;
+  final String? bottomText;
   final String tag;
 
   @override
@@ -206,20 +212,18 @@ class MyGroupedListItem extends ISuspensionBean {
   MyGroupedListItem.fromMap(
     Map<String, dynamic> map,
     String idField,
-    String? pretextField,
+    String? topTextField,
     String? iconField,
-    String textField,
-    String? posttextField,
+    String middleTextField,
+    String? bottomTextField,
   ) : this(
     id: map[idField]! as String,
-    pretext: pretextField.isNullOrEmpty || !map.containsKey(pretextField) || map[pretextField] == null ? null : map[pretextField]! as String,
-    icon: iconField.isNullOrEmpty || !map.containsKey(iconField) || map[iconField] == null ? null : map[iconField]! as String,
-    text: map[textField]! as String,
-    posttext: posttextField.isNullOrEmpty || !map.containsKey(posttextField) || map[posttextField] == null ? null : map[posttextField]! as String,
-    tag: (map[textField]! as String)[0].toUpperCase(),
+    topText: map.value(topTextField, null),
+    icon: map.value(iconField, null),
+    middleText: map[middleTextField]! as String,
+    bottomText: map.value(bottomTextField, null),
+    tag: (map.value(middleTextField, '#'))[0].toUpperCase(),
   );
 
-  Map<String, Object?> toMap() {
-    return {};
-  }
+  Map<String, Object?> toMap() => {};
 }

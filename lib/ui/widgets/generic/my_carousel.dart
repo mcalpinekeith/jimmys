@@ -32,59 +32,70 @@ class _MyCarouselState extends State<MyCarousel> {
       children: [
         Padding(
           padding: const EdgeInsets.all(spacingMicro),
-          child: GlassyCard(
-            child: Row(
-              children: [
-                IconButton(
-                  iconSize: iconLarge,
-                  icon: const FaIcon(FontAwesomeIcons.circleLeft),
-                  onPressed: () async => await _controller.previousPage(),
-                ),
-                Expanded(
-                  child: Center(
-                    child: AnimatedSmoothIndicator(
-                      activeIndex: _selectedIndex,
-                      count: widget.children.length,
-                      onDotClicked: (index) => _controller.animateToPage(index),
-                      effect: ExpandingDotsEffect(
-                        spacing: spacingSmall,
-                        activeDotColor: theme.colorScheme.primary,
-                        dotColor: theme.colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  iconSize: iconLarge,
-                  icon: const FaIcon(FontAwesomeIcons.circleRight),
-                  onPressed: () async => await _controller.nextPage(),
-                ),
-              ],
-            ),
-          ),
+          child: _carouselHeader(theme),
         ),
         Expanded(
           child: SizedBox(
             width: width,
-            child: CarouselSlider.builder(
-              carouselController: _controller,
-              itemBuilder: (context, index, realIndex) => widget.children[index],
-              itemCount: widget.children.length,
-              options: CarouselOptions(
-                padEnds: false,
-                disableCenter: true,
-                viewportFraction: 1,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _selectedIndex = index;
-                  });
-                  widget.onSelected(index);
-                },
-              ),
-            ),
+            child: _carouselBody(),
           ),
         ),
       ],
     );
+  }
+
+  Widget _carouselHeader(ThemeData theme) {
+    return GlassyCard(
+      child: Row(
+        children: [
+          IconButton(
+            iconSize: iconLarge,
+            icon: const FaIcon(FontAwesomeIcons.circleLeft),
+            onPressed: () async => await _controller.previousPage(),
+          ),
+          Expanded(
+            child: Center(
+              child: AnimatedSmoothIndicator(
+                activeIndex: _selectedIndex,
+                count: widget.children.length,
+                onDotClicked: (index) => _controller.animateToPage(index),
+                effect: ExpandingDotsEffect(
+                  spacing: spacingSmall,
+                  activeDotColor: theme.colorScheme.primary,
+                  dotColor: theme.colorScheme.onPrimary,
+                ),
+              ),
+            ),
+          ),
+          IconButton(
+            iconSize: iconLarge,
+            icon: const FaIcon(FontAwesomeIcons.circleRight),
+            onPressed: () async => await _controller.nextPage(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _carouselBody() {
+    return CarouselSlider.builder(
+      carouselController: _controller,
+      itemBuilder: (context, index, realIndex) => widget.children[index],
+      itemCount: widget.children.length,
+      options: CarouselOptions(
+        padEnds: false,
+        disableCenter: true,
+        viewportFraction: 1,
+        onPageChanged: _onPageChanged,
+      ),
+    );
+  }
+
+  void _onPageChanged(index, reason) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    widget.onSelected(index);
   }
 }

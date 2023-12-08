@@ -42,17 +42,11 @@ class _MyNumberStepperState extends State<MyNumberStepper> with WidgetsMixin {
         IconButton(
           iconSize: iconMedium,
           icon: const FaIcon(FontAwesomeIcons.circleMinus),
-          onPressed: () {
-            setState(() {
-              if (_currentValue > widget.minValue) _currentValue -= widget.step;
-              widget.onChanged(_currentValue);
-            });
-          },
+          onPressed: _decreaseOnPressed,
         ),
         ConstrainedBox(
           constraints: const BoxConstraints.tightForFinite(width: 100),
-          child: Text(
-            _currentValue.toString(),
+          child: Text(_currentValue.toString(),
             style: labelMediumSecondary(theme),
             textAlign: TextAlign.center,
           ),
@@ -60,14 +54,23 @@ class _MyNumberStepperState extends State<MyNumberStepper> with WidgetsMixin {
         IconButton(
           iconSize: iconMedium,
           icon: const FaIcon(FontAwesomeIcons.circlePlus),
-          onPressed: () {
-            setState(() {
-              if (_currentValue < widget.maxValue) _currentValue += widget.step;
-              widget.onChanged(_currentValue);
-            });
-          },
+          onPressed: _increaseOnPressed,
         ),
       ],
     );
+  }
+
+  void _decreaseOnPressed() {
+    setState(() {
+      if (_currentValue > widget.minValue) _currentValue -= widget.step;
+      widget.onChanged(_currentValue);
+    });
+  }
+
+  void _increaseOnPressed() {
+    setState(() {
+      if (_currentValue < widget.maxValue) _currentValue += widget.step;
+      widget.onChanged(_currentValue);
+    });
   }
 }

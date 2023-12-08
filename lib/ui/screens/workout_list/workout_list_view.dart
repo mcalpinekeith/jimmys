@@ -30,7 +30,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
       body: SafeArea(
         child: Visibility(
           visible: vmState.workoutList.isNotEmpty,
-          replacement: _createEmptyContainer(),
+          replacement: _noWorkoutsContainer(),
           child: Column(
             children: [
               Expanded(
@@ -38,10 +38,10 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
                   key: widget.key,
                   data: vmState.workoutList.map((_) => _.toMap()).toList(),
                   idField: 'id',
-                  pretextField: 'category',
+                  topTextField: 'category',
                   iconField: 'icon',
-                  textField: 'name',
-                  posttextField: 'description',
+                  middleTextField: 'name',
+                  bottomTextField: 'description',
                   onSelected: (MyGroupedListItem item) => navigate(context, WorkoutEditView(workoutId: item.id)),
                 ),
               ),
@@ -52,28 +52,26 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
     );
   }
 
-  Widget _createEmptyContainer() {
+  Widget _noWorkoutsContainer() {
     final theme = Theme.of(context);
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const Gap(spacingMedium),
-        Text(
-          'Workouts are a myth around here ...',
+        Text('Workouts are a myth around here ...',
           textAlign: TextAlign.center,
           style: headlineLargePrimary(theme),
         ),
         const Gap(spacingMedium),
-        const FaIcon(
-          FontAwesomeIcons.ghost,
+        const FaIcon(FontAwesomeIcons.ghost,
           size: spacingLarge,
         ),
         const Gap(spacingLarge),
         MyButton(
           label: const Text('Add workout'),
           icon: const FaIcon(FontAwesomeIcons.circlePlus),
-          onTap: () => navigate(context, const WorkoutEditView()),
+          onPressed: () => navigate(context, const WorkoutEditView()),
         ),
         const Gap(spacingMedium),
       ],

@@ -8,14 +8,14 @@ class MyButton extends StatelessWidget {
     required this.label,
     required this.icon,
     this.padding = const EdgeInsets.symmetric(vertical: spacingMedium, horizontal: 0.0),
-    this.onTap,
+    this.onPressed,
   });
 
   final Sizes size;
   final Widget label;
   final Widget icon;
   final EdgeInsetsGeometry padding;
-  final VoidCallback? onTap;
+  final void Function()? onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class MyButton extends StatelessWidget {
           child: ElevatedButton.icon(
             label: label,
             icon: icon,
-            onPressed: onTap,
+            onPressed: onPressed,
           ),
         ),
       ),
