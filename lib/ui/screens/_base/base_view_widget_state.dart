@@ -40,7 +40,6 @@ abstract class BaseViewWidgetState<SW extends StatefulWidget, VMC extends BaseVi
   @override
   @mustCallSuper
   void initState() {
-    vmState.user = context.read<User>();
     onInitState();
     vmContract.onInitState();
     super.initState();

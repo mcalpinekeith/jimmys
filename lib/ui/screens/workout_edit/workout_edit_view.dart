@@ -1,3 +1,4 @@
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -5,6 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/core/extensions/datetime.dart';
 import 'package:jimmys/core/extensions/string.dart';
+import 'package:jimmys/domain/models/workout.dart';
 import 'package:jimmys/domain/models/workout_exercise.dart';
 import 'package:jimmys/ui/screens/_base/base_view_widget_state.dart';
 import 'package:jimmys/ui/screens/workout_edit/workout_edit_contract.dart';
@@ -25,10 +27,12 @@ import 'package:uuid/uuid.dart';
 class WorkoutEditView extends StatefulWidget {
   const WorkoutEditView({
     super.key,
-    this.workoutId
+    required this.workout,
+    required this.isAdd,
   });
 
-  final String? workoutId;
+  final Workout workout;
+  final bool isAdd;
 
   @override
   State<WorkoutEditView> createState() => _WorkoutEditViewWidgetState();
@@ -49,19 +53,24 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   final _workoutExerciseKey = GlobalKey<AnimatedListState>();
   final _workoutIconKey = GlobalKey<AnimatedListState>();
 
+  _WorkoutEditViewWidgetState() {
+    _workoutExerciseList = AnimatedListService(_workoutExerciseKey, null, []);
+    _workoutIconList = AnimatedListService(_workoutIconKey, null, []);
+    _workoutIconController = AutoScrollController();
+  }
+
   @override
   void onInitState() {
-    super.initState();
-    _initializeWorkoutIconList();
+    vmState.workout = widget.workout;
+    vmState.isAdd = widget.isAdd;
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      context.focusScope.requestFocus(_focusNode);
+      _initializeWorkoutIconList();
       _initializeWorkoutExerciseList();
     });
   }
 
   void _initializeWorkoutIconList() {
-    _workoutIconController = scrollController(context);
     _workoutIconList = IconService.getAnimatedIconList(_workoutIconKey);
 
     if (vmState.isAdd) return;
@@ -97,6 +106,9 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
 
   @override
   Widget contentBuilder(BuildContext context) {
+    context.focusScope.requestFocus(_focusNode);
+    _workoutIconController = scrollController(context);
+
     return Scaffold(
       appBar: appBar(context, (vmState.isAdd ? 'Add workout' : 'Edit workout'), actions: _appBarActions()),
       floatingActionButton: fab(context, FontAwesomeIcons.solidFloppyDisk, _saveForm),
@@ -242,9 +254,9 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
         ),
         Expanded(
           child: AnimatedList(
-              key: _workoutExerciseKey,
-              initialItemCount: _workoutExerciseList.length,
-              itemBuilder: (BuildContext context, int index, Animation<double> animation) => _workoutExerciseItemBuilder(animation, index: index)
+            key: _workoutExerciseKey,
+            initialItemCount: _workoutExerciseList.length,
+            itemBuilder: (BuildContext context, int index, Animation<double> animation) => _workoutExerciseItemBuilder(animation, index: index)
           ),
         ),
       ],
@@ -403,7 +415,10 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
 
                 if (context.mounted) {
                   pop(context); /// Close form
-                  navigate(context, const WorkoutEditView());
+                  navigate(context, WorkoutEditView(
+                    workout: Workout.create(),
+                    isAdd: true,
+                  ));
                 }
               }
             },

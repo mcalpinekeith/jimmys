@@ -1,4 +1,4 @@
-extension DynamicExtensions on dynamic {
+extension IterableExtensions on Iterable {
   List<String> toStringList() {
     final result = <String>[];
 

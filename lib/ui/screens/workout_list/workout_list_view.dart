@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
+import 'package:jimmys/domain/models/providers/workout_list.dart';
+import 'package:jimmys/domain/models/workout.dart';
 import 'package:jimmys/ui/screens/_base/base_view_widget_state.dart';
 import 'package:jimmys/ui/screens/workout_edit/workout_edit_view.dart';
 import 'package:jimmys/ui/screens/workout_list/workout_list_contract.dart';
@@ -8,6 +10,7 @@ import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/ui/widgets/generic/my_button.dart';
 import 'package:jimmys/ui/widgets/generic/my_grouped_list_view.dart';
 import 'package:jimmys/ui/widgets/generic/widgets_mixin.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutListView extends StatefulWidget {
   const WorkoutListView({super.key});
@@ -18,19 +21,30 @@ class WorkoutListView extends StatefulWidget {
 
 class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, WorkoutListVMContract, WorkoutListViewModelState> with WidgetsMixin implements WorkoutListVContract {
   @override
-  void onInitState() {}
+  void onInitState() {
+    vmState.workoutListProvider = context.read<WorkoutListProvider>();
+  }
 
   @override
   Widget contentBuilder(BuildContext context) {
     return Scaffold(
       appBar: appBar(context, 'Workouts'),
-      floatingActionButton: fab(context, FontAwesomeIcons.plus, () => navigate(context, const WorkoutEditView())),
+      floatingActionButton: fab(context, FontAwesomeIcons.plus, () {
+        navigate(context, WorkoutEditView(
+          workout: Workout.create(),
+          isAdd: true,
+        ));
+      }),
       body: SafeArea(
-        child: Visibility(
-          visible: vmState.workoutList.isNotEmpty,
-          replacement: _noWorkoutsContainer(),
-          child: Column(
-            children: [
+        child: Stack(
+          children: [
+            if (vmState.isLoading)
+              loader(context),
+
+            if (!vmState.hasError && !vmState.isLoading && vmState.workoutList.isEmpty)
+              _noWorkoutsContainer(),
+
+            if (vmState.workoutList.isNotEmpty)
               Expanded(
                 child: MyGroupedListView(
                   key: widget.key,
@@ -40,11 +54,15 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
                   iconField: 'icon',
                   middleTextField: 'name',
                   bottomTextField: 'description',
-                  onSelected: (MyGroupedListItem item) => navigate(context, WorkoutEditView(workoutId: item.id)),
+                  onSelected: (MyGroupedListItem item) {
+                    navigate(context, WorkoutEditView(
+                      workout: vmState.workoutList.firstWhere((_) => _.id == item.id),
+                      isAdd: false,
+                    ));
+                  },
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
@@ -67,7 +85,12 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
         MyButton(
           label: const Text('Add workout'),
           icon: const FaIcon(FontAwesomeIcons.circlePlus),
-          onPressed: () => navigate(context, const WorkoutEditView()),
+          onPressed: () {
+            navigate(context, WorkoutEditView(
+              workout: Workout.create(),
+              isAdd: true,
+            ));
+          }
         ),
         const Gap(spacingMedium),
       ],

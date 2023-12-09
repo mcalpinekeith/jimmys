@@ -19,16 +19,16 @@ class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMCon
   void onInitState() {}
 
   @override
-  Widget contentBuilder(BuildContext ctx) {
+  Widget contentBuilder(BuildContext context) {
     return Scaffold(
-      appBar: appBar(ctx, 'Welcome'),
+      appBar: appBar(context, 'Welcome'),
       body: SafeArea(
         child: Column(
           children: [
             logo(),
             Visibility(
               visible: !vmState.isSigningIn,
-              replacement: loader(ctx),
+              replacement: loader(context),
               child: Expanded(
                 child: ListView(
                   children: [

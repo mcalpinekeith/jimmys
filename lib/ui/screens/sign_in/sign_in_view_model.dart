@@ -8,7 +8,6 @@ import 'package:jimmys/core/extensions/string.dart';
 class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContract> implements SignInVMContract {
   @override
   void onInitState() {
-    vmState.isLoading = true;
     vmState.isSigningIn = false;
   }
 

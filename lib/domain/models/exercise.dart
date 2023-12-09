@@ -1,5 +1,4 @@
-/// Keep import of dynamic.dart - dynamic types use extensions at run-time
-import 'package:jimmys/core/extensions/dynamic.dart';
+import 'package:jimmys/core/extensions/iterable.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 
@@ -30,7 +29,7 @@ class Exercise implements BaseModel {
     id: map.value('id', ''),
     name: map.value('name', ''),
     category: map.value('category', ''),
-    exerciseTypes: map.value('exercise_types', []).toStringList(),
+    exerciseTypes: (map.value('exercise_types', <String>[]) as Iterable).toStringList(),
     stepIncrease: map.value('step_increase', 0.0),
   );
 

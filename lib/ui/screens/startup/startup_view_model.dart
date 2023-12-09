@@ -10,12 +10,12 @@ class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVCont
   }) : _workoutInteractor = workoutInteractor;
 
   @override
-  void onInitState() {
-    startLoadingState();
-
+  Future<void> onInitState() async {
+    vmState.isLoading = true;
     vmState.todayWorkout = _workoutInteractor.todayWorkout;
 
-    _loadWorkouts();
+    await _loadWorkouts();
+
     stopLoadingState();
   }
 
@@ -26,7 +26,7 @@ class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVCont
       vmState.workoutList.clear();
       vmState.workoutList.addAll(await _workoutInteractor.get());
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }

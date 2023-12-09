@@ -9,6 +9,6 @@ class UserService extends ChangeNotifier {
   String? get userId => (Global.isTest ? MockFirestore.mockUser.uid : FirebaseAuth.instance.currentUser?.uid);
 
   UserService() {
-    FirebaseAuth.instance.userChanges().listen((_) => notifyListeners);
+    /// FirebaseAuth.instance.userChanges().listen((_) => notifyListeners);
   }
 }

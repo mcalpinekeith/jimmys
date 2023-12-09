@@ -1,8 +1,15 @@
+import 'package:english_words/english_words.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
+import 'package:uuid/uuid.dart';
 
 class Workout implements BaseModel {
   Workout.empty();
+
+  Workout.create() {
+    id = const Uuid().v8();
+    name = '${generateWordPairs().first.join()} workout';
+  }
 
   Workout({
     required this.id,

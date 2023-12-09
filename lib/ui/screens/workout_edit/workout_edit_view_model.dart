@@ -23,33 +23,14 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     _exerciseInteractor = exerciseInteractor;
 
   @override
-  void onInitState() {
-    startLoadingState();
-    _loadWorkout();
-    _loadWorkoutExercises();
-    _loadCategories();
-    _loadExercises();
+  Future<void> onInitState() async {
+    vmState.isLoading = true;
+
+    await _loadWorkoutExercises();
+    await _loadCategories();
+    await _loadExercises();
+
     stopLoadingState();
-  }
-
-  Future _loadWorkout() async {
-    vmState.hasError = false;
-
-    try {
-      if (vmState.isAdd) {
-        final id = const Uuid().v8();
-        final name = '${generateWordPairs().first.join()} workout';
-
-        vmState.workout = Workout(id: id, name: name);
-      }
-      else {
-        vmState.workout = (await _workoutInteractor.get(criteria: ('workout_id', vmState.workoutId!))).first;
-      }
-    }
-    on Exception catch (ex) {
-      vmState.hasError = true;
-      viewContract.showError(ex.toString());
-    }
   }
 
   Future _loadWorkoutExercises() async {
@@ -59,11 +40,11 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
       vmState.workoutExercises.clear();
 
       if (!vmState.isAdd) {
-        vmState.workoutExercises.addAll(await _workoutExerciseInteractor.get(criteria: ('workout_id', vmState.workoutId!)));
+        vmState.workoutExercises.addAll(await _workoutExerciseInteractor.get(criteria: ('workout_id', vmState.workout.id)));
         vmState.workoutExercises.sort((a, b) => a.sequence.compareTo(b.sequence));
       }
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
@@ -76,7 +57,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
       vmState.categories.clear();
       vmState.categories.addAll(await _workoutInteractor.getCategories());
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
@@ -89,7 +70,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
       vmState.exercises.clear();
       vmState.exercises.addAll(await _exerciseInteractor.get());
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
@@ -104,7 +85,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
         _workoutInteractor.remove(vmState.workout);
       }
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
@@ -117,7 +98,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     try {
       _workoutInteractor.save(vmState.workout);
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
@@ -130,7 +111,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     try {
       _workoutExerciseInteractor.save(workoutExercise);
     }
-    on Exception catch (ex) {
+    catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
