@@ -14,24 +14,26 @@ class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVCont
     vmState.hasError = false;
     startLoadingState();
 
-    vmState.todayWorkout = _workoutInteractor.todayWorkout;
-
-    await _loadWorkouts();
-
-    stopLoadingState();
-  }
-
-  Future _loadWorkouts() async {
-    vmState.hasError = false;
-
     try {
-      vmState.workoutList.clear();
-      vmState.workoutList.addAll(await _workoutInteractor.get());
+      await _loadTodayWorkout();
+      await _loadWorkouts();
     }
     catch (ex) {
       vmState.hasError = true;
       viewContract.showError(ex.toString());
     }
+    finally {
+      stopLoadingState();
+    }
+  }
+
+  Future<void> _loadTodayWorkout() async {
+    vmState.todayWorkout = await _workoutInteractor.getTodayWorkout();
+  }
+
+  Future _loadWorkouts() async {
+    vmState.workoutList.clear();
+    vmState.workoutList.addAll(await _workoutInteractor.get());
   }
 
   @override
