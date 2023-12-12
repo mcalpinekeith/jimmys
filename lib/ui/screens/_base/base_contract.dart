@@ -31,5 +31,6 @@ abstract class BaseViewModelContract<VMS extends BaseViewModelState, VC extends 
   late final VC viewContract;
 
   void onInitState();
+  Future<void> reload();
   void onDisposeView();
 }

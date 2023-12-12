@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:jimmys/core/global.dart';
 import 'package:jimmys/ui/screens/_base/base_contract.dart';
@@ -55,8 +54,8 @@ abstract class BaseViewWidgetState<SW extends StatefulWidget, VMC extends BaseVi
   Widget build(BuildContext context) => ChangeNotifierProvider<VMC>(
     create: (_) => vmContract,
     child: autoSubscribeToVmStateChanges
-        ? viewConsumerWidget(builder: (context) => contentBuilder(context))
-        : contentBuilder(context),
+      ? viewConsumerWidget(builder: (context) => contentBuilder(context))
+      : contentBuilder(context),
   );
 
   /// Override this method to build the view using the [viewModelState].
