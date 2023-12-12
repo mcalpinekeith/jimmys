@@ -21,6 +21,11 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
 
   @override
   Future<void> onInitState() async {
+    await reload();
+  }
+
+  @override
+  Future<void> reload() async {
     vmState.hasError = false;
     startLoadingState();
 
@@ -64,7 +69,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     try {
       if (!vmState.isAdd) {
         _workoutInteractor.remove(vmState.workout);
-        notifyListeners();
+        vmState.lastSave = DateTime.now();
       }
     }
     catch (ex) {
@@ -79,7 +84,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
 
     try {
       _workoutInteractor.save(vmState.workout);
-      notifyListeners();
+      vmState.lastSave = DateTime.now();
     }
     catch (ex) {
       vmState.hasError = true;
@@ -93,7 +98,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
 
     try {
       _workoutExerciseInteractor.save(workoutExercise);
-      notifyListeners();
+      vmState.lastSave = DateTime.now();
     }
     catch (ex) {
       vmState.hasError = true;

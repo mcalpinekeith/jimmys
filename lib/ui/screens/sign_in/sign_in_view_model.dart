@@ -18,13 +18,13 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
     try {
       switch (provider) {
         case 'Google':
-          await signInWithGoogle();
+          await _signInWithGoogle();
           break;
         case 'Facebook':
-          await signInWithFacebook();
+          await _signInWithFacebook();
           break;
         case 'Yahoo':
-          await signInWithYahoo();
+          await _signInWithYahoo();
           break;
       }
 
@@ -47,7 +47,7 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
     }
   }
 
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> _signInWithGoogle() async {
     /// Trigger the authentication flow
     final googleUser = await GoogleSignIn().signIn();
 
@@ -65,7 +65,7 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 
-  Future<UserCredential?> signInWithFacebook() async {
+  Future<UserCredential?> _signInWithFacebook() async {
     // Trigger the sign-in flow
     final loginResult = await FacebookAuth.instance.login();
 
@@ -77,7 +77,7 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
-  Future<UserCredential> signInWithYahoo() async {
+  Future<UserCredential> _signInWithYahoo() async {
     YahooAuthProvider yahooAuthProvider = YahooAuthProvider();
 
     /// Call the login method to initiate the Yahoo login process

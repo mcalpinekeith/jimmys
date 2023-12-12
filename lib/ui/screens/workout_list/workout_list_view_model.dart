@@ -11,6 +11,11 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListViewModelState, Work
 
   @override
   Future<void> onInitState() async {
+    await reload();
+  }
+
+  @override
+  Future<void> reload() async {
     vmState.hasError = false;
     startLoadingState();
 
