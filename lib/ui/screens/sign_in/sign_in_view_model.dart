@@ -7,13 +7,13 @@ import 'package:jimmys/core/extensions/string.dart';
 
 class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContract> implements SignInVMContract {
   @override
-  void onInitState() {
-    vmState.isSigningIn = false;
-  }
+  void onInitState() {}
 
   @override
   Future signIn(String provider, Function onSignIn) async {
     vmState.hasError = false;
+    vmState.isSignedIn = false;
+    startLoadingState();
 
     try {
       switch (provider) {
@@ -27,6 +27,9 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
           await signInWithYahoo();
           break;
       }
+
+      vmState.isSignedIn = true;
+      onSignIn();
     }
     on FirebaseAuthException catch (error) {
       if (error.code == 'account-exists-with-different-credential') {
@@ -37,11 +40,11 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
           : error.message as String;
 
         viewContract.showError(message);
-        return;
       }
     }
-
-    onSignIn();
+    finally {
+      stopLoadingState();
+    }
   }
 
   Future<UserCredential?> signInWithGoogle() async {

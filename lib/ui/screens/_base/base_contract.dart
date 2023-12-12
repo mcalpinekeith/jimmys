@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:jimmys/core/global.dart';
 import 'package:jimmys/data/modules/services/user_service.dart';
@@ -6,7 +7,7 @@ import 'package:jimmys/data/modules/services/user_service.dart';
 /// most views. It includes features like tracking data loading status, error
 /// occurrence, and accessing the current user.
 abstract class BaseViewModelState {
-  late var user = getIt<UserService>().user;
+  User? user = getIt<UserService>().user;
   bool isLoading = false;
   bool hasError = false;
 }

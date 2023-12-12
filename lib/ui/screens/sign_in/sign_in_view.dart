@@ -26,47 +26,40 @@ class _SignInViewWidgetState extends BaseViewWidgetState<SignInView, SignInVMCon
         child: Column(
           children: [
             logo(),
-            Visibility(
-              visible: !vmState.isSigningIn,
-              replacement: loader(context),
-              child: Expanded(
-                child: ListView(
-                  children: [
-                    MyButton(
-                      size: Sizes.large,
-                      label: const Text('Continue with Google'),
-                      icon: const FaIcon(FontAwesomeIcons.google),
-                      onPressed: () async => await continueOnPressed('Google')
-                    ),
-                    MyButton(
-                      size: Sizes.large,
-                      label: const Text('Continue with Facebook'),
-                      icon: const FaIcon(FontAwesomeIcons.facebook),
-                      onPressed: () async => await continueOnPressed('Facebook')
-                    ),
-                    MyButton(
-                      size: Sizes.large,
-                      label: const Text('Continue with Yahoo!'),
-                      icon: const FaIcon(FontAwesomeIcons.yahoo),
-                      onPressed: () async => await continueOnPressed('Yahoo')
-                    ),
-                  ],
-                ),
-              ),
+            Stack(
+              children: [
+                if (vmState.isLoading || vmState.isSignedIn)
+                  loader(context),
+
+                if (!vmState.isLoading  && !vmState.isSignedIn)
+                  Column(
+                    children: [
+                      MyButton(
+                        size: Sizes.large,
+                        label: const Text('Continue with Google'),
+                        icon: const FaIcon(FontAwesomeIcons.google),
+                        onPressed: () async => await vmContract.signIn('Google',() => navigate(context, const StartupView())),
+                      ),
+                      MyButton(
+                        size: Sizes.large,
+                        label: const Text('Continue with Facebook'),
+                        icon: const FaIcon(FontAwesomeIcons.facebook),
+                        onPressed: () async => await vmContract.signIn('Facebook',() => navigate(context, const StartupView())),
+                      ),
+                      MyButton(
+                        size: Sizes.large,
+                        label: const Text('Continue with Yahoo!'),
+                        icon: const FaIcon(FontAwesomeIcons.yahoo),
+                        onPressed: () async => await vmContract.signIn('Yahoo',() => navigate(context, const StartupView())),
+                      ),
+                    ],
+                  ),
+              ],
             ),
           ],
         ),
       ),
     );
-  }
-
-  @override
-  Future continueOnPressed(String provider) async {
-    setState(() {
-      vmState.isSigningIn = true;
-    });
-
-    await vmContract.signIn(provider,() => navigate(context, const StartupView()));
   }
 
   @override
