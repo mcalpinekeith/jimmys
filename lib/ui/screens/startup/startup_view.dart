@@ -27,18 +27,6 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
       body: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(spacingSmall, 0, spacingSmall, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('Hello,',
-                    style: context.textTheme.headlineLarge
-                  ),
-                  userAvatar(vmState.user),
-                ],
-              ),
-            ),
             _userGreeting(),
             MyButton(
               label: const Text('Add workouts'),
@@ -65,24 +53,41 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
       ? '${vmState.user!.displayName!}.'
       : 'Stranger.';
 
-    return Row(
+    return Column(
       children: [
-        SizedBox(
-          height: spacingLarge,
-          child: Padding(
-            padding: const EdgeInsets.only(left: spacingSmall),
-            child: Text(displayName,
-              style: headlineLargePrimary(context),
-              overflow: TextOverflow.ellipsis,
-            ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(spacingSmall, 0, spacingSmall, 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Hello,',
+                  style: context.textTheme.headlineLarge
+              ),
+              userAvatar(vmState.user),
+            ],
           ),
         ),
-      ],
+        Row(
+          children: [
+            SizedBox(
+              height: spacingLarge,
+              child: Padding(
+                padding: const EdgeInsets.only(left: spacingSmall),
+                child: Text(displayName,
+                  style: headlineLargePrimary(context),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ]
     );
   }
 
   Widget _scheduleWorkoutsOption() {
-    if (vmState.workoutList.isEmpty) return const SizedBox.shrink();
+    if (vmState.isLoading) return loader(context, padding: const EdgeInsets.only(top: spacingMedium));
+    if (vmState.workoutList.isEmpty) return nothing;
 
     return MyButton(
       label: const Text('Schedule workouts'),
@@ -94,7 +99,8 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
   }
 
   Widget _scheduledWorkout() {
-    if (vmState.todayWorkout == null) return const SizedBox.shrink();
+    if (vmState.isLoading) return loader(context, padding: const EdgeInsets.only(top: spacingMedium));
+    if (vmState.todayWorkout == null) return nothing;
 
     return Expanded(
       child: Column(

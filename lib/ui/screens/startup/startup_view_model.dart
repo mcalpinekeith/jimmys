@@ -11,7 +11,9 @@ class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVCont
 
   @override
   Future<void> onInitState() async {
-    vmState.isLoading = true;
+    vmState.hasError = false;
+    startLoadingState();
+
     vmState.todayWorkout = _workoutInteractor.todayWorkout;
 
     await _loadWorkouts();

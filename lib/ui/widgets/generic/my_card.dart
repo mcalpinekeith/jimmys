@@ -33,7 +33,7 @@ class MyCard extends StatelessWidget {
   }
 
   Widget _childWrapper(Card card) {
-    if (!isInteractive) return child;
+    if (!isInteractive) return card;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,

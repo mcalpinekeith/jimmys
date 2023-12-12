@@ -11,6 +11,7 @@ import 'package:jimmys/core/extensions/string.dart';
 
 mixin WidgetsMixin {
   bool use24HourFormat(BuildContext context) => context.mediaQuery.alwaysUse24HourFormat;
+  Widget get nothing => const SizedBox.shrink();
 
   Widget logo() {
     return Container(
@@ -46,9 +47,22 @@ mixin WidgetsMixin {
     );
   }
 
-  Widget loader(BuildContext context) {
-    return SpinKitDualRing(
-      color: context.colorScheme.primary,
+  Widget loader(BuildContext context, {double size = 45.0, EdgeInsets? padding}) {
+    return _paddingWrapper(
+      child: SpinKitDualRing(
+        size: size,
+        color: context.colorScheme.primary,
+      ),
+      padding: padding,
+    );
+  }
+
+  Widget _paddingWrapper({required Widget child, EdgeInsets? padding}) {
+    if (padding == null) return child;
+
+    return Padding(
+      padding: padding,
+      child: child,
     );
   }
 
@@ -75,7 +89,7 @@ mixin WidgetsMixin {
 
   void navigate(BuildContext context, Widget page) async {
     await context.navigator.push(MaterialPageRoute(
-        builder: (_) => page
+      builder: (_) => page
     ));
   }
 
