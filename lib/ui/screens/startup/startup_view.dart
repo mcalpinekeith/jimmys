@@ -99,7 +99,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
   }
 
   Widget _scheduledWorkout() {
-    if (vmState.isLoading) return loader(context, padding: const EdgeInsets.only(top: spacingMedium));
+    if (vmState.isLoading) return loader(context, padding: const EdgeInsets.only(top: spacingMedium + spacingLarge));
     if (vmState.todayWorkout == null) return nothing;
 
     return Expanded(
