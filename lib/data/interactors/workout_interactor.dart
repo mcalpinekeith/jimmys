@@ -8,10 +8,16 @@ class WorkoutInteractor implements WorkoutUseCases {
 
   @override
   DateTime? lastSave;
-  @override
-  Workout? todayWorkout;
 
   WorkoutInteractor({required this.store});
+
+  @override
+  Future<Workout?> getTodayWorkout() async {
+    final workouts = await get();
+
+    /// TODO: set the correct today workout
+    return workouts.firstOrNull;
+  }
 
   @override
   Future<List<Workout>> get({(String, String)? criteria}) async {
@@ -26,10 +32,10 @@ class WorkoutInteractor implements WorkoutUseCases {
     final workouts = await get();
 
     return workouts
-        .where((_) => _.category.isNotNullNorEmpty)
-        .map((_) => _.category as String)
-        .toSet()
-        .toList();
+      .where((_) => _.category.isNotNullNorEmpty)
+      .map((_) => _.category as String)
+      .toSet()
+      .toList();
   }
 
   @override
