@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
@@ -155,7 +154,6 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       vmContract.saveWorkoutExercise(workoutExercise);
     }
 
-    vmState.lastSave = DateTime.now();
     notify();
   }
 
@@ -290,87 +288,93 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     final workoutExercise = item ?? _workoutExerciseList[index];
 
     return Padding(
-      padding: const EdgeInsets.all(spacingMicro),
+      padding: const EdgeInsets.only(top: spacingSmall, bottom: spacingSmall),
       child: MyCard(
         animation: animation,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(spacingSmall),
-              child: Text(workoutExercise.exercise!.name,
-                style: titleMediumSecondary(context),
-                softWrap: true,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: spacingSmall, right: spacingSmall),
+                child: Text(workoutExercise.exercise!.name,
+                  style: titleMediumSecondary(context),
+                  softWrap: true,
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: spacingSmall, right: spacingMedium),
-                    child: ElevatedButton(
-                      child: Text('Sets: ${workoutExercise.sets.join(', ')}'),
-                      onPressed: () {
-                        for (var i = 0; i < _workoutExerciseList.items.length; i++) {
-                          _workoutExerciseList[i].isSetsExpanded = i == index ? !_workoutExerciseList[i].isSetsExpanded : false;
-                        }
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: spacingSmall, right: spacingMedium),
+                      child: ElevatedButton(
+                        child: Text('Sets: ${workoutExercise.sets.join(', ')}'),
+                        onPressed: () {
+                          for (var i = 0; i < _workoutExerciseList.items.length; i++) {
+                            _workoutExerciseList[i].isSetsExpanded = i == index ? !_workoutExerciseList[i].isSetsExpanded : false;
+                          }
 
-                        notify();
-                      },
+                          notify();
+                        },
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  iconSize: iconMedium,
-                  highlightColor: context.colorScheme.primary,
-                  color: workoutExercise.isDropSet ? context.colorScheme.primary : context.colorScheme.onPrimaryContainer,
-                  icon: const FaIcon(FontAwesomeIcons.rankingStar),
-                  onPressed: () {
-                    workoutExercise.isDropSet = !workoutExercise.isDropSet;
-                    notify();
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: spacingMedium, right: spacingSmall),
-                  child: IconButton(
+                  IconButton(
                     iconSize: iconMedium,
-                    color: context.colorScheme.error,
-                    icon: const FaIcon(FontAwesomeIcons.trash),
+                    highlightColor: context.colorScheme.primary,
+                    color: workoutExercise.isDropSet ? context.colorScheme.primary : context.colorScheme.onPrimaryContainer,
+                    icon: const FaIcon(FontAwesomeIcons.rankingStar),
                     onPressed: () {
-                      _workoutExerciseList.removeAt(_workoutExerciseList.indexOf(workoutExercise));
+                      workoutExercise.isDropSet = !workoutExercise.isDropSet;
+                      notify();
                     },
                   ),
-                ),
-              ],
-            ),
-            AnimatedContainer(
-              duration: duration,
-              height: workoutExercise.isSetsExpanded ? workoutExercise.sets.length * 50 : 0,
-              child: Column(
-                children: [
-                  const Divider(height: spacingSmall, thickness: 1, indent: spacingMedium, endIndent: spacingMedium),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: workoutExercise.sets.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        var set = workoutExercise.sets[index];
-
-                        return MyNumberStepper(
-                          initialValue: int.parse(set),
-                          step: 1,
-                          onChanged: (value) {
-                            workoutExercise.sets[index] = value.toString();
-                            notify();
-                          },
-                        );
+                  Padding(
+                    padding: const EdgeInsets.only(left: spacingMedium, right: spacingSmall),
+                    child: IconButton(
+                      iconSize: iconMedium,
+                      color: context.colorScheme.error,
+                      icon: const FaIcon(FontAwesomeIcons.trash),
+                      onPressed: () {
+                        _workoutExerciseList.removeAt(_workoutExerciseList.indexOf(workoutExercise));
+                        vmContract.removeWorkoutExercise(workoutExercise);
+                        notify();
                       },
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
+              AnimatedContainer(
+                duration: duration,
+                height: workoutExercise.isSetsExpanded ? workoutExercise.sets.length * 50 : 0,
+                child: Column(
+                  children: [
+                    const Divider(height: spacingSmall, thickness: 1, indent: spacingMedium, endIndent: spacingMedium),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: workoutExercise.sets.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var set = workoutExercise.sets[index];
+
+                          return MyNumberStepper(
+                            initialValue: int.parse(set),
+                            step: 1,
+                            onChanged: (value) {
+                              workoutExercise.sets[index] = value.toString();
+                              vmContract.saveWorkoutExercise(workoutExercise);
+                              notify();
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

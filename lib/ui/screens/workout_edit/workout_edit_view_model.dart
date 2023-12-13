@@ -77,6 +77,20 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
   }
 
   @override
+  void removeWorkoutExercise(WorkoutExercise workoutExercise) {
+    vmState.hasError = false;
+
+    try {
+      _workoutExerciseInteractor.remove(workoutExercise);
+      vmState.lastSave = DateTime.now();
+    }
+    catch (ex) {
+      vmState.hasError = true;
+      viewContract.showError(ex.toString());
+    }
+  }
+
+  @override
   void save() {
     vmState.hasError = false;
 

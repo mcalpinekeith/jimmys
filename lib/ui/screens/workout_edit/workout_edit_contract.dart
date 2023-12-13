@@ -20,6 +20,7 @@ abstract class WorkoutEditVContract extends BaseViewContract {
 
 abstract class WorkoutEditVMContract extends BaseViewModelContract<WorkoutEditViewModelState, WorkoutEditVContract> {
   void remove();
+  void removeWorkoutExercise(WorkoutExercise workoutExercise);
   void save();
   void saveWorkoutExercise(WorkoutExercise workoutExercise);
 }
