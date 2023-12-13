@@ -158,6 +158,10 @@ mixin WidgetsMixin {
       );
   }
 
+  void dismissKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
+  }
+
   Widget fab(BuildContext context, IconData icon, void Function() onPressed) {
     return FloatingActionButton(
       onPressed: onPressed,

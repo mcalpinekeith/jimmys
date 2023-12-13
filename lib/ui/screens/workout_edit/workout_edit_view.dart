@@ -1,4 +1,3 @@
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -40,15 +39,10 @@ class WorkoutEditView extends StatefulWidget {
 
 class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, WorkoutEditVMContract, WorkoutEditViewModelState> with WidgetsMixin, TickerProviderStateMixin implements WorkoutEditVContract {
 
-  /// Override to disable auto rebuilds on any vmState change.
-  ///@override
-  ///bool get autoSubscribeToVmStateChanges => false;
-
   late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
   late AutoScrollController _workoutIconController;
   late AnimatedListService<IconItem> _workoutIconList;
 
-  final _focusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   final _workoutExerciseKey = GlobalKey<AnimatedListState>();
   final _workoutIconKey = GlobalKey<AnimatedListState>();
@@ -60,7 +54,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   }
 
   @override
-  void onInitState() {
+  Future<void> onInitState() async {
     vmState.workout = widget.workout;
     vmState.isAdd = widget.isAdd;
 
@@ -68,6 +62,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       _initializeWorkoutIconList();
       _initializeWorkoutExerciseList();
     });
+
+    await reload();
   }
 
   void _initializeWorkoutIconList() {
@@ -106,7 +102,6 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
 
   @override
   Widget contentBuilder(BuildContext context) {
-    context.focusScope.requestFocus(_focusNode);
     _workoutIconController = scrollController(context);
 
     return Scaffold(
@@ -163,9 +158,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       vmContract.saveWorkoutExercise(workoutExercise);
     }
 
-    setState(() {
-      vmState.lastSave = DateTime.now();
-    });
+    vmState.lastSave = DateTime.now();
+    notify();
   }
 
   //region Carousel Pages
@@ -179,7 +173,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       }
     }
 
-    FocusManager.instance.primaryFocus?.unfocus();
+    dismissKeyboard();
   }
 
   Widget _carouselPageMain() {
@@ -219,7 +213,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       children: [
         const Gap(spacingMedium),
         Text('Select an icon for your new workout.',
-            style: context.textTheme.bodySmall
+          style: context.textTheme.bodySmall
         ),
         const Gap(spacingSmall),
         Expanded(
@@ -248,7 +242,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
           child: Padding(
             padding: const EdgeInsets.only(bottom: 32),
             child: Text('Select an exercise from the list',
-                style: context.textTheme.labelSmall
+              style: context.textTheme.labelSmall
             ),
           ),
         ),
@@ -268,9 +262,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       labelText: 'Exercise',
       options: vmState.exercises.map((_) => _.name).toList(),
       onSelected: (String selection) {
-        setState(() {
-          vmState.currentExercise = vmState.exercises.where((_) => _.name == selection).singleOrNull;
-        });
+        vmState.currentExercise = vmState.exercises.where((_) => _.name == selection).singleOrNull;
+        notify();
       },
     );
   }
@@ -281,18 +274,18 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     final index = _workoutExerciseList.length;
 
     _workoutExerciseList.insert(
-        index,
-        WorkoutExerciseItem(
-          id: const Uuid().v8(),
-          workoutId: vmState.workout.id,
-          exerciseId: vmState.currentExercise!.id,
-          isDropSet: false,
-          sequence: index + 1,
-          sets: ['15', '12', '8'],
-          exercise: vmState.currentExercise!,
-          supersetExerciseId: null,
-          supersetExercise: null,
-        )
+      index,
+      WorkoutExerciseItem(
+        id: const Uuid().v8(),
+        workoutId: vmState.workout.id,
+        exerciseId: vmState.currentExercise!.id,
+        isDropSet: false,
+        sequence: index + 1,
+        sets: ['15', '12', '8'],
+        exercise: vmState.currentExercise!,
+        supersetExerciseId: null,
+        supersetExercise: null,
+      )
     );
   }
 
@@ -322,11 +315,11 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
                     child: ElevatedButton(
                       child: Text('Sets: ${workoutExercise.sets.join(', ')}'),
                       onPressed: () {
-                        setState(() {
-                          for (var i = 0; i < _workoutExerciseList.items.length; i++) {
-                            _workoutExerciseList[i].isSetsExpanded = i == index ? !_workoutExerciseList[i].isSetsExpanded : false;
-                          }
-                        });
+                        for (var i = 0; i < _workoutExerciseList.items.length; i++) {
+                          _workoutExerciseList[i].isSetsExpanded = i == index ? !_workoutExerciseList[i].isSetsExpanded : false;
+                        }
+
+                        notify();
                       },
                     ),
                   ),
@@ -337,9 +330,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
                   color: workoutExercise.isDropSet ? context.colorScheme.primary : context.colorScheme.onPrimaryContainer,
                   icon: const FaIcon(FontAwesomeIcons.rankingStar),
                   onPressed: () {
-                    setState(() {
-                      workoutExercise.isDropSet = !workoutExercise.isDropSet;
-                    });
+                    workoutExercise.isDropSet = !workoutExercise.isDropSet;
+                    notify();
                   },
                 ),
                 Padding(
@@ -371,9 +363,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
                           initialValue: int.parse(set),
                           step: 1,
                           onChanged: (value) {
-                            setState(() {
-                              workoutExercise.sets[index] = value.toString();
-                            });
+                            workoutExercise.sets[index] = value.toString();
+                            notify();
                           },
                         );
                       },
@@ -391,51 +382,52 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   Widget _carouselPageSaveOptions() {
     /// For readability, leave onPressed function bodies in this function
     return ListView(
-        children: [
-          const Gap(spacingLarge),
-          MyButton(
-            size: Sizes.large,
-            label: const Text('Save & close'),
-            icon: const FaIcon(FontAwesomeIcons.floppyDisk),
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                _saveForm();
+      children: [
+        const Gap(spacingLarge),
+        MyButton(
+          size: Sizes.large,
+          label: const Text('Save & close'),
+          icon: const FaIcon(FontAwesomeIcons.floppyDisk),
+          onPressed: () async {
+            if (!_formKey.currentState!.validate()) return;
 
-                if (context.mounted) pop(context);
-              }
-            },
-          ),
-          MyButton(
-            size: Sizes.large,
-            label: const Text('Save & add new workout'),
-            icon: const FaIcon(FontAwesomeIcons.rotateLeft),
-            onPressed: () async {
-              if (_formKey.currentState!.validate()) {
-                _saveForm();
+            _saveForm();
 
-                if (context.mounted) {
-                  pop(context); /// Close form
-                  navigate(context, WorkoutEditView(
-                    workout: Workout.create(),
-                    isAdd: true,
-                  ));
-                }
-              }
-            },
-          ),
-          MyButton(
-              size: Sizes.large,
-              label: const Text('Save & edit exercises'),
-              icon: const FaIcon(FontAwesomeIcons.listOl),
-              onPressed: () async {}
-          ),
-          MyButton(
-              size: Sizes.large,
-              label: const Text('Save & schedule'),
-              icon: const FaIcon(FontAwesomeIcons.xmarksLines),
-              onPressed: () async {}
-          ),
-        ]
+            if (context.mounted) pop(context);
+          },
+        ),
+        MyButton(
+          size: Sizes.large,
+          label: const Text('Save & add new workout'),
+          icon: const FaIcon(FontAwesomeIcons.rotateLeft),
+          onPressed: () async {
+            if (!_formKey.currentState!.validate()) return;
+
+            _saveForm();
+
+            if (context.mounted) {
+              pop(context);
+
+              navigate(context, WorkoutEditView(
+                workout: Workout.create(),
+                isAdd: true,
+              ));
+            }
+          },
+        ),
+        MyButton(
+          size: Sizes.large,
+          label: const Text('Save & edit exercises'),
+          icon: const FaIcon(FontAwesomeIcons.listOl),
+          onPressed: () async {}
+        ),
+        MyButton(
+          size: Sizes.large,
+          label: const Text('Save & schedule'),
+          icon: const FaIcon(FontAwesomeIcons.xmarksLines),
+          onPressed: () async {}
+        ),
+      ]
     );
   }
   //endregion
@@ -456,7 +448,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
 
   @override
   void dispose() {
-    FocusManager.instance.primaryFocus?.unfocus();
+    dismissKeyboard();
     super.dispose();
   }
 }

@@ -44,6 +44,10 @@ abstract class BaseViewWidgetState<SW extends StatefulWidget, VMC extends BaseVi
     super.initState();
   }
 
+  void notify() {
+    vmContract.notifyListeners();
+  }
+
   Future<void> reload() async {
     await vmContract.reload();
   }
