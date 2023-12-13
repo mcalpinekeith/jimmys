@@ -8,5 +8,5 @@ abstract class SignInVContract extends BaseViewContract {
 }
 
 abstract class SignInVMContract extends BaseViewModelContract<SignInViewModelState, SignInVContract> {
-  Future signIn(String provider, Function onSignIn);
+  Future<void> signIn(String provider, Function onSignIn);
 }

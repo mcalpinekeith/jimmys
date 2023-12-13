@@ -87,14 +87,14 @@ mixin WidgetsMixin {
     );
   }
 
-  Future<Object?> navigate(BuildContext context, Widget page) async {
-    return await context.navigator.push(MaterialPageRoute(
+  Future<void> navigate(BuildContext context, Widget page) async {
+    await context.navigator.push(MaterialPageRoute(
       builder: (_) => page
     ));
   }
 
-  void pop(BuildContext context, {Object? result}) {
-    context.navigator.pop(result);
+  void pop(BuildContext context) {
+    context.navigator.pop();
   }
 
   AppBar appBar(BuildContext context, String text, {List<Widget>? actions}) {
@@ -146,9 +146,7 @@ mixin WidgetsMixin {
             iconSize: iconLarge,
             icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
             color: Colors.black54,
-            onPressed: () => pop(context,
-              result: false
-            ),
+            onPressed: () => pop(context),
           ),
           IconButton(
             iconSize: iconLarge,

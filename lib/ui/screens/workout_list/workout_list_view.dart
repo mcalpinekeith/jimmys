@@ -19,18 +19,15 @@ class WorkoutListView extends StatefulWidget {
 
 class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, WorkoutListVMContract, WorkoutListViewModelState> with WidgetsMixin implements WorkoutListVContract {
   @override
-  void onInitState() {}
+  Future<void> onInitState() async {
+    await reload();
+  }
 
   @override
   Widget contentBuilder(BuildContext context) {
     return Scaffold(
       appBar: appBar(context, 'Workouts'),
-      floatingActionButton: fab(context, FontAwesomeIcons.plus, () {
-        navigate(context, WorkoutEditView(
-          workout: Workout.create(),
-          isAdd: true,
-        ));
-      }),
+      floatingActionButton: fab(context, FontAwesomeIcons.plus, _workoutAddOnPressed),
       body: SafeArea(
         child: Stack(
           children: [
@@ -49,12 +46,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
                 iconField: 'icon',
                 middleTextField: 'name',
                 bottomTextField: 'description',
-                onSelected: (MyGroupedListItem item) {
-                  navigate(context, WorkoutEditView(
-                    workout: vmState.workoutList.firstWhere((_) => _.id == item.id),
-                    isAdd: false,
-                  ));
-                },
+                onSelected: (MyGroupedListItem item) => _workoutEditOnPressed(item),
               ),
           ],
         ),
@@ -79,16 +71,29 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
         MyButton(
           label: const Text('Add workout'),
           icon: const FaIcon(FontAwesomeIcons.circlePlus),
-          onPressed: () {
-            navigate(context, WorkoutEditView(
-              workout: Workout.create(),
-              isAdd: true,
-            ));
-          }
+          onPressed: _workoutAddOnPressed,
         ),
         const Gap(spacingMedium),
       ],
     );
+  }
+
+  void _workoutAddOnPressed() async {
+    await navigate(context, WorkoutEditView(
+      workout: Workout.create(),
+      isAdd: true,
+    ));
+
+    await reload();
+  }
+
+  void _workoutEditOnPressed(MyGroupedListItem item) async {
+    await navigate(context, WorkoutEditView(
+      workout: vmState.workoutList.firstWhere((_) => _.id == item.id),
+      isAdd: false,
+    ));
+
+    await reload();
   }
 
   @override

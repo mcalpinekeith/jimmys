@@ -44,6 +44,10 @@ abstract class BaseViewWidgetState<SW extends StatefulWidget, VMC extends BaseVi
     super.initState();
   }
 
+  Future<void> reload() async {
+    await vmContract.reload();
+  }
+
   /// Adding @mustCallSuper to ensure the presence of changeNotifierProvider.
   /// By default, this automatically includes a viewConsumerWidget for whole view updates
   /// when the viewModel state changes. For resource-intensive views, set

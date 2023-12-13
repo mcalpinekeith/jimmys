@@ -22,9 +22,6 @@ abstract class BaseViewModel<VMS extends BaseViewModelState, VC extends BaseView
   @override
   void onInitState() {}
 
-  @override
-  Future<void> reload() async {}
-
   /// Same for when the view is disposed.
   @override
   void onDisposeView() {}

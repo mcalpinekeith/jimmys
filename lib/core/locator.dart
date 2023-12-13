@@ -19,7 +19,7 @@ import 'package:jimmys/ui/screens/workout_list/workout_list_view_model.dart';
 import 'package:jimmys/utilities/icon_service.dart';
 import 'package:jimmys/utilities/test/mock_firestore.dart';
 
-Future initializeApp() async {
+Future<void> initializeApp() async {
   if (Global.isAppInitialized) return;
 
   /// Initialize modules

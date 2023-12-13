@@ -20,9 +20,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     _exerciseInteractor = exerciseInteractor;
 
   @override
-  Future<void> onInitState() async {
-    await reload();
-  }
+  void onInitState() {}
 
   @override
   Future<void> reload() async {
@@ -43,7 +41,7 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     }
   }
 
-  Future _loadWorkoutExercises() async {
+  Future<void> _loadWorkoutExercises() async {
     vmState.workoutExercises.clear();
 
     if (!vmState.isAdd) {
@@ -52,12 +50,12 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
     }
   }
 
-  Future _loadCategories() async {
+  Future<void> _loadCategories() async {
     vmState.categories.clear();
     vmState.categories.addAll(await _workoutInteractor.getCategories());
   }
 
-  Future _loadExercises() async {
+  Future<void> _loadExercises() async {
     vmState.exercises.clear();
     vmState.exercises.addAll(await _exerciseInteractor.get());
   }

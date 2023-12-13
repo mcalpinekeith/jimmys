@@ -10,9 +10,7 @@ class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVCont
   }) : _workoutInteractor = workoutInteractor;
 
   @override
-  Future<void> onInitState() async {
-    await reload();
-  }
+  void onInitState() {}
 
   @override
   Future<void> reload() async {
@@ -36,7 +34,7 @@ class StartupViewModel extends BaseViewModel<StartupViewModelState, StartupVCont
     vmState.todayWorkout = await _workoutInteractor.getTodayWorkout();
   }
 
-  Future _loadWorkouts() async {
+  Future<void> _loadWorkouts() async {
     vmState.workoutList.clear();
     vmState.workoutList.addAll(await _workoutInteractor.get());
   }

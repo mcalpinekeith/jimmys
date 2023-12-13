@@ -19,7 +19,9 @@ class StartupView extends StatefulWidget {
 
 class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVMContract, StartupViewModelState> with WidgetsMixin implements StartupVContract {
   @override
-  void onInitState() {}
+  Future<void> onInitState() async {
+    await reload();
+  }
 
   @override
   Widget contentBuilder(BuildContext context) {
@@ -31,7 +33,10 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
             MyButton(
               label: const Text('Add workouts'),
               icon: const FaIcon(FontAwesomeIcons.circlePlus),
-              onPressed: () => navigate(context, const WorkoutListView()),
+              onPressed: () async {
+                await navigate(context, const WorkoutListView());
+                await reload();
+              },
             ),
             MyButton(
               label: const Text('Add exercises'),
@@ -61,7 +66,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Hello,',
-                  style: context.textTheme.headlineLarge
+                style: context.textTheme.headlineLarge
               ),
               userAvatar(vmState.user),
             ],

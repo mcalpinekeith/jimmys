@@ -10,7 +10,10 @@ class SignInViewModel extends BaseViewModel<SignInViewModelState, SignInVContrac
   void onInitState() {}
 
   @override
-  Future signIn(String provider, Function onSignIn) async {
+  Future<void> reload() async {}
+
+  @override
+  Future<void> signIn(String provider, Function onSignIn) async {
     vmState.hasError = false;
     vmState.isSignedIn = false;
     startLoadingState();
