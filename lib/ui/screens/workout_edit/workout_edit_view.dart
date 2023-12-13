@@ -39,17 +39,17 @@ class WorkoutEditView extends StatefulWidget {
 
 class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, WorkoutEditVMContract, WorkoutEditViewModelState> with WidgetsMixin, TickerProviderStateMixin implements WorkoutEditVContract {
 
-  late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
-  late AutoScrollController _workoutIconController;
-  late AnimatedListService<IconItem> _workoutIconList;
-
   final _formKey = GlobalKey<FormState>();
   final _workoutExerciseKey = GlobalKey<AnimatedListState>();
   final _workoutIconKey = GlobalKey<AnimatedListState>();
 
+  late AnimatedListService<IconItem> _workoutIconList;
+  late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
+  late AutoScrollController _workoutIconController;
+
   _WorkoutEditViewWidgetState() {
+    _workoutIconList = AnimatedListService(_workoutIconKey, null, IconService.iconItems());
     _workoutExerciseList = AnimatedListService(_workoutExerciseKey, null, []);
-    _workoutIconList = AnimatedListService(_workoutIconKey, null, []);
     _workoutIconController = AutoScrollController();
   }
 
@@ -58,17 +58,14 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     vmState.workout = widget.workout;
     vmState.isAdd = widget.isAdd;
 
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      _initializeWorkoutIconList();
-      _initializeWorkoutExerciseList();
-    });
+    _setWorkoutIconListIsSelected();
 
     await reload();
+
+    _loadWorkoutExerciseList();
   }
 
-  void _initializeWorkoutIconList() {
-    _workoutIconList = IconService.getAnimatedIconList(_workoutIconKey);
-
+  void _setWorkoutIconListIsSelected() {
     if (vmState.isAdd) return;
 
     for (var i = 0; i < _workoutIconList.items.length; i++) {
@@ -78,7 +75,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     }
   }
 
-  void _initializeWorkoutExerciseList() {
+  void _loadWorkoutExerciseList() {
     _workoutExerciseList = vmState.workoutExercises.isEmpty
       ? AnimatedListService(_workoutExerciseKey, _removedWorkoutExerciseItemBuilder, [])
       : AnimatedListService(_workoutExerciseKey, _removedWorkoutExerciseItemBuilder,

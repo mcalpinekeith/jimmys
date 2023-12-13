@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:jimmys/utilities/animated_list_service.dart';
 
 class IconService {
   static List<IconData> defaultIcons = const [
@@ -361,19 +360,19 @@ class IconService {
 
   ];
 
-  static AnimatedListService<IconItem> getAnimatedIconList(GlobalKey<AnimatedListState> key) {
-    final items = <IconItem>[];
+  static List<IconItem> iconItems() {
+    final result = <IconItem>[];
 
     for (var i = 0; i < defaultIcons.length; i++) {
       final iconData = defaultIcons[i];
 
-      items.add(IconItem(
+      result.add(IconItem(
         unicode: getIconUnicode(iconData),
         icon: iconData,
       ));
     }
 
-    return AnimatedListService(key, null, items);
+    return result;
   }
 
   static String getIconUnicode(IconData iconData) {
