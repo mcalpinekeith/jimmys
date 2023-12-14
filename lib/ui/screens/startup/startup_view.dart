@@ -31,16 +31,16 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           children: [
             _userGreeting(),
             MyButton(
-              label: const Text('Add workouts'),
-              icon: const FaIcon(FontAwesomeIcons.circlePlus),
+              label: const Text('Workouts'),
+              icon: const FaIcon(FontAwesomeIcons.stopwatch),
               onPressed: () async {
                 await navigate(context, const WorkoutListView());
                 await reload();
               },
             ),
             MyButton(
-              label: const Text('Add exercises'),
-              icon: const FaIcon(FontAwesomeIcons.circlePlus),
+              label: const Text('Exercises'),
+              icon: const FaIcon(FontAwesomeIcons.personRunning),
               onPressed: () {
                 //Navigator.pop(context);
               },
@@ -95,7 +95,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
     if (vmState.workoutList.isEmpty) return nothing;
 
     return MyButton(
-      label: const Text('Schedule workouts'),
+      label: const Text('Schedule'),
       icon: const FaIcon(FontAwesomeIcons.calendar),
       onPressed: () {
         //Navigator.pop(context);

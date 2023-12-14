@@ -285,6 +285,8 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   }
 
   Widget _workoutExerciseItemBuilder(Animation<double> animation, {int index = 0, WorkoutExerciseItem? item}) {
+    /// TODO: drag & drop to change sequence
+    /// TODO: superset
     final workoutExercise = item ?? _workoutExerciseList[index];
 
     return Padding(
@@ -409,10 +411,12 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
             if (context.mounted) {
               pop(context);
 
-              navigate(context, WorkoutEditView(
+              await navigate(context, WorkoutEditView(
                 workout: Workout.create(),
                 isAdd: true,
               ));
+
+              /// TODO: reload workout list on previous screen
             }
           },
         ),
