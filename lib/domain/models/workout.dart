@@ -13,17 +13,22 @@ class Workout implements BaseModel {
 
   Workout({
     required this.id,
+    DateTime? createdAt,
     required this.name,
     this.category = '',
     this.icon = '',
     this.description = '',
     this.isShared = false,
-  });
+  }) :
+    createdAt = createdAt ?? DateTime.now();
 
   @override
   String id = '';
   @override
+  DateTime createdAt = DateTime.now();
+  @override
   String get path => 'workouts';
+
   String name = '';
   String? category;
   String? icon;
@@ -32,16 +37,18 @@ class Workout implements BaseModel {
 
   @override
   Workout fromMap(Map<String, dynamic> map) => Workout(
-    id: map.value('id', ''),
-    name: map.value('name', ''),
-    category: map.value('category', ''),
-    icon: map.value('icon', ''),
-    description: map.value('description', ''),
+    id: map.value('id'),
+    createdAt: map.value('created_at'),
+    name: map.value('name'),
+    category: map.value('category'),
+    icon: map.value('icon'),
+    description: map.value('description'),
   );
 
   @override
   Map<String, dynamic> toMap() => {
     'id': id,
+    'created_at': createdAt,
     'name': name,
     'category': category,
     'icon': icon,
