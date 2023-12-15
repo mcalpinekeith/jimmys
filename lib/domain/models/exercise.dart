@@ -1,44 +1,65 @@
 import 'package:jimmys/core/extensions/iterable.dart';
 import 'package:jimmys/core/extensions/map.dart';
+import 'package:jimmys/domain/enums/exercise_categories.dart';
 import 'package:jimmys/domain/models/base_model.dart';
+import 'package:jimmys/domain/models/range.dart';
+import 'package:uuid/uuid.dart';
 
 class Exercise implements BaseModel {
   Exercise.empty();
 
+  Exercise.create() {
+    id = const Uuid().v8();
+  }
+
   Exercise({
     required this.id,
+    DateTime? createdAt,
     required this.name,
-    this.category = '',
-    List<String>? exerciseTypes,
-    this.stepIncrease = 1.0,
+    required this.category,
+    List<String>? muscleGroups,
+    this.weight,
     this.isShared = false,
-  }) : exerciseTypes = exerciseTypes ?? [];
+  }) :
+    createdAt = createdAt ?? DateTime.now(),
+    muscleGroups = muscleGroups ?? [];
+
+  static const categoryDefaultValue = ExerciseCategories.strength;
+  static const weightIncrement = 1.0;
 
   @override
   String id = '';
   @override
+  DateTime createdAt = DateTime.now();
+  @override
   String get path => 'exercises';
+
   String name = '';
-  String? category;
-  List<String> exerciseTypes = [];
-  double stepIncrease = 1.0;
+  ExerciseCategories category = categoryDefaultValue;
+  List<String> muscleGroups = [];
   bool isShared = false;
+  Range? weight;
 
   @override
-  Exercise fromMap(Map<String, dynamic> map) => Exercise(
-    id: map.value('id', ''),
-    name: map.value('name', ''),
-    category: map.value('category', ''),
-    exerciseTypes: (map.value('exercise_types', <String>[]) as Iterable).toStringList(),
-    stepIncrease: map.value('step_increase', 0.0),
-  );
+  Exercise fromMap(Map<String, dynamic> map) {
+    final weight = map.valueOrNull('weight');
+
+    return Exercise(
+      id: map.value('id'),
+      createdAt: map.value('created_at'),
+      name: map.value('name'),
+      category: ExerciseCategories.fromInt(map.value('category', defaultValue: categoryDefaultValue)),
+      muscleGroups: (map.value('muscle_groups', defaultValue: <String>[]) as Iterable).toStringList(),
+      weight: weight == null ? null : Range.fromMap(weight),
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {
     'id': id,
+    'created_at': createdAt,
     'name': name,
-    'category': category,
-    'exercise_types': exerciseTypes,
-    'step_increase': stepIncrease,
+    'category': category.i,
+    'muscle_groups': muscleGroups.isEmpty ? null : muscleGroups,
   };
 }
