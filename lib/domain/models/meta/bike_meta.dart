@@ -1,8 +1,9 @@
 import 'package:jimmys/core/extensions/map.dart';
+import 'package:jimmys/domain/enums/exercise_categories.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/domain/models/range.dart';
 
-class BikeMeta extends BaseMapModel {
+class BikeMeta extends BaseMetaModel {
   BikeMeta({
     this.time,
     this.distance,
@@ -65,4 +66,7 @@ class BikeMeta extends BaseMapModel {
 
     return result;
   }
+
+  @override
+  ExerciseCategories get exerciseCategory => ExerciseCategories.bike;
 }

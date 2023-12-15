@@ -61,5 +61,6 @@ class Exercise implements BaseModel {
     'name': name,
     'category': category.i,
     'muscle_groups': muscleGroups.isEmpty ? null : muscleGroups,
+    'weight': weight?.toMap(),
   };
 }

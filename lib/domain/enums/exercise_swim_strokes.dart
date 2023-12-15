@@ -1,3 +1,4 @@
+/*
 enum ExerciseSwimStrokes {
   any(10, 'Any stroke'),
   back(15, 'Backstroke'),
@@ -21,3 +22,4 @@ enum ExerciseSwimStrokes {
 
   factory ExerciseSwimStrokes.fromInt(int i) => values.firstWhere((_) => _.i == i, orElse: () => any);
 }
+*/

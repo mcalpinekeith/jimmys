@@ -4,7 +4,7 @@ import 'package:jimmys/domain/models/exercise.dart';
 import 'package:jimmys/domain/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
-class WorkoutExercise<T extends BaseMapModel> implements BaseModel {
+class WorkoutExercise<T extends BaseMetaModel> implements BaseModel {
   WorkoutExercise.empty();
 
   WorkoutExercise.create() {
@@ -49,7 +49,7 @@ class WorkoutExercise<T extends BaseMapModel> implements BaseModel {
     workoutId: map.value('workout_id'),
     exerciseId: map.value('exercise_id'),
     sequence: map.value('sequence', defaultValue: sequenceDefaultValue),
-    meta: (T as BaseMapModel).fromMap(map.value('meta')),
+    meta: (T as BaseMetaModel).fromMap(map.value('meta')),
   );
 
   @override
@@ -59,6 +59,6 @@ class WorkoutExercise<T extends BaseMapModel> implements BaseModel {
     'workout_id': workoutId,
     'exercise_id': exerciseId,
     'sequence': sequence,
-    'meta': (T as BaseMapModel).toMap(),
+    'meta': (T as BaseMetaModel).toMap(),
   };
 }

@@ -1,9 +1,10 @@
 import 'package:jimmys/core/extensions/map.dart';
+import 'package:jimmys/domain/enums/exercise_categories.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/domain/models/exercise.dart';
 import 'package:jimmys/domain/models/range.dart';
 
-class StrengthMeta extends BaseMapModel {
+class StrengthMeta extends BaseMetaModel {
   StrengthMeta({
     required this.sets,
     this.isDropSet = false,
@@ -33,4 +34,7 @@ class StrengthMeta extends BaseMapModel {
     'is_drop_set': isDropSet,
     'superset_exercise_id': supersetExerciseId,
   };
+
+  @override
+  ExerciseCategories get exerciseCategory => ExerciseCategories.strength;
 }
