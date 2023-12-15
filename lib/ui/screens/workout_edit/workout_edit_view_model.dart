@@ -91,20 +91,6 @@ class WorkoutEditViewModel extends BaseViewModel<WorkoutEditViewModelState, Work
   }
 
   @override
-  void save() {
-    vmState.hasError = false;
-
-    try {
-      _workoutInteractor.save(vmState.workout);
-      vmState.lastSave = DateTime.now();
-    }
-    catch (ex) {
-      vmState.hasError = true;
-      viewContract.showError(ex.toString());
-    }
-  }
-
-  @override
   void saveWorkoutExercise(WorkoutExercise workoutExercise) {
     vmState.hasError = false;
 
