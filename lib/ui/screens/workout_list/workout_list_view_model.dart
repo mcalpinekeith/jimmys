@@ -31,7 +31,11 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListViewModelState, Work
 
   Future<void> _loadWorkouts() async {
     vmState.workoutList.clear();
-    vmState.workoutList.addAll(await _workoutInteractor.get());
+
+    final workouts = await _workoutInteractor.get();
+    for (var workout in workouts) {
+      vmState.workoutList.add(WorkoutItem(workout));
+    }
   }
 
   @override

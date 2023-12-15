@@ -110,6 +110,15 @@ mixin WidgetsMixin {
     );
   }
 
+  SearchBar searchBar(BuildContext context, TextEditingController controller) {
+    return SearchBar(
+      hintText: 'Search',
+      controller: controller,
+      leading: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+      trailing: const [FaIcon(FontAwesomeIcons.microphone)],
+    );
+  }
+
   Widget addAction(BuildContext context, void Function()? onPressed) {
     return IconButton(
       iconSize: iconMedium,
