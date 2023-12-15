@@ -209,11 +209,11 @@ class MyGroupedListItem extends ISuspensionBean {
     String? bottomTextField,
   ) : this(
     id: map[idField]! as String,
-    topText: map.value(topTextField, null),
-    icon: map.value(iconField, null),
+    topText: map.valueOrNull(topTextField),
+    icon: map.valueOrNull(iconField),
     middleText: map[middleTextField]! as String,
-    bottomText: map.value(bottomTextField, null),
-    tag: (map.value(middleTextField, '#'))[0].toUpperCase(),
+    bottomText: map.valueOrNull(bottomTextField),
+    tag: (map.value(middleTextField, defaultValue: '#'))[0].toUpperCase(),
   );
 
   Map<String, Object?> toMap() => {};
