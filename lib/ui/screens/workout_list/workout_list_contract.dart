@@ -17,5 +17,5 @@ class WorkoutItem {
   WorkoutItem(this.data);
 
   Workout data;
-  bool isFiltered = false;
+  bool isVisible = true;
 }

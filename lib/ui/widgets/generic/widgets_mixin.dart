@@ -103,9 +103,11 @@ mixin WidgetsMixin {
 
   SearchBar searchBar(BuildContext context, TextEditingController controller) => SearchBar(
     hintText: 'Search',
+    constraints: const BoxConstraints(maxHeight: searchBarMaxHeight),
+    padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(3)),
     controller: controller,
     leading: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-    trailing: const [FaIcon(FontAwesomeIcons.microphone)],
+    trailing: const [FaIcon(FontAwesomeIcons.filter)],
   );
 
   Widget addAction(BuildContext context, void Function()? onPressed) => IconButton(

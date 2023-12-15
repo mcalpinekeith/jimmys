@@ -11,6 +11,8 @@ const iconLarge = 30.0;
 const radiusSmall = 6.0;
 const radiusMedium = 10.0;
 
+const double searchBarMaxHeight = 60;
+
 /// default is 300
 const Duration duration = Duration(milliseconds: 150);
 
