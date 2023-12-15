@@ -13,14 +13,12 @@ mixin WidgetsMixin {
   bool use24HourFormat(BuildContext context) => context.mediaQuery.alwaysUse24HourFormat;
   Widget get nothing => const SizedBox.shrink();
 
-  Widget logo() {
-    return Container(
-      padding: const EdgeInsets.all(spacingMedium),
-      width: 300,
-      height: 300,
-      child: Image.asset('assets/images/logo-color-no-background-high-res.png'),
-    );
-  }
+  Widget logo() => Container(
+    padding: const EdgeInsets.all(spacingMedium),
+    width: 300,
+    height: 300,
+    child: Image.asset('assets/images/logo-color-no-background-high-res.png'),
+  );
 
   Widget userAvatar(User? user) {
     Widget avatar = Image.memory(kTransparentImage);
@@ -47,15 +45,13 @@ mixin WidgetsMixin {
     );
   }
 
-  Widget loader(BuildContext context, {double size = 45.0, EdgeInsets? padding}) {
-    return _paddingWrapper(
-      child: SpinKitDualRing(
-        size: size,
-        color: context.colorScheme.primary,
-      ),
-      padding: padding,
-    );
-  }
+  Widget loader(BuildContext context, {double size = 45.0, EdgeInsets? padding}) => _paddingWrapper(
+    child: SpinKitDualRing(
+      size: size,
+      color: context.colorScheme.primary,
+    ),
+    padding: padding,
+  );
 
   Widget _paddingWrapper({required Widget child, EdgeInsets? padding}) {
     if (padding == null) return child;
@@ -66,26 +62,20 @@ mixin WidgetsMixin {
     );
   }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(BuildContext context, String message) {
-    return context.scaffoldMessenger.showSnackBar(SnackBar(
-      content: Text(message),
-    ));
-  }
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(BuildContext context, String message) => context.scaffoldMessenger.showSnackBar(SnackBar(
+    content: Text(message),
+  ));
 
-  AutoScrollController scrollController(BuildContext context) {
-    final padding = context.mediaQuery.padding;
-    
-    return AutoScrollController(
-      viewportBoundaryGetter: () => Rect.fromLTRB(
-        padding.left,
-        padding.top,
-        padding.right,
-        padding.bottom
-      ),
-      axis: Axis.vertical,
-      suggestedRowHeight: iconMedium + (spacingMicro * 2),
-    );
-  }
+  AutoScrollController scrollController(BuildContext context) => AutoScrollController(
+    viewportBoundaryGetter: () => Rect.fromLTRB(
+      context.mediaQuery.padding.left,
+      context.mediaQuery.padding.top,
+      context.mediaQuery.padding.right,
+      context.mediaQuery.padding.bottom
+    ),
+    axis: Axis.vertical,
+    suggestedRowHeight: iconMedium + (spacingMicro * 2),
+  );
 
   Future<void> navigate(BuildContext context, Widget page) async {
     await context.navigator.push(MaterialPageRoute(
@@ -93,97 +83,86 @@ mixin WidgetsMixin {
     ));
   }
 
-  void pop(BuildContext context) {
-    context.navigator.pop();
-  }
+  void pop(BuildContext context) => context.navigator.pop();
 
-  AppBar appBar(BuildContext context, String text, {List<Widget>? actions}) {
-    return AppBar(
-      centerTitle: true,
-      title: Text(text,
-        style: context.textTheme.headlineLarge!.copyWith(
-          color: context.colorScheme.onPrimary,
-        ),
-      ),
-      backgroundColor: context.colorScheme.primary,
-      actions: actions,
-    );
-  }
-
-  SearchBar searchBar(BuildContext context, TextEditingController controller) {
-    return SearchBar(
-      hintText: 'Search',
-      controller: controller,
-      leading: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-      trailing: const [FaIcon(FontAwesomeIcons.microphone)],
-    );
-  }
-
-  Widget addAction(BuildContext context, void Function()? onPressed) {
-    return IconButton(
-      iconSize: iconMedium,
-      icon: const FaIcon(FontAwesomeIcons.plus),
-      color: context.colorScheme.onPrimary,
-      onPressed: onPressed,
-    );
-  }
-
-  Widget deleteAction(BuildContext context, String dataTypeText, void Function()? onPressed) {
-    return IconButton(
-      iconSize: iconMedium,
-      icon: const FaIcon(FontAwesomeIcons.trash),
-      color: Colors.red,
-      onPressed: () => showDialog<void>(
-        context: context,
-        builder: (BuildContext context) => _deleteActionDialog(context, dataTypeText, onPressed),
-      ),
-    );
-  }
-
-  AlertDialog _deleteActionDialog(BuildContext context, String dataTypeText, void Function()? onPressed) {
-    return AlertDialog(
-        actionsAlignment: MainAxisAlignment.center,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radiusMedium))),
-        title: Text('Confirm delete',
-          style: titleMediumSecondary(context)
-        ),
-        content: Text('Are you sure you want to delete the $dataTypeText?',
-          style: labelMediumSecondary(context)
-        ),
-        actions: [
-          IconButton(
-            iconSize: iconLarge,
-            icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
-            color: Colors.black54,
-            onPressed: () => pop(context),
-          ),
-          IconButton(
-            iconSize: iconLarge,
-            icon: const FaIcon(FontAwesomeIcons.solidCircleCheck),
-            color: context.colorScheme.error,
-            onPressed: onPressed,
-          ),
-        ],
-      );
-  }
-
-  void dismissKeyboard() {
-    FocusManager.instance.primaryFocus?.unfocus();
-  }
-
-  Widget fab(BuildContext context, IconData icon, void Function() onPressed) {
-    return FloatingActionButton(
-      onPressed: onPressed,
-      shape: const CircleBorder(),
-      elevation: context.popupMenuTheme.elevation,
-      backgroundColor: context.colorScheme.primary,
-      child: FaIcon(
-        icon,
+  AppBar appBar(BuildContext context, String text, {List<Widget>? actions}) => AppBar(
+    centerTitle: true,
+    title: Text(text,
+      style: context.textTheme.headlineLarge!.copyWith(
         color: context.colorScheme.onPrimary,
-        size: iconMedium,
       ),
+    ),
+    backgroundColor: context.colorScheme.primary,
+    actions: actions,
+  );
+
+  AppBar emptyAppBar() => AppBar(
+    toolbarHeight: iconLarge,
+    backgroundColor: Colors.transparent,
+  );
+
+  SearchBar searchBar(BuildContext context, TextEditingController controller) => SearchBar(
+    hintText: 'Search',
+    controller: controller,
+    leading: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+    trailing: const [FaIcon(FontAwesomeIcons.microphone)],
+  );
+
+  Widget addAction(BuildContext context, void Function()? onPressed) => IconButton(
+    iconSize: iconMedium,
+    icon: const FaIcon(FontAwesomeIcons.plus),
+    color: context.colorScheme.onPrimary,
+    onPressed: onPressed,
+  );
+
+  Widget deleteAction(BuildContext context, String dataTypeText, void Function()? onPressed) => IconButton(
+    iconSize: iconMedium,
+    icon: const FaIcon(FontAwesomeIcons.trash),
+    color: Colors.red,
+    onPressed: () => showDialog<void>(
+      context: context,
+      builder: (BuildContext context) => deleteActionDialog(context, dataTypeText, onPressed),
+    ),
+  );
+
+  AlertDialog deleteActionDialog(BuildContext context, String dataTypeText, void Function()? onPressed) => AlertDialog(
+      actionsAlignment: MainAxisAlignment.center,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(radiusMedium))),
+      title: Text('Confirm delete',
+        style: titleMediumSecondary(context)
+      ),
+      content: Text('Are you sure you want to delete the $dataTypeText?',
+        style: labelMediumSecondary(context)
+      ),
+      actions: [
+        IconButton(
+          iconSize: iconLarge,
+          icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
+          color: Colors.black54,
+          onPressed: () => pop(context),
+        ),
+        IconButton(
+          iconSize: iconLarge,
+          icon: const FaIcon(FontAwesomeIcons.solidCircleCheck),
+          color: context.colorScheme.error,
+          onPressed: onPressed,
+        ),
+      ],
     );
-  }
+
+  void dismissKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+
+  Widget fab(BuildContext context, IconData icon, void Function() onPressed) => FloatingActionButton(
+    onPressed: onPressed,
+    shape: const CircleBorder(),
+    elevation: context.popupMenuTheme.elevation,
+    backgroundColor: context.colorScheme.primary,
+    child: FaIcon(
+      icon,
+      color: context.colorScheme.onPrimary,
+      size: iconMedium,
+    ),
+  );
 
   Widget icon(String? icon) {
     if (icon.isNullOrEmpty) return const SizedBox.shrink();
@@ -194,29 +173,21 @@ mixin WidgetsMixin {
     );
   }
 
-  TextStyle headlineLargePrimary(BuildContext context) {
-    return context.textTheme.headlineLarge!.copyWith(
-      color: context.colorScheme.primary,
-    );
-  }
+  TextStyle headlineLargePrimary(BuildContext context) => context.textTheme.headlineLarge!.copyWith(
+    color: context.colorScheme.primary,
+  );
 
-  TextStyle titleMediumSecondary(BuildContext context) {
-    return context.textTheme.titleMedium!.copyWith(
-      color: context.colorScheme.secondary,
-    );
-  }
+  TextStyle titleMediumSecondary(BuildContext context) => context.textTheme.titleMedium!.copyWith(
+    color: context.colorScheme.secondary,
+  );
 
-  TextStyle labelMediumSecondary(BuildContext context, {double fontSize = 20}) {
-    return context.textTheme.labelMedium!.copyWith(
-      color: context.colorScheme.secondary,
-      fontSize: fontSize,
-    );
-  }
+  TextStyle labelMediumSecondary(BuildContext context, {double fontSize = 20}) => context.textTheme.labelMedium!.copyWith(
+    color: context.colorScheme.secondary,
+    fontSize: fontSize,
+  );
 
-  TextStyle labelMediumOnPrimary(BuildContext context, {double fontSize = 20}) {
-    return context.textTheme.labelMedium!.copyWith(
-      color: context.colorScheme.onPrimary,
-      fontSize: fontSize,
-    );
-  }
+  TextStyle labelMediumOnPrimary(BuildContext context, {double fontSize = 20}) => context.textTheme.labelMedium!.copyWith(
+    color: context.colorScheme.onPrimary,
+    fontSize: fontSize,
+  );
 }

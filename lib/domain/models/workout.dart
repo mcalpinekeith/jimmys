@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:english_words/english_words.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
@@ -13,19 +14,19 @@ class Workout implements BaseModel {
 
   Workout({
     required this.id,
-    DateTime? createdAt,
+    Timestamp? createdAt,
     required this.name,
     this.category = '',
     this.icon = '',
     this.description = '',
     this.isShared = false,
   }) :
-    createdAt = createdAt ?? DateTime.now();
+    createdAt = createdAt ?? Timestamp.now();
 
   @override
   String id = '';
   @override
-  DateTime createdAt = DateTime.now();
+  Timestamp createdAt = Timestamp.now();
   @override
   String get path => 'workouts';
 
@@ -36,14 +37,16 @@ class Workout implements BaseModel {
   bool isShared = false;
 
   @override
-  Workout fromMap(Map<String, dynamic> map) => Workout(
-    id: map.value('id'),
-    createdAt: map.value('created_at'),
-    name: map.value('name'),
-    category: map.value('category'),
-    icon: map.value('icon'),
-    description: map.value('description'),
-  );
+  Workout fromMap(Map<String, dynamic> map) {
+    return Workout(
+      id: map.value('id'),
+      createdAt: map.value('created_at'),
+      name: map.value('name'),
+      category: map.value('category'),
+      icon: map.value('icon'),
+      description: map.value('description'),
+    );
+  }
 
   @override
   Map<String, dynamic> toMap() => {

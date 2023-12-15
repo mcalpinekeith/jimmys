@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/domain/models/exercise.dart';
@@ -13,7 +14,7 @@ class WorkoutExercise<T extends BaseMetaModel> implements BaseModel {
 
   WorkoutExercise({
     required this.id,
-    DateTime? createdAt,
+    Timestamp? createdAt,
     required this.workoutId,
     required this.exerciseId,
     required this.sequence,
@@ -22,14 +23,14 @@ class WorkoutExercise<T extends BaseMetaModel> implements BaseModel {
     this.exercise,
     this.isShared = false,
   }) :
-    createdAt = createdAt ?? DateTime.now();
+    createdAt = createdAt ?? Timestamp.now();
 
   static const sequenceDefaultValue = 1;
 
   @override
   String id = '';
   @override
-  DateTime createdAt = DateTime.now();
+  Timestamp createdAt = Timestamp.now();
   @override
   String get path => 'workout_exercises';
 

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jimmys/core/extensions/iterable.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/domain/enums/exercise_categories.dart';
@@ -14,14 +15,14 @@ class Exercise implements BaseModel {
 
   Exercise({
     required this.id,
-    DateTime? createdAt,
+    Timestamp? createdAt,
     required this.name,
     required this.category,
     List<String>? muscleGroups,
     this.weight,
     this.isShared = false,
   }) :
-    createdAt = createdAt ?? DateTime.now(),
+    createdAt = createdAt ?? Timestamp.now(),
     muscleGroups = muscleGroups ?? [];
 
   static const categoryDefaultValue = ExerciseCategories.strength;
@@ -30,7 +31,7 @@ class Exercise implements BaseModel {
   @override
   String id = '';
   @override
-  DateTime createdAt = DateTime.now();
+  Timestamp createdAt = Timestamp.now();
   @override
   String get path => 'exercises';
 

@@ -30,6 +30,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
         child: Column(
           children: [
             _userGreeting(),
+            const Gap(spacingMedium),
             MyButton(
               label: const Text('Workouts'),
               icon: const FaIcon(FontAwesomeIcons.stopwatch),

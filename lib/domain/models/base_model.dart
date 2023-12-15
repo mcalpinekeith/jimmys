@@ -1,8 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:jimmys/domain/enums/exercise_categories.dart';
 
 abstract class BaseModel extends BaseMapModel {
   late String id;
-  late DateTime createdAt;
+  late Timestamp createdAt;
   String get path;
 }
 
