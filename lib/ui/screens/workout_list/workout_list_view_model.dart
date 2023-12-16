@@ -1,3 +1,4 @@
+import 'package:jimmys/domain/enums/exercise_categories.dart';
 import 'package:jimmys/domain/models/workout.dart';
 import 'package:jimmys/domain/use_cases/workout_use_cases.dart';
 import 'package:jimmys/ui/screens/_base/base_view_model.dart';
@@ -20,6 +21,7 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListViewModelState, Work
 
     try {
       await _loadWorkouts();
+      _loadExerciseCategories();
     }
     catch (ex) {
       vmState.hasError = true;
@@ -36,6 +38,14 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListViewModelState, Work
     final workouts = await _workoutInteractor.get();
     for (var workout in workouts) {
       vmState.workoutList.add(WorkoutItem(workout));
+    }
+  }
+
+  void _loadExerciseCategories() {
+    vmState.exerciseCategoryList.clear();
+
+    for (var exerciseCategory in ExerciseCategories.values) {
+      vmState.exerciseCategoryList.add(ExerciseCategoryItem(exerciseCategory));
     }
   }
 

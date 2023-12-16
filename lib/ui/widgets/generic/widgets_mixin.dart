@@ -101,13 +101,13 @@ mixin WidgetsMixin {
     backgroundColor: Colors.transparent,
   );
 
-  SearchBar searchBar(BuildContext context, TextEditingController controller) => SearchBar(
+  SearchBar searchBar(BuildContext context, TextEditingController controller, Widget trailing) => SearchBar(
     hintText: 'Search',
     constraints: const BoxConstraints(maxHeight: searchBarMaxHeight),
     padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.all(3)),
     controller: controller,
     leading: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-    trailing: const [FaIcon(FontAwesomeIcons.filter)],
+    trailing: [trailing],
   );
 
   Widget addAction(BuildContext context, void Function()? onPressed) => IconButton(
