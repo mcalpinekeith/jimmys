@@ -50,7 +50,7 @@ class Exercise implements BaseModel {
       createdAt: map.value('created_at'),
       name: map.value('name'),
       category: ExerciseCategories.fromInt(map.value('category', defaultValue: categoryDefaultValue)),
-      muscleGroups: (map.value('muscle_groups', defaultValue: <String>[]) as Iterable).toStringList(),
+      muscleGroups: (map.value('muscle_groups', defaultValue: <String>[]) as Iterable).toDistinct(),
       weight: weight == null ? null : Range.fromMap(weight),
     );
   }

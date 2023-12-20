@@ -43,12 +43,12 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   final _workoutIconKey = GlobalKey<AnimatedListState>();
 
   late AnimatedListService<IconItem> _workoutIconList;
-  late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
+  //late AnimatedListService<WorkoutExerciseItem> _workoutExerciseList;
   late AutoScrollController _workoutIconController;
 
   _WorkoutEditViewWidgetState() {
     _workoutIconList = AnimatedListService(_workoutIconKey, null, IconService.iconItems());
-    _workoutExerciseList = AnimatedListService(_workoutExerciseKey, null, []);
+    //_workoutExerciseList = AnimatedListService(_workoutExerciseKey, null, []);
     _workoutIconController = AutoScrollController();
   }
 
@@ -61,7 +61,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
 
     await reload();
 
-    _loadWorkoutExerciseList();
+    //_loadWorkoutExerciseList();
   }
 
   void _setWorkoutIconListIsSelected() {
@@ -74,7 +74,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     }
   }
 
-  void _loadWorkoutExerciseList() {
+/*  void _loadWorkoutExerciseList() {
     _workoutExerciseList = vmState.workoutExercises.isEmpty
       ? AnimatedListService(_workoutExerciseKey, _removedWorkoutExerciseItemBuilder, [])
       : AnimatedListService(_workoutExerciseKey, _removedWorkoutExerciseItemBuilder,
@@ -95,14 +95,18 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   }
 
   Widget _removedWorkoutExerciseItemBuilder(BuildContext context, Animation<double> animation, WorkoutExerciseItem item) => _workoutExerciseItemBuilder(animation, item: item);
+*/
 
   @override
   Widget contentBuilder(BuildContext context) {
     _workoutIconController = scrollController(context);
 
     return Scaffold(
-      appBar: appBar(context, (vmState.isAdd ? 'Add workout' : 'Edit workout'), actions: _appBarActions()),
-      floatingActionButton: fab(context, FontAwesomeIcons.solidFloppyDisk, _saveForm),
+      appBar: AppBar(
+        actions: _appBarActions(),
+        toolbarHeight: iconLarge,
+        backgroundColor: Colors.transparent,
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -115,14 +119,10 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
                   children: [
                     _carouselPageMain(),
                     _carouselPageIcon(),
-                    _carouselPageExercises(),
-                    _carouselPageSaveOptions(),
+                    //_carouselPageExercises(),
                   ],
                 ),
               ),
-              const Gap(spacingSmall),
-              _lastSave(),
-              const Gap(spacingSmall),
             ],
           ),
         ),
@@ -134,28 +134,31 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     if (vmState.isAdd) return null;
 
     return [
-      deleteAction(context, 'workout', () {
-        vmContract.remove();
+      Padding(
+        padding: const EdgeInsets.only(right: spacingSmall),
+        child: deleteAction(context, 'workout', () {
+          vmContract.remove();
 
-        if (!vmState.hasError && context.mounted) {
-          pop(context); /// Close dialog
-          pop(context); /// Close form
-        }
-      })
+          if (!vmState.hasError && context.mounted) {
+            pop(context); /// Close dialog
+            pop(context); /// Close form
+          }
+        }),
+      )
     ];
   }
 
-  void _saveForm() {
+/*  void _saveForm() {
     if (!_formKey.currentState!.validate()) return;
 
     vmContract.save();
 
-    for (final workoutExercise in _workoutExerciseList.items) {
+    *//*for (final workoutExercise in _workoutExerciseList.items) {
       vmContract.saveWorkoutExercise(workoutExercise);
-    }
+    }*//*
 
     notify();
-  }
+  }*/
 
   //region Carousel Pages
   void _carouselOnSelected(int selectedIndex) {
@@ -223,6 +226,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
     );
   }
 
+/*
   Widget _carouselPageExercises() {
     return Column(
       children: [
@@ -381,70 +385,17 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       ),
     );
   }
-
-  Widget _carouselPageSaveOptions() {
-    /// For readability, leave onPressed function bodies in this function
-    return ListView(
-      children: [
-        const Gap(spacingLarge),
-        MyButton(
-          size: Sizes.large,
-          label: const Text('Save & close'),
-          icon: const FaIcon(FontAwesomeIcons.floppyDisk),
-          onPressed: () async {
-            if (!_formKey.currentState!.validate()) return;
-
-            _saveForm();
-
-            if (context.mounted) pop(context);
-          },
-        ),
-        MyButton(
-          size: Sizes.large,
-          label: const Text('Save & add new workout'),
-          icon: const FaIcon(FontAwesomeIcons.rotateLeft),
-          onPressed: () async {
-            if (!_formKey.currentState!.validate()) return;
-
-            _saveForm();
-
-            if (context.mounted) {
-              pop(context);
-
-              await navigate(context, WorkoutEditView(
-                workout: Workout.create(),
-                isAdd: true,
-              ));
-
-              /// TODO: reload workout list on previous screen
-            }
-          },
-        ),
-        MyButton(
-          size: Sizes.large,
-          label: const Text('Save & edit exercises'),
-          icon: const FaIcon(FontAwesomeIcons.listOl),
-          onPressed: () async {}
-        ),
-        MyButton(
-          size: Sizes.large,
-          label: const Text('Save & schedule'),
-          icon: const FaIcon(FontAwesomeIcons.xmarksLines),
-          onPressed: () async {}
-        ),
-      ]
-    );
-  }
+*/
   //endregion
 
-  Widget _lastSave() {
+/*  Widget _lastSave() {
     final value = vmState.lastSave != null ? vmState.lastSave!.time(use24HourFormat(context)) : 'never';
 
-    return Text('Last save: $value',
+    return Text('last save: $value',
       style: context.textTheme.bodySmall,
       textAlign: TextAlign.center
     );
-  }
+  }*/
 
   @override
   void showError(String message) {
@@ -458,6 +409,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
   }
 }
 
+/*
 class WorkoutExerciseItem extends WorkoutExercise {
   WorkoutExerciseItem({
     required super.id,
@@ -472,4 +424,4 @@ class WorkoutExerciseItem extends WorkoutExercise {
   });
 
   bool isSetsExpanded = false;
-}
+}*/

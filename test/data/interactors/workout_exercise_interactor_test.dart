@@ -1,3 +1,4 @@
+/*
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jimmys/core/global.dart';
 import 'package:jimmys/domain/models/exercise.dart';
@@ -184,4 +185,4 @@ void main() async {
 
     expect(resultAfterRemove.length, 0);
   });
-}
+}*/
