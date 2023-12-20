@@ -21,7 +21,6 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListViewModelState, Work
 
     try {
       await _loadWorkouts();
-      _loadExerciseCategories();
     }
     catch (ex) {
       vmState.hasError = true;
@@ -38,14 +37,6 @@ class WorkoutListViewModel extends BaseViewModel<WorkoutListViewModelState, Work
     final workouts = await _workoutInteractor.get();
     for (var workout in workouts) {
       vmState.workoutList.add(WorkoutItem(workout));
-    }
-  }
-
-  void _loadExerciseCategories() {
-    vmState.exerciseCategoryList.clear();
-
-    for (var exerciseCategory in ExerciseCategories.values) {
-      vmState.exerciseCategoryList.add(ExerciseCategoryItem(exerciseCategory));
     }
   }
 
