@@ -23,7 +23,7 @@ class Exercise implements BaseModel {
     createdAt = createdAt ?? Timestamp.now(),
     muscleGroups = muscleGroups ?? [];
 
-  static const categoryDefaultValue = ExerciseCategories.weight;
+  static const categoryDefaultValue = ExerciseCategories.weights;
 
   @override
   String id = '';

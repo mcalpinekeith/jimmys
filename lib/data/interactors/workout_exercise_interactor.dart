@@ -1,7 +1,7 @@
 import 'package:jimmys/core/global.dart';
 import 'package:jimmys/data/modules/services/store_service.dart';
 import 'package:jimmys/domain/enums/exercise_categories.dart';
-import 'package:jimmys/domain/models/meta/weight_meta.dart';
+import 'package:jimmys/domain/models/meta/weights_meta.dart';
 import 'package:jimmys/domain/models/workout_exercise.dart';
 import 'package:jimmys/domain/use_cases/exercise_use_cases.dart';
 import 'package:jimmys/domain/use_cases/workout_exercise_use_cases.dart';
@@ -33,12 +33,12 @@ class WorkoutExerciseInteractor implements WorkoutExerciseUseCases {
       if (exercises.isNotEmpty) {
         workoutExercise.exercise = exercises.first;
 
-        if (workoutExercise.exercise!.category == ExerciseCategories.weight) {
-          final weight = workoutExercise.meta as WeightMeta;
-          if (weight.supersetExerciseId != null) {
-            final supersetExercises = await exerciseInteractor.get(criteria: ('id', weight.supersetExerciseId!));
+        if (workoutExercise.exercise!.category == ExerciseCategories.weights) {
+          final weights = workoutExercise.meta as WeightsMeta;
+          if (weights.supersetExerciseId != null) {
+            final supersetExercises = await exerciseInteractor.get(criteria: ('id', weights.supersetExerciseId!));
             if (supersetExercises.isNotEmpty) {
-              weight.supersetExercise = supersetExercises.first;
+              weights.supersetExercise = supersetExercises.first;
             }
           }
         }

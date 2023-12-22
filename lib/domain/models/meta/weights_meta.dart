@@ -5,8 +5,8 @@ import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/domain/models/exercise.dart';
 import 'package:jimmys/domain/models/range.dart';
 
-class WeightMeta extends BaseMetaModel {
-  WeightMeta({
+class WeightsMeta extends BaseMetaModel {
+  WeightsMeta({
     required this.sets,
     this.isDropSet = false,
     this.supersetExerciseId,
@@ -22,7 +22,7 @@ class WeightMeta extends BaseMetaModel {
   late Exercise? supersetExercise;
 
   @override
-  WeightMeta fromMap(Map<String, dynamic> map) => WeightMeta(
+  WeightsMeta fromMap(Map<String, dynamic> map) => WeightsMeta(
     sets: map.value('sets'),
     isDropSet: map.value('is_drop_set', defaultValue: false),
     supersetExerciseId: map.valueOrNull('superset_exercise_id'),
@@ -41,5 +41,5 @@ class WeightMeta extends BaseMetaModel {
   }
 
   @override
-  ExerciseCategories get exerciseCategory => ExerciseCategories.weight;
+  ExerciseCategories get exerciseCategory => ExerciseCategories.weights;
 }

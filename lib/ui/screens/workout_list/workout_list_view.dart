@@ -22,6 +22,7 @@ class WorkoutListView extends StatefulWidget {
 }
 
 class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, WorkoutListVMContract, WorkoutListViewModelState> with WidgetsMixin implements WorkoutListVContract {
+  //region Filter
   /// isVisible[0]
   late TextEditingController _searchController;
   void _searchListener() => _searchWorkouts(_searchController.text);
@@ -44,6 +45,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   void _exerciseCategoriesFilterListener() => _exerciseCategoriesFilterWorkouts(_exerciseCategoriesController.selected);
   void _exerciseCategoriesFilterWorkouts(List<String> selected) {
     for (var workoutItem in vmState.workoutList) {
+      /// TODO: search by exercise categories
       //workoutItem.isVisible[1] = selected.isEmpty ? true : selected.contains(workoutItem.data.);
       workoutItem.isVisible[1] = true;
     }
@@ -66,22 +68,21 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   PersistentBottomSheetController? _bottomSheetController;
   bool _bottomSheetIsVisible = false;
 
-  @override
-  Future<void> onInitState() async {
-    await reload();
-    _initializeControllers();
-  }
-
   void _initializeControllers() {
     _searchController = TextEditingController();
     _exerciseCategoriesController = ListController(ExerciseCategories.values.map((_) => _.title).toList());
-    //_categoriesController = ListController(vmState.workoutList.where((_) => _.data.category.isNotNullNorEmpty).map((_) => _.data.category).toDistinct());
-    _categoriesController = ListController(['long category 1','long category 2','long category 3','long category 4','long category 5','long category 6','long category 7','long category 8','long category 9','long category 10']);
-
+    _categoriesController = ListController(vmState.workoutList.where((_) => _.data.category.isNotNullNorEmpty).map((_) => _.data.category).toDistinct());
 
     _searchController.addListener(_searchListener);
     _exerciseCategoriesController.addListener(_exerciseCategoriesFilterListener);
     _categoriesController.addListener(_categoriesFilterListener);
+  }
+  //endregion
+
+  @override
+  Future<void> onInitState() async {
+    await reload();
+    _initializeControllers();
   }
 
   @override
@@ -97,8 +98,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
         title: isLoadedAndNotEmpty ? searchBar(context, _searchController, IconButton(
           iconSize: iconMedium,
           icon: const FaIcon(FontAwesomeIcons.filter),
-          onPressed: _workoutFilterOnPressed,
-          )
+          onPressed: _workoutFilterOnPressed)
         ) : nothing,
         toolbarHeight: searchBarMaxHeight + spacingSmall,
         backgroundColor: Colors.transparent,
@@ -122,7 +122,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
                     child: MyGroupedListView(
                       key: widget.key,
                       data: vmState.workoutList
-                        .where((_) => _.isVisible.every((element) => element))
+                        .where((_) => _.isVisible.every((__) => __))
                         .map((_) => _.data.toMap())
                         .toList(),
                       idField: 'id',
@@ -158,6 +158,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
     );
   }
 
+  //region Filter
   Widget _exerciseCategoriesFiltersSummary() {
     if (_exerciseCategoriesController.isEmpty) return nothing;
 
@@ -180,6 +181,92 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
     );
   }
 
+  void _workoutFilterOnPressed() {
+    if (_bottomSheetIsVisible && _bottomSheetController != null) {
+      _bottomSheetController!.close();
+      _bottomSheetIsVisible = false;
+      return;
+    }
+
+    _bottomSheetIsVisible = true;
+    _bottomSheetController = _scaffoldKey.currentState?.showBottomSheet((context) => Column(
+        children: [
+          Row(
+            children: [
+              IconButton(
+                iconSize: iconLarge,
+                icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
+                color: Colors.black54,
+                onPressed: () {
+                  if (_bottomSheetController != null) {
+                    _bottomSheetController!.close();
+                    _bottomSheetIsVisible = false;
+                  }
+                },
+              ),
+            ],
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                const Text('exercises with categories:'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
+                  child: Wrap(
+                      alignment: WrapAlignment.center,
+                      spacing: spacingMicro,
+                      children: _exerciseCategoriesController.values.map((_) {
+                        return FilterChip(
+                          label: Text(_),
+                          selected: _exerciseCategoriesController.contains(_),
+                          onSelected: (bool isSelected) {
+                            _exerciseCategoriesController.change(_, isSelected);
+
+                            if (_bottomSheetController != null) _bottomSheetController!.setState!(() {});
+                          },
+                        );
+                      }).toList()
+                  ),
+                ),
+                const Gap(spacingSmall),
+                const Text('workouts with categories:'),
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
+                      child: Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: spacingMicro,
+                          children: _categoriesController.values.map((_) {
+                            return FilterChip(
+                              label: Text(_),
+                              selected: _categoriesController.contains(_),
+                              onSelected: (bool isSelected) {
+                                _categoriesController.change(_, isSelected);
+
+                                if (_bottomSheetController != null) _bottomSheetController!.setState!(() {});
+                              },
+                            );
+                          }).toList()
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ]),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(radiusMedium),
+            topRight: Radius.circular(radiusMedium)
+        ),
+      ),
+      constraints: BoxConstraints.tight(Size(context.media.size.width, context.media.size.height * 0.4)),
+    );
+  }
+  //endregion
+
   void _workoutAddOnPressed() async {
     final page = WorkoutEditView(
       workout: Workout.create(),
@@ -200,91 +287,6 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
     await navigate(context, page);
     vmContract.saveWorkout(page.workout);
     await reload();
-  }
-
-  void _workoutFilterOnPressed() {
-    if (_bottomSheetIsVisible && _bottomSheetController != null) {
-      _bottomSheetController!.close();
-      _bottomSheetIsVisible = false;
-      return;
-    }
-
-    _bottomSheetIsVisible = true;
-    _bottomSheetController = _scaffoldKey.currentState?.showBottomSheet((context) => Column(
-      children: [
-        Row(
-          children: [
-            IconButton(
-              iconSize: iconLarge,
-              icon: const FaIcon(FontAwesomeIcons.solidCircleXmark),
-              color: Colors.black54,
-              onPressed: () {
-                if (_bottomSheetController != null) {
-                  _bottomSheetController!.close();
-                  _bottomSheetIsVisible = false;
-                }
-              },
-            ),
-          ],
-        ),
-        Expanded(
-          child: Column(
-            children: [
-              const Text('exercises with categories:'),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
-                child: Wrap(
-                  alignment: WrapAlignment.spaceAround,
-                  spacing: spacingMicro,
-                  children: _exerciseCategoriesController.values.map((_) {
-                    return FilterChip(
-                      label: Text(_),
-                      selected: _exerciseCategoriesController.contains(_),
-                      onSelected: (bool isSelected) {
-                        _exerciseCategoriesController.change(_, isSelected);
-
-                        if (_bottomSheetController != null) _bottomSheetController!.setState!(() {});
-                      },
-                    );
-                  }).toList()
-                ),
-              ),
-              const Gap(spacingSmall),
-              const Text('workouts with categories:'),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
-                    child: Wrap(
-                      alignment: WrapAlignment.spaceAround,
-                      spacing: spacingMicro,
-                      children: _categoriesController.values.map((_) {
-                        return FilterChip(
-                          label: Text(_),
-                          selected: _categoriesController.contains(_),
-                          onSelected: (bool isSelected) {
-                            _categoriesController.change(_, isSelected);
-
-                            if (_bottomSheetController != null) _bottomSheetController!.setState!(() {});
-                          },
-                        );
-                      }).toList()
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ]),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(radiusMedium),
-          topRight: Radius.circular(radiusMedium)
-        ),
-      ),
-      constraints: BoxConstraints.tight(Size(context.media.size.width, context.media.size.height * 0.4)),
-    );
   }
 
   @override
