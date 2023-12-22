@@ -10,7 +10,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:jimmys/core/extensions/string.dart';
 
 mixin WidgetsMixin {
-  bool use24HourFormat(BuildContext context) => context.mediaQuery.alwaysUse24HourFormat;
+  bool use24HourFormat(BuildContext context) => context.media.alwaysUse24HourFormat;
   Widget get nothing => const SizedBox.shrink();
 
   Widget logo() => Container(
@@ -48,7 +48,7 @@ mixin WidgetsMixin {
   Widget loader(BuildContext context, {double size = 45.0, EdgeInsets? padding}) => _paddingWrapper(
     child: SpinKitDualRing(
       size: size,
-      color: context.colorScheme.primary,
+      color: context.color.primary,
     ),
     padding: padding,
   );
@@ -62,16 +62,16 @@ mixin WidgetsMixin {
     );
   }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(BuildContext context, String message) => context.scaffoldMessenger.showSnackBar(SnackBar(
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showSnackBar(BuildContext context, String message) => context.messenger.showSnackBar(SnackBar(
     content: Text(message),
   ));
 
   AutoScrollController scrollController(BuildContext context) => AutoScrollController(
     viewportBoundaryGetter: () => Rect.fromLTRB(
-      context.mediaQuery.padding.left,
-      context.mediaQuery.padding.top,
-      context.mediaQuery.padding.right,
-      context.mediaQuery.padding.bottom
+      context.media.padding.left,
+      context.media.padding.top,
+      context.media.padding.right,
+      context.media.padding.bottom
     ),
     axis: Axis.vertical,
     suggestedRowHeight: iconMedium + (spacingMicro * 2),
@@ -88,11 +88,11 @@ mixin WidgetsMixin {
   AppBar appBar(BuildContext context, String text, {List<Widget>? actions}) => AppBar(
     centerTitle: true,
     title: Text(text,
-      style: context.textTheme.headlineLarge!.copyWith(
-        color: context.colorScheme.onPrimary,
+      style: context.text.headlineLarge!.copyWith(
+        color: context.color.onPrimary,
       ),
     ),
-    backgroundColor: context.colorScheme.primary,
+    backgroundColor: context.color.primary,
     actions: actions,
   );
 
@@ -113,7 +113,7 @@ mixin WidgetsMixin {
   Widget addAction(BuildContext context, void Function()? onPressed) => IconButton(
     iconSize: iconMedium,
     icon: const FaIcon(FontAwesomeIcons.plus),
-    color: context.colorScheme.onPrimary,
+    color: context.color.onPrimary,
     onPressed: onPressed,
   );
 
@@ -146,7 +146,7 @@ mixin WidgetsMixin {
         IconButton(
           iconSize: iconLarge,
           icon: const FaIcon(FontAwesomeIcons.solidCircleCheck),
-          color: context.colorScheme.error,
+          color: context.color.error,
           onPressed: onPressed,
         ),
       ],
@@ -157,11 +157,11 @@ mixin WidgetsMixin {
   Widget fab(BuildContext context, IconData icon, void Function() onPressed) => FloatingActionButton(
     onPressed: onPressed,
     shape: const CircleBorder(),
-    elevation: context.popupMenuTheme.elevation,
-    backgroundColor: context.colorScheme.primary,
+    elevation: context.popupTheme.elevation,
+    backgroundColor: context.color.primary,
     child: FaIcon(
       icon,
-      color: context.colorScheme.onPrimary,
+      color: context.color.onPrimary,
       size: iconMedium,
     ),
   );
@@ -175,21 +175,21 @@ mixin WidgetsMixin {
     );
   }
 
-  TextStyle headlineLargePrimary(BuildContext context) => context.textTheme.headlineLarge!.copyWith(
-    color: context.colorScheme.primary,
+  TextStyle headlineLargePrimary(BuildContext context) => context.text.headlineLarge!.copyWith(
+    color: context.color.primary,
   );
 
-  TextStyle titleMediumSecondary(BuildContext context) => context.textTheme.titleMedium!.copyWith(
-    color: context.colorScheme.secondary,
+  TextStyle titleMediumSecondary(BuildContext context) => context.text.titleMedium!.copyWith(
+    color: context.color.secondary,
   );
 
-  TextStyle labelMediumSecondary(BuildContext context, {double fontSize = 20}) => context.textTheme.labelMedium!.copyWith(
-    color: context.colorScheme.secondary,
+  TextStyle labelMediumSecondary(BuildContext context, {double fontSize = 20}) => context.text.labelMedium!.copyWith(
+    color: context.color.secondary,
     fontSize: fontSize,
   );
 
-  TextStyle labelMediumOnPrimary(BuildContext context, {double fontSize = 20}) => context.textTheme.labelMedium!.copyWith(
-    color: context.colorScheme.onPrimary,
+  TextStyle labelMediumOnPrimary(BuildContext context, {double fontSize = 20}) => context.text.labelMedium!.copyWith(
+    color: context.color.onPrimary,
     fontSize: fontSize,
   );
 }
