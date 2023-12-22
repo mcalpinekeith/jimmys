@@ -10,6 +10,7 @@ class RunMeta extends BaseMetaModel {
     this.heartRate,
     this.pace,
     this.cadence,
+    this.reps,
   });
 
   static const distanceAboveDefaultValue = 1.0;
@@ -26,11 +27,14 @@ class RunMeta extends BaseMetaModel {
   static const cadenceBelowDefaultValue = 185.0;
   static const cadenceIncrement = 1.0;
 
+  static const repsDefaultValue = 1;
+
   String? time; /// hh:mm
   Range? distance; /// mi
   Range? heartRate; /// bpm
   Range? pace; /// min/mi
   Range? cadence; /// spm
+  int? reps;
 
   @override
   RunMeta fromMap(Map<String, dynamic> map) {
@@ -45,6 +49,7 @@ class RunMeta extends BaseMetaModel {
       heartRate: heartRate == null ? null : Range.fromMap(heartRate),
       pace: pace == null ? null : Range.fromMap(pace),
       cadence: cadence == null ? null : Range.fromMap(cadence),
+      reps: map.valueOrNull('reps'),
     );
   }
 
@@ -53,10 +58,11 @@ class RunMeta extends BaseMetaModel {
     final Map<String, dynamic> result = {};
 
     if (time != null) result['time'] = time;
-    if (distance != null) result['distance'] = distance?.toMap();
-    if (heartRate != null) result['heart_rate'] = heartRate?.toMap();
-    if (pace != null) result['pace'] = pace?.toMap();
-    if (cadence != null) result['cadence'] = cadence?.toMap();
+    if (distance != null) result['distance'] = distance!.toMap();
+    if (heartRate != null) result['heart_rate'] = heartRate!.toMap();
+    if (pace != null) result['pace'] = pace!.toMap();
+    if (cadence != null) result['cadence'] = cadence!.toMap();
+    if (reps != null) result['reps'] = reps;
 
     return result;
   }

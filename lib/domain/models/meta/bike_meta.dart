@@ -39,14 +39,16 @@ class BikeMeta extends BaseMetaModel {
 
   @override
   BikeMeta fromMap(Map<String, dynamic> map) {
+    final distance = map.valueOrNull('distance');
+    final heartRate = map.valueOrNull('heart_rate');
     final power = map.valueOrNull('power');
     final speed = map.valueOrNull('speed');
     final cadence = map.valueOrNull('cadence');
 
     return BikeMeta(
       time: map.valueOrNull('time'),
-      distance: map.valueOrNull('distance'),
-      heartRate: map.valueOrNull('heart_rate'),
+      distance: distance == null ? null : Range.fromMap(distance),
+      heartRate: heartRate == null ? null : Range.fromMap(heartRate),
       power: power == null ? null : Range.fromMap(power),
       speed: speed == null ? null : Range.fromMap(speed),
       cadence: cadence == null ? null : Range.fromMap(cadence),
@@ -58,11 +60,11 @@ class BikeMeta extends BaseMetaModel {
     final Map<String, dynamic> result = {};
 
     if (time != null) result['time'] = time;
-    if (distance != null) result['distance'] = distance;
-    if (heartRate != null) result['heartRate'] = heartRate?.toMap();
-    if (power != null) result['power'] = power?.toMap();
-    if (speed != null) result['speed'] = speed?.toMap();
-    if (cadence != null) result['cadence'] = cadence?.toMap();
+    if (distance != null) result['distance'] = distance!.toMap();
+    if (heartRate != null) result['heart_rate'] = heartRate!.toMap();
+    if (power != null) result['power'] = power!.toMap();
+    if (speed != null) result['speed'] = speed!.toMap();
+    if (cadence != null) result['cadence'] = cadence!.toMap();
 
     return result;
   }

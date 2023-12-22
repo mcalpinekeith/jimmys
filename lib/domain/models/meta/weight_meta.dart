@@ -1,19 +1,19 @@
 import 'package:jimmys/core/extensions/map.dart';
+import 'package:jimmys/core/extensions/string.dart';
 import 'package:jimmys/domain/enums/exercise_categories.dart';
 import 'package:jimmys/domain/models/base_model.dart';
 import 'package:jimmys/domain/models/exercise.dart';
 import 'package:jimmys/domain/models/range.dart';
 
-class StrengthMeta extends BaseMetaModel {
-  StrengthMeta({
+class WeightMeta extends BaseMetaModel {
+  WeightMeta({
     required this.sets,
     this.isDropSet = false,
-    this.supersetExerciseId = '',
+    this.supersetExerciseId,
   });
 
-  static const weightAboveDefaultValue = 8.5;
-  static const paceBelowDefaultValue = 9.5;
-  static const paceIncrement = 1.0;
+  static const weightAboveDefaultValue = 5.0;
+  static const weightIncrement = 1.0;
 
   Map<double, Range> sets;  /// reps, weights
   bool isDropSet = false;
@@ -22,19 +22,24 @@ class StrengthMeta extends BaseMetaModel {
   late Exercise? supersetExercise;
 
   @override
-  StrengthMeta fromMap(Map<String, dynamic> map) => StrengthMeta(
+  WeightMeta fromMap(Map<String, dynamic> map) => WeightMeta(
     sets: map.value('sets'),
     isDropSet: map.value('is_drop_set', defaultValue: false),
     supersetExerciseId: map.valueOrNull('superset_exercise_id'),
   );
 
   @override
-  Map<String, dynamic> toMap() => {
-    'sets': sets,
-    'is_drop_set': isDropSet,
-    'superset_exercise_id': supersetExerciseId,
-  };
+  Map<String, dynamic> toMap() {
+    final Map<String, dynamic> result = {};
+
+    result['sets'] = sets;
+    result['is_drop_set'] = isDropSet;
+
+    if (supersetExerciseId.isNotNullNorEmpty) result['superset_exercise_id'] = supersetExerciseId;
+
+    return result;
+  }
 
   @override
-  ExerciseCategories get exerciseCategory => ExerciseCategories.strength;
+  ExerciseCategories get exerciseCategory => ExerciseCategories.weight;
 }

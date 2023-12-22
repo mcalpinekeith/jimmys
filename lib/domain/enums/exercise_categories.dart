@@ -1,16 +1,15 @@
 enum ExerciseCategories {
-  bike(10, 'Bike'),
-  calisthenics(20, 'Calisthenics'),
-  cardio(30, 'Cardio'),
-  hiit(40, 'HIIT'),
-  run(50, 'Run'),
-  strength(60, 'Strength'),
-  swim(70, 'Swim');
+  bike(5, 'Bike'),
+  calisthenics(10, 'Calisthenics'),
+  cardio(15, 'Cardio'),
+  run(20, 'Run'),
+  weight(25, 'Weight'),
+  swim(30, 'Swim');
 
   final int i;
   final String title;
 
   const ExerciseCategories(this.i, this.title);
 
-  factory ExerciseCategories.fromInt(int i) => values.firstWhere((_) => _.i == i, orElse: () => strength);
+  factory ExerciseCategories.fromInt(int i) => values.firstWhere((_) => _.i == i, orElse: () => weight);
 }

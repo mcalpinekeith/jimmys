@@ -58,10 +58,10 @@ class CardioMeta extends BaseMetaModel {
     final Map<String, dynamic> result = {};
 
     if (time != null) result['time'] = time;
-    if (distance != null) result['distance'] = distance?.toMap();
-    if (heartRate != null) result['heart_rate'] = heartRate?.toMap();
-    if (pace != null) result['pace'] = pace?.toMap();
-    if (cadence != null) result['cadence'] = cadence?.toMap();
+    if (distance != null) result['distance'] = distance!.toMap();
+    if (heartRate != null) result['heart_rate'] = heartRate!.toMap();
+    if (pace != null) result['pace'] = pace!.toMap();
+    if (cadence != null) result['cadence'] = cadence!.toMap();
     if (reps != null) result['reps'] = reps;
 
     return result;
