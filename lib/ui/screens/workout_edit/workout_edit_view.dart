@@ -211,7 +211,7 @@ class _WorkoutEditViewWidgetState extends BaseViewWidgetState<WorkoutEditView, W
       children: [
         const Gap(spacingMedium),
         Text('Select an icon for your new workout.',
-          style: context.textTheme.bodySmall
+          style: context.text.bodySmall
         ),
         const Gap(spacingSmall),
         Expanded(

@@ -17,7 +17,7 @@ class WorkoutExerciseInteractor implements WorkoutExerciseUseCases {
 
   @override
   Future<List<WorkoutExercise>> get({(String, String)? criteria}) async {
-    //final sharedWorkoutExercises = await store.sharedWhere<WorkoutExercise>(WorkoutExercise.empty(), criteria: criteria);
+    /// TODO: fix shared exercise schema: final sharedWorkoutExercises = await store.sharedWhere<WorkoutExercise>(WorkoutExercise.empty(), criteria: criteria);
     final workoutExercises = await store.where<WorkoutExercise>(WorkoutExercise.empty(), criteria: criteria);
     final workoutInteractor = getIt<WorkoutUseCases>();
     final exerciseInteractor = getIt<ExerciseUseCases>();

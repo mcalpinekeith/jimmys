@@ -67,7 +67,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('Hello,',
-                style: context.textTheme.headlineLarge
+                style: context.text.headlineLarge
               ),
               userAvatar(vmState.user),
             ],
@@ -116,7 +116,7 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
           const Gap(spacingMedium),
           Text(vmState.todayWorkout!.name,
             textAlign: TextAlign.center,
-            style: context.textTheme.titleLarge,
+            style: context.text.titleLarge,
             softWrap: true,
           ),
           const Gap(spacingSmall),

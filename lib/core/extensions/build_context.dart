@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 extension BuildContextExtensions on BuildContext {
   ThemeData get theme => Theme.of(this);
 
-  TextTheme get textTheme => theme.textTheme;
+  TextTheme get text => theme.textTheme;
 
-  ColorScheme get colorScheme => theme.colorScheme;
+  ColorScheme get color => theme.colorScheme;
 
-  PopupMenuThemeData get popupMenuTheme => theme.popupMenuTheme;
+  PopupMenuThemeData get popupTheme => theme.popupMenuTheme;
 
-  DefaultTextStyle get defaultTextStyle => DefaultTextStyle.of(this);
+  DefaultTextStyle get textStyle => DefaultTextStyle.of(this);
 
-  MediaQueryData get mediaQuery => MediaQuery.of(this);
+  MediaQueryData get media => MediaQuery.of(this);
 
   NavigatorState get navigator => Navigator.of(this);
 
-  FocusScopeNode get focusScope => FocusScope.of(this);
+  FocusScopeNode get focus => FocusScope.of(this);
 
   ScaffoldState get scaffold => Scaffold.of(this);
 
-  ScaffoldMessengerState get scaffoldMessenger => ScaffoldMessenger.of(this);
+  ScaffoldMessengerState get messenger => ScaffoldMessenger.of(this);
 }

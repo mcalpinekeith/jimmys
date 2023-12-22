@@ -60,12 +60,12 @@ class _MyGridState extends State<MyGrid> with TickerProviderStateMixin {
         sizeFactor: animation,
         child: IconButton(
           iconSize: iconMedium,
-          color: item.isSelected ? context.colorScheme.primary : context.colorScheme.secondary,
+          color: item.isSelected ? context.color.primary : context.color.secondary,
           icon: FaIcon(item.icon!),
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),
             side: BorderSide(
-              color: item.isSelected ? context.colorScheme.primary : Colors.transparent,
+              color: item.isSelected ? context.color.primary : Colors.transparent,
             )
           ),
           onPressed: () => _iconOnPressed(index, item),

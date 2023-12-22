@@ -61,7 +61,7 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
         maxLines: widget.keyboardType == TextInputType.multiline ? widget.maxLines : 1,
         //initialValue: initialValue, use controller to set initialValue
         style: labelMediumSecondary(context),
-        cursorColor: context.colorScheme.primary,
+        cursorColor: context.color.primary,
         controller: _controller,
         validator: widget.validator,
         decoration: _decoration(),
@@ -81,16 +81,16 @@ class _MyTextState extends State<MyTextFormField> with WidgetsMixin {
         borderSide: BorderSide(color: Colors.red),
       ),
       focusedBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colorScheme.primary),
+        borderSide: BorderSide(color: context.color.primary),
       ),
       focusedErrorBorder: const UnderlineInputBorder(
         borderSide: BorderSide(color: Colors.red),
       ),
       disabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colorScheme.shadow),
+        borderSide: BorderSide(color: context.color.shadow),
       ),
       enabledBorder: UnderlineInputBorder(
-        borderSide: BorderSide(color: context.colorScheme.secondary),
+        borderSide: BorderSide(color: context.color.secondary),
       ),
     );
   }

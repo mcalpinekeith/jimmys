@@ -125,7 +125,7 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
     return SizedBox(
       width: _textWidth(item.icon.isNotNullNorEmpty),
       child: Text(item.middleText,
-        style: context.textTheme.titleLarge,
+        style: context.text.titleLarge,
         softWrap: true,
       ),
     );
@@ -143,7 +143,7 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
     );
   }
 
-  double _textWidth(bool hasIcon) => context.mediaQuery.size.width - (hasIcon ? spacingSmall * 5 : spacingSmall * 2) - (spacingSmall * 10);
+  double _textWidth(bool hasIcon) => context.media.size.width - (hasIcon ? spacingSmall * 5 : spacingSmall * 2) - (spacingSmall * 10);
   //endregion
 
   Widget _indexHintBuilder(BuildContext context, String tag) {
@@ -153,11 +153,11 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
       alignment: Alignment.center,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: context.colorScheme.primary,
+        color: context.color.primary,
       ),
       child: Text(tag,
         style: TextStyle(
-          color: context.colorScheme.onPrimary,
+          color: context.color.onPrimary,
           fontSize: 20,
         ),
       ),
@@ -170,11 +170,11 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
       indexHintAlignment: Alignment.centerRight,
       indexHintOffset: const Offset(-spacingMedium, 0),
       selectTextStyle: TextStyle(
-        color: context.colorScheme.onPrimary,
+        color: context.color.onPrimary,
       ),
       selectItemDecoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: context.colorScheme.primary,
+        color: context.color.primary,
       ),
     );
   }
