@@ -1,4 +1,6 @@
-enum MuscleGroups {
+import 'package:jimmys/domain/enums/base_enum.dart';
+
+enum MuscleGroups implements BaseEnum {
   traps(5, 'traps'),
   delts(10, 'delts'),
   backDelts(15, 'back delts'),
@@ -19,6 +21,9 @@ enum MuscleGroups {
 
   final int i;
   final String title;
+
+  @override
+  String getTitle(int i) => MuscleGroups.fromInt(i).title;
 
   const MuscleGroups(this.i, this.title);
 

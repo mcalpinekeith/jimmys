@@ -12,6 +12,8 @@ import 'package:jimmys/ui/screens/sign_in/sign_in_contract.dart';
 import 'package:jimmys/ui/screens/sign_in/sign_in_view_model.dart';
 import 'package:jimmys/ui/screens/startup/startup_contract.dart';
 import 'package:jimmys/ui/screens/startup/startup_view_model.dart';
+import 'package:jimmys/ui/screens/exercise_list/exercise_list_contract.dart';
+import 'package:jimmys/ui/screens/exercise_list/exercise_list_view_model.dart';
 import 'package:jimmys/ui/screens/workout_edit/workout_edit_contract.dart';
 import 'package:jimmys/ui/screens/workout_edit/workout_edit_view_model.dart';
 import 'package:jimmys/ui/screens/workout_list/workout_list_contract.dart';
@@ -52,6 +54,10 @@ Future<void> initializeApp() async {
   /// WorkoutList
   getIt.registerFactory<WorkoutListVMContract>(() => WorkoutListViewModel(workoutInteractor: getIt<WorkoutUseCases>()));
   getIt.registerFactory<WorkoutListViewModelState>(() => WorkoutListViewModelState());
+
+  /// ExerciseList
+  getIt.registerFactory<ExerciseListVMContract>(() => ExerciseListViewModel(exerciseInteractor: getIt<ExerciseUseCases>()));
+  getIt.registerFactory<ExerciseListViewModelState>(() => ExerciseListViewModelState());
 
   Global.isAppInitialized = true;
 }

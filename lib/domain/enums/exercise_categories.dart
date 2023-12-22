@@ -1,4 +1,6 @@
-enum ExerciseCategories {
+import 'package:jimmys/domain/enums/base_enum.dart';
+
+enum ExerciseCategories implements BaseEnum {
   bike(5, 'Bike'),
   calisthenics(10, 'Calisthenics'),
   cardio(15, 'Cardio'),
@@ -8,6 +10,9 @@ enum ExerciseCategories {
 
   final int i;
   final String title;
+
+  @override
+  String getTitle(int i) => ExerciseCategories.fromInt(i).title;
 
   const ExerciseCategories(this.i, this.title);
 
