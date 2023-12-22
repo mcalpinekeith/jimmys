@@ -4,24 +4,22 @@ import 'package:gap/gap.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/core/extensions/iterable.dart';
 import 'package:jimmys/core/extensions/string.dart';
-import 'package:jimmys/domain/enums/exercise_categories.dart';
-import 'package:jimmys/domain/models/workout.dart';
+import 'package:jimmys/domain/enums/muscle_groups.dart';
 import 'package:jimmys/ui/screens/_base/base_view_widget_state.dart';
-import 'package:jimmys/ui/screens/workout_edit/workout_edit_view.dart';
-import 'package:jimmys/ui/screens/workout_list/workout_list_contract.dart';
+import 'package:jimmys/ui/screens/exercise_list/exercise_list_contract.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/ui/widgets/controllers/list_controller.dart';
 import 'package:jimmys/ui/widgets/generic/my_grouped_list_view.dart';
 import 'package:jimmys/ui/widgets/generic/widgets_mixin.dart';
 
-class WorkoutListView extends StatefulWidget {
-  const WorkoutListView({super.key});
+class ExerciseListView extends StatefulWidget {
+  const ExerciseListView({super.key});
 
   @override
-  State<WorkoutListView> createState() => _WorkoutListViewWidgetState();
+  State<ExerciseListView> createState() => _ExerciseListViewWidgetState();
 }
 
-class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, WorkoutListVMContract, WorkoutListViewModelState> with WidgetsMixin implements WorkoutListVContract {
+class _ExerciseListViewWidgetState extends BaseViewWidgetState<ExerciseListView, ExerciseListVMContract, ExerciseListViewModelState> with WidgetsMixin implements ExerciseListVContract {
   //region Filter
   /// isVisible[0]
   late TextEditingController _searchController;
@@ -29,25 +27,19 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   void _searchWorkouts(String text) {
     text = text.toLowerCase();
 
-    for (var item in vmState.workoutList) {
-      item.isVisible[0] = text.isNullOrEmpty ? true :
-      (
-        item.data.name.toLowerCase().contains(text) ||
-        (item.data.description.isNotNullNorEmpty && item.data.description!.toLowerCase().contains(text))
-      );
+    for (var item in vmState.exerciseList) {
+      item.isVisible[0] = text.isNullOrEmpty ? true : item.data.name.toLowerCase().contains(text);
     }
 
     notify();
   }
 
   /// isVisible[1]
-  late ListController _exerciseCategoriesController;
-  void _exerciseCategoriesFilterListener() => _exerciseCategoriesFilterWorkouts(_exerciseCategoriesController.selected);
-  void _exerciseCategoriesFilterWorkouts(List<String> selected) {
-    for (var item in vmState.workoutList) {
-      /// TODO: search by exercise categories
-      //item.isVisible[1] = selected.isEmpty ? true : selected.contains(workoutItem.data.);
-      item.isVisible[1] = true;
+  late ListController _muscleGroupsController;
+  void _muscleGroupsFilterListener() => _muscleGroupsFilterExercises(_muscleGroupsController.selected);
+  void _muscleGroupsFilterExercises(List<String> selected) {
+    for (var item in vmState.exerciseList) {
+      item.isVisible[1] = selected.isEmpty ? true : selected.contains(item.data.muscleGroups.map((_) => _.title).join('|'));
     }
 
     notify();
@@ -57,8 +49,8 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   late ListController _categoriesController;
   void _categoriesFilterListener() => _categoriesFilterWorkouts(_categoriesController.selected);
   void _categoriesFilterWorkouts(List<String> selected) {
-    for (var item in vmState.workoutList) {
-      item.isVisible[2] = selected.isEmpty ? true : selected.contains(item.data.category);
+    for (var item in vmState.exerciseList) {
+      item.isVisible[2] = selected.isEmpty ? true : selected.contains(item.data.category.title);
     }
 
     notify();
@@ -70,11 +62,11 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
 
   void _initializeControllers() {
     _searchController = TextEditingController();
-    _exerciseCategoriesController = ListController('exercises with categories', ExerciseCategories.values.map((_) => _.title).toList());
-    _categoriesController = ListController('workouts with categories', vmState.workoutList.where((_) => _.data.category.isNotNullNorEmpty).map((_) => _.data.category).toDistinct());
+    _muscleGroupsController = ListController('muscle groups', MuscleGroups.values.map((_) => _.title).toList());
+    _categoriesController = ListController('categories', vmState.exerciseList.map((_) => _.data.category).toDistinct());
 
     _searchController.addListener(_searchListener);
-    _exerciseCategoriesController.addListener(_exerciseCategoriesFilterListener);
+    _muscleGroupsController.addListener(_muscleGroupsFilterListener);
     _categoriesController.addListener(_categoriesFilterListener);
   }
   //endregion
@@ -88,8 +80,8 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   @override
   Widget contentBuilder(BuildContext context) {
     final isLoaded = !vmState.isLoading;
-    final isLoadedAndEmpty = isLoaded && vmState.workoutList.isEmpty;
-    final isLoadedAndNotEmpty = isLoaded && vmState.workoutList.isNotEmpty;
+    final isLoadedAndEmpty = isLoaded && vmState.exerciseList.isEmpty;
+    final isLoadedAndNotEmpty = isLoaded && vmState.exerciseList.isNotEmpty;
 
     return Scaffold(
       key: _scaffoldKey,
@@ -111,25 +103,23 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
               loader(context),
 
             if (isLoadedAndEmpty)
-              noResults(context, 'Workouts'),
+              noResults(context, 'Exercises'),
 
             if (isLoadedAndNotEmpty)
               Column(
                 children: [
-                  filterSummary(_exerciseCategoriesController),
+                  filterSummary(_muscleGroupsController),
                   filterSummary(_categoriesController),
                   Expanded(
                     child: MyGroupedListView(
                       key: widget.key,
-                      data: vmState.workoutList
+                      data: vmState.exerciseList
                         .where((_) => _.isVisible.every((__) => __))
                         .map((_) => _.data.toMap())
                         .toList(),
                       idField: 'id',
                       topTextField: 'category',
-                      iconField: 'icon',
                       middleTextField: 'name',
-                      bottomTextField: 'description',
                       onSelected: (MyGroupedListItem item) => _editOnPressed(item),
                     ),
                   ),
@@ -164,7 +154,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
         Expanded(
           child: Column(
             children: [
-              filter(_bottomSheetController, _exerciseCategoriesController),
+              filter(_bottomSheetController, _muscleGroupsController),
               const Gap(spacingSmall),
               filter(_bottomSheetController, _categoriesController),
             ],
@@ -190,25 +180,29 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
   //endregion
 
   void _addOnPressed() async {
+/*
     final page = WorkoutEditView(
       workout: Workout.create(),
       isAdd: true,
     );
 
     await navigate(context, page);
-    vmContract.saveWorkout(page.workout);
+    vmContract.saveExercise(page.workout);
     await reload();
+*/
   }
 
   void _editOnPressed(MyGroupedListItem item) async {
+/*
     final page = WorkoutEditView(
       workout: vmState.workoutList.firstWhere((_) => _.data.id == item.id).data,
       isAdd: false,
     );
 
     await navigate(context, page);
-    vmContract.saveWorkout(page.workout);
+    vmContract.saveExercise(page.workout);
     await reload();
+*/
   }
 
   @override
@@ -221,8 +215,8 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
     _searchController.removeListener(_searchListener);
     _searchController.dispose();
 
-    _exerciseCategoriesController.removeListener(_exerciseCategoriesFilterListener);
-    _exerciseCategoriesController.dispose();
+    _muscleGroupsController.removeListener(_muscleGroupsFilterListener);
+    _muscleGroupsController.dispose();
 
     _categoriesController.removeListener(_categoriesFilterListener);
     _categoriesController.dispose();

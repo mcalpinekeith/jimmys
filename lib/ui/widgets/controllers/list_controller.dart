@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:jimmys/core/extensions/string.dart';
 
 class ListController extends ChangeNotifier {
-  ListController(this.values);
+  ListController(this.title, this.values);
 
+  String title;
   List<String> values = [];
   List<String> selected = [];
 

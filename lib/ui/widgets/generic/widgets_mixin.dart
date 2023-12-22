@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:gap/gap.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/ui/theme/constants.dart';
+import 'package:jimmys/ui/widgets/controllers/list_controller.dart';
 import 'package:jimmys/utilities/icon_service.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -99,6 +101,62 @@ mixin WidgetsMixin {
   AppBar emptyAppBar() => AppBar(
     toolbarHeight: iconLarge,
     backgroundColor: Colors.transparent,
+  );
+
+  Widget noResults(BuildContext context, String entity) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        const Gap(spacingLarge),
+        const FaIcon(FontAwesomeIcons.ghost,
+          size: spacingLarge,
+        ),
+        const Gap(spacingMedium),
+        Text('$entity are a myth around here ...',
+          textAlign: TextAlign.center,
+          style: headlineLargePrimary(context),
+        ),
+      ],
+    );
+  }
+
+  Widget filterSummary(ListController controller) {
+    if (controller.isEmpty) return nothing;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
+      child: Text('${controller.title}: ${controller.selectedSummary}',
+        textAlign: TextAlign.center
+      ),
+    );
+  }
+
+  Widget filter(PersistentBottomSheetController? bottomSheetController, ListController controller) => Column(
+    children: [
+      Text(controller.title),
+      Expanded(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              spacing: spacingMicro,
+              children: controller.values.map((_) {
+                return FilterChip(
+                  label: Text(_),
+                  selected: controller.contains(_),
+                  onSelected: (bool isSelected) {
+                    controller.change(_, isSelected);
+
+                    if (bottomSheetController != null) bottomSheetController.setState!(() {});
+                  },
+                );
+              }).toList()
+            ),
+          ),
+        ),
+      ),
+    ],
   );
 
   SearchBar searchBar(BuildContext context, TextEditingController controller, Widget trailing) => SearchBar(

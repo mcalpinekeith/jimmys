@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gap/gap.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/ui/screens/_base/base_view_widget_state.dart';
+import 'package:jimmys/ui/screens/exercise_list/exercise_list_view.dart';
 import 'package:jimmys/ui/screens/startup/startup_contract.dart';
 import 'package:jimmys/ui/screens/workout_list/workout_list_view.dart';
 import 'package:jimmys/ui/theme/constants.dart';
@@ -42,8 +43,9 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
             MyButton(
               label: const Text('Exercises'),
               icon: const FaIcon(FontAwesomeIcons.personRunning),
-              onPressed: () {
-                //Navigator.pop(context);
+              onPressed: () async {
+                await navigate(context, const ExerciseListView());
+                await reload();
               },
             ),
             _scheduleWorkoutsOption(),
