@@ -55,13 +55,5 @@ class Exercise implements BaseModel {
     'muscle_groups': muscleGroups.isEmpty ? null : muscleGroups,
   };
 
-  List<MuscleGroups> _fromInts(Iterable<dynamic> values) {
-    final result = <MuscleGroups>[];
-
-    for (var value in values) {
-      result.add(MuscleGroups.fromInt(value));
-    }
-
-    return result;
-  }
+  List<MuscleGroups> _fromInts(Iterable<dynamic> values) => values.map((_) => MuscleGroups.fromInt(_)).toList();
 }

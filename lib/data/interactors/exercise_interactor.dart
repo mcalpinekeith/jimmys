@@ -1,5 +1,5 @@
 import 'package:jimmys/data/modules/services/store_service.dart';
-import 'package:jimmys/domain/enums/exercise_categories.dart';
+import 'package:jimmys/data/shared/shared_exercises.dart';
 import 'package:jimmys/domain/models/exercise.dart';
 import 'package:jimmys/domain/use_cases/exercise_use_cases.dart';
 
@@ -13,12 +13,12 @@ class ExerciseInteractor implements ExerciseUseCases {
 
   @override
   Future<List<Exercise>> get({(String, String)? criteria}) async {
-    /// TODO: fix shared exercise schema: final sharedExercises = await store.sharedWhere<Exercise>(Exercise.empty(), criteria: criteria);
+    final sharedExercises = SharedExercises.where(criteria);
     final exercises = await store.where<Exercise>(Exercise.empty(), criteria: criteria);
 
-    /// sharedExercises.addAll(exercises);
+    sharedExercises.addAll(exercises);
 
-    return exercises;
+    return sharedExercises;
   }
 
   @override
