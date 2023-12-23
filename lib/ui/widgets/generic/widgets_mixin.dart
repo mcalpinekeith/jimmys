@@ -134,25 +134,23 @@ mixin WidgetsMixin {
   Widget filter(PersistentBottomSheetController? bottomSheetController, ListController controller) => Column(
     children: [
       Text(controller.title),
-      Expanded(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              spacing: spacingMicro,
-              children: controller.values.map((_) {
-                return FilterChip(
-                  label: Text(_),
-                  selected: controller.contains(_),
-                  onSelected: (bool isSelected) {
-                    controller.change(_, isSelected);
+      SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: spacingSmall),
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: spacingMicro,
+            children: controller.values.map((_) {
+              return FilterChip(
+                label: Text(_),
+                selected: controller.contains(_),
+                onSelected: (bool isSelected) {
+                  controller.change(_, isSelected);
 
-                    if (bottomSheetController != null) bottomSheetController.setState!(() {});
-                  },
-                );
-              }).toList()
-            ),
+                  if (bottomSheetController != null) bottomSheetController.setState!(() {});
+                },
+              );
+            }).toList()
           ),
         ),
       ),

@@ -177,7 +177,7 @@ class _WorkoutListViewWidgetState extends BaseViewWidgetState<WorkoutListView, W
           topRight: Radius.circular(radiusMedium)
         ),
       ),
-      constraints: BoxConstraints.tight(Size(context.media.size.width, context.media.size.height * 0.4)),
+      constraints: BoxConstraints.tight(Size(context.media.size.width, context.media.size.height * 0.5)),
     );
   }
 

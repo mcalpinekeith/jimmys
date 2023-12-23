@@ -45,7 +45,6 @@ class _StartupViewWidgetState extends BaseViewWidgetState<StartupView, StartupVM
               icon: const FaIcon(FontAwesomeIcons.personRunning),
               onPressed: () async {
                 await navigate(context, const ExerciseListView());
-                await reload();
               },
             ),
             _scheduleWorkoutsOption(),

@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/core/extensions/iterable.dart';
 import 'package:jimmys/core/extensions/string.dart';
+import 'package:jimmys/domain/enums/exercise_categories.dart';
 import 'package:jimmys/domain/enums/muscle_groups.dart';
 import 'package:jimmys/ui/screens/_base/base_view_widget_state.dart';
 import 'package:jimmys/ui/screens/exercise_list/exercise_list_contract.dart';
@@ -63,7 +64,7 @@ class _ExerciseListViewWidgetState extends BaseViewWidgetState<ExerciseListView,
   void _initializeControllers() {
     _searchController = TextEditingController();
     _muscleGroupsController = ListController('muscle groups', MuscleGroups.values.map((_) => _.title).toList());
-    _categoriesController = ListController('categories', vmState.exerciseList.map((_) => _.data.category).toDistinct());
+    _categoriesController = ListController('categories', vmState.exerciseList.map((_) => _.data.category.title).toDistinct());
 
     _searchController.addListener(_searchListener);
     _muscleGroupsController.addListener(_muscleGroupsFilterListener);
@@ -119,6 +120,7 @@ class _ExerciseListViewWidgetState extends BaseViewWidgetState<ExerciseListView,
                         .toList(),
                       idField: 'id',
                       topTextField: 'category',
+                      topEnumField: ExerciseCategories.weights,
                       middleTextField: 'name',
                       onSelected: (MyGroupedListItem item) => _editOnPressed(item),
                     ),
@@ -167,7 +169,7 @@ class _ExerciseListViewWidgetState extends BaseViewWidgetState<ExerciseListView,
           topRight: Radius.circular(radiusMedium)
         ),
       ),
-      constraints: BoxConstraints.tight(Size(context.media.size.width, context.media.size.height * 0.4)),
+      constraints: BoxConstraints.tight(Size(context.media.size.width, context.media.size.height * 0.55)),
     );
   }
 

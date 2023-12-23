@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:jimmys/core/extensions/build_context.dart';
 import 'package:jimmys/core/extensions/map.dart';
 import 'package:jimmys/core/extensions/string.dart';
+import 'package:jimmys/domain/enums/base_enum.dart';
 import 'package:jimmys/ui/theme/constants.dart';
 import 'package:jimmys/ui/widgets/generic/widgets_mixin.dart';
 
@@ -12,6 +13,7 @@ class MyGroupedListView extends StatefulWidget {
     required this.data,
     required this.idField,
     this.topTextField,
+    this.topEnumField,
     this.iconField,
     required this.middleTextField,
     this.bottomTextField,
@@ -23,6 +25,7 @@ class MyGroupedListView extends StatefulWidget {
   final String idField;
   final String? iconField;
   final String? topTextField;
+  final BaseEnum? topEnumField;
   final String middleTextField;
   final String? bottomTextField;
   final EdgeInsetsGeometry padding;
@@ -42,6 +45,7 @@ class _MyGroupedListViewState extends State<MyGroupedListView> with WidgetsMixin
         _,
         widget.idField,
         widget.topTextField,
+        widget.topEnumField,
         widget.iconField,
         widget.middleTextField,
         widget.bottomTextField,
@@ -184,6 +188,7 @@ class MyGroupedListItem extends ISuspensionBean {
   MyGroupedListItem({
     required this.id,
     this.topText,
+    this.topEnum,
     this.icon,
     required this.middleText,
     this.bottomText,
@@ -192,6 +197,7 @@ class MyGroupedListItem extends ISuspensionBean {
 
   final String id;
   final String? topText;
+  final BaseEnum? topEnum;
   final String? icon;
   final String middleText;
   final String? bottomText;
@@ -204,12 +210,14 @@ class MyGroupedListItem extends ISuspensionBean {
     Map<String, dynamic> map,
     String idField,
     String? topTextField,
+    BaseEnum? topEnumField,
     String? iconField,
     String middleTextField,
     String? bottomTextField,
   ) : this(
     id: map[idField]! as String,
-    topText: map.valueOrNull(topTextField),
+    topText: map.valueOrNull(topTextField, enumerable: topEnumField),
+    topEnum: topEnumField,
     icon: map.valueOrNull(iconField),
     middleText: map[middleTextField]! as String,
     bottomText: map.valueOrNull(bottomTextField),
